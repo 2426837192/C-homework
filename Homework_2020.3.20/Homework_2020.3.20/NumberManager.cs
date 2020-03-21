@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Homework_2020._3._20
+{
+    // 静态类，分别为顾客、商品、订单分配序号
+    static class NumberManager
+    {
+        static string customerNumber = "000000";            //六位顾客编号
+        static string itemNumber = "000";                   //三位物品编号
+        static string orderNumber = "00000000";             //八位订单编号
+
+        public static string GetCustomerNumber()
+        {
+            int intNumber = int.Parse(customerNumber) + 1;
+            customerNumber = intNumber.ToString().PadLeft(6, '0');
+
+            return customerNumber;
+        }
+
+        public static string GetItemNumber()
+        {
+            int intNumber = int.Parse(itemNumber) + 1;
+            itemNumber = intNumber.ToString().PadLeft(3, '0');
+
+            return itemNumber;
+        }
+
+        public static string GetOrderNumber()
+        {
+            int intNumber = int.Parse(orderNumber) + 1;
+            orderNumber = intNumber.ToString().PadLeft(8, '0');
+
+            return orderNumber;
+        }
+    }
+}
