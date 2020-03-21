@@ -79,7 +79,7 @@ namespace Homework_2020._3._20
                 {
                     Console.WriteLine("请按下回车键以继续");
                 }
-                Console.WriteLine("\n根据订单号对所有订单进行排序：");
+                Console.WriteLine("\n根据购买商品类别的数量对所有订单进行排序：");
                 myShop.OrderService.SortOrders();
 
                 myShop.OrderService.PrintOrders();
