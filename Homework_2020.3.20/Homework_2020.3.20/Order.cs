@@ -93,7 +93,7 @@ namespace Homework_2020._3._20
                 result += orderItem;
             }
             result += "-----------------------------\n";
-            result += "Item Amount:c" + this.OrderItemAmount + "\n";
+            result += "Item Amount: " + this.OrderItemAmount + "\n";
             result += "Total Price: $" + this.TotalPrice + "\n";
             result += "-----------------------------\n";
             result += "-----------------------------\n";
