@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ArrayOfOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Order>
+    <customer>
+      <CustomerNumber>000001</CustomerNumber>
+      <CustomerName>ZHONG YUAN</CustomerName>
+    </customer>
+    <items>
+      <OrderItem>
+        <ItemNumber>010</ItemNumber>
+        <UnitPrice>2</UnitPrice>
+        <Description>BOOK</Description>
+        <Quantity>1</Quantity>
+      </OrderItem>
+      <OrderItem>
+        <ItemNumber>006</ItemNumber>
+        <UnitPrice>5</UnitPrice>
+        <Description>MILK</Description>
+        <Quantity>3</Quantity>
+      </OrderItem>
+      <OrderItem>
+        <ItemNumber>004</ItemNumber>
+        <UnitPrice>8000</UnitPrice>
+        <Description>CELL PHONE</Description>
+        <Quantity>1</Quantity>
+      </OrderItem>
+    </items>
+    <OrderNumber>00000001</OrderNumber>
+  </Order>
+  <Order>
+    <customer>
+      <CustomerNumber>000002</CustomerNumber>
+      <CustomerName>SHENG GUANGMING</CustomerName>
+    </customer>
+    <items>
+      <OrderItem>
+        <ItemNumber>002</ItemNumber>
+        <UnitPrice>3000</UnitPrice>
+        <Description>COMPUTER</Description>
+        <Quantity>1</Quantity>
+      </OrderItem>
+    </items>
+    <OrderNumber>00000002</OrderNumber>
+  </Order>
+</ArrayOfOrder>
