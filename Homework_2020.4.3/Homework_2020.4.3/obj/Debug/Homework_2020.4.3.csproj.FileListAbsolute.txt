@@ -1,0 +1,10 @@
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\bin\Debug\Homework_2020.4.3.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\bin\Debug\Homework_2020.4.3.exe
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\bin\Debug\Homework_2020.4.3.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020.4.3.csprojAssemblyReference.cache
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020._4._3.Form1.resources
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020._4._3.Properties.Resources.resources
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020.4.3.csproj.GenerateResource.cache
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020.4.3.csproj.CoreCompileInputs.cache
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020.4.3.exe
+C:\Users\zhong\source\repos\Homework_2020.4.3\Homework_2020.4.3\obj\Debug\Homework_2020.4.3.pdb
