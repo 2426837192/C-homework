@@ -1,0 +1,15 @@
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.4.10.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.4.10.exe
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.4.10.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.3.20.exe
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.3.20.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\bin\Debug\Homework_2020.3.20.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.csprojAssemblyReference.cache
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020._4._10.Form1.resources
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020._4._10.Properties.Resources.resources
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.csproj.GenerateResource.cache
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.csproj.CoreCompileInputs.cache
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.csproj.CopyComplete
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.exe
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020.4.10.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.10\Homework_2020.4.10\obj\Debug\Homework_2020._4._10.Form2.resources
