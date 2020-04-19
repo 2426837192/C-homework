@@ -1,0 +1,456 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="[TOC] 回顾一下，前面 lock、Monitor 部分我们学习了线程锁，Mutex 部分学习了进程同步，Semaphor 部分学习了资源池限制。 这一篇将学习 C 中用于发送线程通知的 AutoR" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>C#多线程(6)：线程通知 - 痴者工良 - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    <link id="MainCss" rel="stylesheet" href="/skins/codinglife/bundle-codinglife.min.css?v=hlpQ1CJDwwJXDxv2HNauUmW3NjyWzoMaw1uER19SLT0" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/whuanle/custom.css?v=mA&#x2B;FpFQUS/JIlY1IQJTjcdZUvw0=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/codinglife/bundle-codinglife-mobile.min.css?v=XjHfryC9ctsatIZz1dHn7TsRIqmwz9c3aj_6SCfHSDM" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/whuanle/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/whuanle/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/whuanle/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 406195;
+        var currentBlogApp = 'whuanle';
+        var cb_enable_mathjax = true;
+        var isLogined = false;
+        var skinName = 'CodingLife';
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']], processClass: 'math', processEscapes: true },
+        TeX: {
+        equationNumbers: { autoNumber: ['AMS'], useLabelIds: true },
+        extensions: ['extpfeil.js', 'mediawiki-texvc.js'],
+        Macros: {bm: "\\boldsymbol"}
+        },
+        'HTML-CSS': { linebreaks: { automatic: true } },
+        SVG: { linebreaks: { automatic: true } }
+        });
+    </script>
+    <script src="https://mathjax.cnblogs.com/2_7_5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/whuanle/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/whuanle/">痴者工良</a>
+</h1>
+<h2>
+一个逗B的大学生，爱好技术交流，目前专注于.NET 全栈开发
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/whuanle/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E7%97%B4%E8%80%85%E5%B7%A5%E8%89%AF">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/whuanle/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+132&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+174</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/whuanle/p/12730169.html">C#多线程(6)：线程通知</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p><div class="toc"><div class="toc-container-header">目录</div><ul><li><a href="#autorestevent-类">AutoRestEvent 类</a><ul><li><a href="#常用方法">常用方法</a></li><li><a href="#一个简单的示例">一个简单的示例</a></li><li><a href="#解释一下">解释一下</a></li><li><a href="#复杂一点的示例">复杂一点的示例</a></li><li><a href="#解释">解释</a></li></ul></li></ul></div></p>
+<p>回顾一下，前面 lock、Monitor 部分我们学习了线程锁，Mutex 部分学习了进程同步，Semaphor 部分学习了资源池限制。</p>
+<p>这一篇将学习 C# 中用于发送线程通知的 AutoRestEvent 类。</p>
+<h2 id="autorestevent-类">AutoRestEvent 类</h2>
+<p>用于从一个线程向另一个线程发送通知。</p>
+<p>微软文档是这样介绍的：表示线程同步事件在一个等待线程释放后收到信号时自动重置。</p>
+<p>其构造函数只有一个：</p>
+<p>构造函数里面的参数用于设置信号状态。</p>
+<table>
+<thead>
+<tr>
+<th>构造函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AutoResetEvent(Boolean)</td>
+<td>用一个指示是否将初始状态设置为终止的布尔值初始化 AutoResetEvent 类的新实例。</td>
+</tr>
+</tbody>
+</table>
+<p>真糟糕的机器翻译。</p>
+<h3 id="常用方法">常用方法</h3>
+<p>AutoRestEvent 类是干嘛的，构造函数的参数又是干嘛的？不着急，我们来先来看看这个类常用的方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Close()</td>
+<td>释放由当前 WaitHandle 占用的所有资源。</td>
+</tr>
+<tr>
+<td>Reset()</td>
+<td>将事件状态设置为非终止，从而导致线程受阻。</td>
+</tr>
+<tr>
+<td>Set()</td>
+<td>将事件状态设置为有信号，从而允许一个或多个等待线程继续执行。</td>
+</tr>
+<tr>
+<td>WaitOne()</td>
+<td>阻止当前线程，直到当前 WaitHandle 收到信号。</td>
+</tr>
+<tr>
+<td>WaitOne(Int32)</td>
+<td>阻止当前线程，直到当前 WaitHandle 收到信号，同时使用 32 位带符号整数指定时间间隔（以毫秒为单位）。</td>
+</tr>
+<tr>
+<td>WaitOne(Int32, Boolean)</td>
+<td>阻止当前线程，直到当前的 WaitHandle 收到信号为止，同时使用 32 位带符号整数指定时间间隔，并指定是否在等待之前退出同步域。</td>
+</tr>
+<tr>
+<td>WaitOne(TimeSpan)</td>
+<td>阻止当前线程，直到当前实例收到信号，同时使用 TimeSpan 指定时间间隔。</td>
+</tr>
+<tr>
+<td>WaitOne(TimeSpan, Boolean)</td>
+<td>阻止当前线程，直到当前实例收到信号为止，同时使用 TimeSpan 指定时间间隔，并指定是否在等待之前退出同步域。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一个简单的示例">一个简单的示例</h3>
+<p>这里我们编写一个这样的程序：</p>
+<p>创建一个线程，能够执行多个阶段的任务；每完成一个阶段，都需要停下来，等待子线程发生通知，才能继续下一步执行。</p>
+<p><code>.WaitOne()</code> 用来等待另一个线程发送通知；</p>
+<p><code>.Set()</code> 用来对线程发出通知，此时 <code>AutoResetEvent</code> 变成终止状态；</p>
+<p><code>.ReSet()</code> 用来重置 <code>AutoResetEvent</code> 状态；</p>
+<pre><code class="language-csharp">    class Program
+    {
+        // 线程通知
+        private static AutoResetEvent resetEvent = new AutoResetEvent(false);
+
+        static void Main(string[] args)
+        {
+            // 创建线程
+            new Thread(DoOne).Start();
+
+            // 用于不断向另一个线程发送信号
+            while (true)
+            {
+                Console.ReadKey();
+                resetEvent.Set();           // 发生通知，设置终止状态
+            }
+        }
+
+        public static void DoOne()
+        {
+            Console.WriteLine(&quot;等待中，请发出信号允许我运行&quot;);
+
+            // 等待其它线程发送信号
+            resetEvent.WaitOne();
+
+            Console.WriteLine(&quot;\n     收到信号，继续执行&quot;);
+            for (int i = 0; i &lt; 5; i++) Thread.Sleep(TimeSpan.FromSeconds(0.5));
+
+            resetEvent.Reset(); // 重置为非终止状态
+            Console.WriteLine(&quot;\n第一阶段运行完毕，请继续给予指示&quot;);
+
+            // 等待其它线程发送信号
+            resetEvent.WaitOne();
+            Console.WriteLine(&quot;\n     收到信号，继续执行&quot;);
+            for (int i = 0; i &lt; 5; i++) Thread.Sleep(TimeSpan.FromSeconds(0.5));
+
+            Console.WriteLine(&quot;\n第二阶段运行完毕，线程结束，请手动关闭窗口&quot;);
+        }
+    }
+</code></pre>
+<h3 id="解释一下">解释一下</h3>
+<p>AutoResetEvent 对象有终止和非终止状态。<code>Set()</code> 设置终止状态，<code>Reset()</code> 重置非终止状态。</p>
+<p>这个终止状态，可以理解成信号已经通知；非终止状态则是信号还没有通知。</p>
+<p>注意，注意终止状态和非终止状态指的是 AutoResetEvent 的状态，不是指线程的状态。</p>
+<p>
+<div style="color: rgb(23, 23, 23); font-family: &quot;Segoe UI&quot;, SegoeUI, &quot;Segoe WP&quot;, &quot;Helvetica Neue&quot;, Helvetica, Tahoma, Arial, sans-serif; background-color: rgb(255, 241, 204);border-radius: 10px;padding:20px;">
+线程通过调用 WaitOne() 方法，等待信号；<br />
+    另一个线程可以调用 Set() 通知 AutoResetEvent 释放等待线程。<br />
+    然后 AutoResetEvent 变为终止状态。
+</div>
+</p>
+<p>需要注意的是，如果 AutoResetEvent 已经处于终止状态，那么线程调用 <code>WaitOne()</code> 不会再起作用。除非调用<code>Reset()</code> 。</p>
+<p>构造函数中的参数，正是设置这个状态的。true 代表终止状态，false 代表非终止状态。如果使用 <code>new AutoResetEvent(true);</code> ，则线程一开始是无需等待信号的。</p>
+<p>在使用完类型后，您应直接或间接释放类型，显式调用 <code>Close()/Dispose()</code> 或 使用 <code>using</code>。 当然，也可以直接退出程序。</p>
+<p>需要注意的是，如果多次调用 <code>Set()</code> 的时间间隔过短，如果第一次 <code>Set()</code> 还没有结束(信号发送需要处理时间)，那么第二次 <code>Set()</code>  可能无效(不起作用)。</p>
+<h3 id="复杂一点的示例">复杂一点的示例</h3>
+<p>我们设计一个程序：</p>
+<ul>
+<li>Two 线程开始处于阻塞状态；</li>
+<li>线程 One 可以设置线程 Two 继续运行，然后阻塞自己；</li>
+<li>线程 Two 可以设置 One 继续运行，然后阻塞自己；</li>
+</ul>
+<p><img src="https://img2020.cnblogs.com/blog/1315495/202004/1315495-20200419085617645-1608327358.png" alt=""></p>
+<p>程序代码如下(运行后，请将键盘设置成英文输入状态再按下按键)：</p>
+<pre><code class="language-c#">    class Program
+    {
+        // 控制第一个线程
+        // 第一个线程开始时，AutoResetEvent 处于终止状态，无需等待信号
+        private static AutoResetEvent oneResetEvent = new AutoResetEvent(true);
+
+        // 控制第二个线程
+        // 第二个线程开始时，AutoResetEvent 处于非终止状态，需要等待信号
+        private static AutoResetEvent twoResetEvent = new AutoResetEvent(false);
+
+        static void Main(string[] args)
+        {
+            new Thread(DoOne).Start();
+            new Thread(DoTwo).Start();
+
+            Console.ReadKey();
+        }
+
+        public static void DoOne()
+        {
+            while (true)
+            {
+                Console.WriteLine(&quot;\n① 按一下键，我就让DoTwo运行&quot;);
+                Console.ReadKey();
+                twoResetEvent.Set();
+                oneResetEvent.Reset();
+                // 等待 DoTwo() 给我信号
+                oneResetEvent.WaitOne();
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(&quot;\n     DoOne() 执行&quot;);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        public static void DoTwo()
+        {
+            while (true)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                // 等待 DoOne() 给我信号
+                twoResetEvent.WaitOne();
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(&quot;\n     DoTwo() 执行&quot;);
+                Console.ForegroundColor = ConsoleColor.White;
+
+                Console.WriteLine(&quot;\n② 按一下键，我就让DoOne运行&quot;);
+                Console.ReadKey();
+                oneResetEvent.Set();
+                twoResetEvent.Reset();
+            }
+        }
+    }
+</code></pre>
+<p><img src="https://img2020.cnblogs.com/blog/1315495/202004/1315495-20200419085735036-338165833.gif" alt=""></p>
+<h3 id="解释">解释</h3>
+<p>两个线程具有的功能：阻塞自己、解除另一个线程的阻塞。</p>
+<p>用电影《最佳拍档》里面的一个画面来理解。</p>
+<p>DoOne 、DoTwo 轮流呼吸，不能自己控制自己呼吸，但自己能够决定别人呼吸。</p>
+<p>你搞我，我搞你，就能相互呼吸了。</p>
+<p><img src="https://img2020.cnblogs.com/blog/1315495/202004/1315495-20200419085652221-1342019386.png" alt=""></p>
+<p>当然<code>WaitOne()</code> 也可以设置等待时间，如果 光头佬(DoOne) 耍赖不让 金刚(DoTwo)呼吸，金刚等待一定时间后，可以强行荡动天平，落地呼吸。</p>
+<p>
+<div style="color: rgb(23, 23, 23); font-family: &quot;Segoe UI&quot;, SegoeUI, &quot;Segoe WP&quot;, &quot;Helvetica Neue&quot;, Helvetica, Tahoma, Arial, sans-serif; background-color: rgb(255, 241, 204);border-radius: 10px;padding:20px;">
+注意，AutoRestEvent 用得不当容易发生死锁。
+<br />
+另外 AutoRestEvent 使用的是内核时间模式，因此等待时间不能太长，不然比较耗费 CPU 时间。
+</div>
+</p>
+<p>AutoResetEvent 也适合用于线程同步。</p>
+<p>另外，线程中使用 <code>WaitOne()</code> ，另一个线程使用 <code>Set()</code> 通知后， AutoResetEvent 对象会自动恢复非终止状态，不需要线程使用 <code>Reset()</code> 。</p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-19 08:58</span>&nbsp;
+<a href="https://www.cnblogs.com/whuanle/">痴者工良</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12730169" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12730169);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 406195, cb_blogApp = 'whuanle', cb_blogUserGuid = 'b8263b87-b86b-4861-1de2-08d54dbac325';
+    var cb_entryId = 12730169, cb_entryCreatedDate = '2020-04-19 08:58', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 痴者工良
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+</body>
+</html>

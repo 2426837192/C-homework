@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="半监督学习（Semi-Supervised Learning，SSL）的 SOTA 一次次被 Google 刷新，从 MixMatch 开始，到同期的 UDA、ReMixMatch，再到 2020 年" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>【半监督学习】MixMatch、UDA、ReMixMatch、FixMatch - wuliytTaotao - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simplememory/bundle-simplememory.min.css?v=OL4qeo1LNGlN1rKIhv5UctANvt0M6Nx6kLzr_ffx3Xk" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/wuliytTaotao/custom.css?v=Ys4jjisysgB7HTT8kLbDi2Ak1a8=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/SimpleMemory/bundle-SimpleMemory-mobile.min.css" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/wuliytTaotao/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/wuliytTaotao/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/wuliytTaotao/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 418495;
+        var currentBlogApp = 'wuliytTaotao';
+        var cb_enable_mathjax = true;
+        var isLogined = false;
+        var skinName = 'SimpleMemory';
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']], processClass: 'math', processEscapes: true },
+        TeX: {
+        equationNumbers: { autoNumber: ['AMS'], useLabelIds: true },
+        extensions: ['extpfeil.js', 'mediawiki-texvc.js'],
+        Macros: {bm: "\\boldsymbol"}
+        },
+        'HTML-CSS': { linebreaks: { automatic: true } },
+        SVG: { linebreaks: { automatic: true } }
+        });
+    </script>
+    <script src="https://mathjax.cnblogs.com/2_7_5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/wuliytTaotao/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/wuliytTaotao/">wuliytTaotao</a>
+</h1>
+<h2>
+努力努力再努力(ง •̀_•́)ง  研究方向：主动学习、半监督学习、深度学习、机器学习
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/wuliytTaotao/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/wuliytTaotao">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/wuliytTaotao/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+64&nbsp; </span>
+<span id="stats_article_count">文章 - 
+4&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+60</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/wuliytTaotao/p/12727922.html">【半监督学习】MixMatch、UDA、ReMixMatch、FixMatch</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+    <div id="cnblogs_post_description" style="display: none">
+        半监督学习（Semi-Supervised Learning，SSL）的 SOTA 一次次被 Google 刷新，从 MixMatch 开始，到同期的 UDA、ReMixMatch，再到 2020 年的 FixMatch。
+    </div>
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p>半监督学习（Semi-Supervised Learning，SSL）的 SOTA 一次次被 Google 刷新，从 MixMatch 开始，到同期的 UDA、ReMixMatch，再到 2020 年的 FixMatch。</p>
+<p><div class="toc"><div class="toc-container-header">目录</div><ul><li><a href="#consistency-regularization">Consistency Regularization</a></li><li><a href="#entropy-minimization">Entropy Minimization</a></li><li><a href="#结合-consistency-regularization-和-entropy-minimization">结合 Consistency Regularization 和 Entropy Minimization</a></li><li><a href="#fixmatch-simplifying-ssl-with-consistency-and-confidence">FixMatch: Simplifying SSL with Consistency and Confidence</a></li><li><a href="#references">References</a></li></ul></div></p>
+<p>这四篇深度半监督学习方面的工作，都是从 consistency regularization 和 entropy minimization 两方面入手：</p>
+<ul>
+<li>consistency regularization：一致性约束，给输入图片或者中间层注入 noise，模型的输出应该尽可能保持不变或者近似。</li>
+<li>entropy minimization：最小化熵，模型在 unlabeled data 上的熵应该尽可能最小化。Pseudo label 也隐含地用到了 entropy minimization。</li>
+</ul>
+<h2 id="consistency-regularization">Consistency Regularization</h2>
+<p>对于每一个 unlabeled instance，consistency regularization 要求两次随机注入 noise 的输出近似。背后的思想是，如果一个模型是鲁棒的，那么即使输入有扰动，输出也应该近似。</p>
+<p>对于 consistency regularization 来说，如何注入 noise 以及如何计算近似，就是每个方法的不同之处。注入 noise 可以通过模型本身的随机性（如 dropout）或者直接加入噪声（如 Gaussian noise），也可以通过 data augmentation；计算一致性的方法，可以使用 L2，也可以使用 KL divergency、cross entropy。</p>
+<h2 id="entropy-minimization">Entropy Minimization</h2>
+<p>MixMatch、UDA 和 ReMixMatch 通过 temperature sharpening 来间接利用 entropy minimization，而 FixMatch 通过 Pseudo label 来间接利用 entropy minimization。可以认为，只要通过得到 unlabeled data 的人工标签然后按照监督学习的方法（如 cross entropy loss）来训练的，都间接用到了 entropy minimization。因为人工标签都是 one-hot 或者近似 one-hot 的，如果 unlabeled data 的 prediction 近似人工标签，那么此时无标签数据的熵肯定也是较小的。</p>
+<p>为什么这里叫做人工标签而不是伪标签？一般而言，在半监督中，伪标签（pseudo label）特指 hard label，即 one-hot 类型的或者通过 argmax 得到的。[4] 而 MixMatch、UDA、ReMixMatch 得到的人工标签并不是 hard label。</p>
+<p>Entropy minimization 可以在计算 unlabeled data 部分的 loss 和 consistency regularization 一起实现。</p>
+<p>temperature sharpening 和 pseudo label 都得到了 unlabeled data 的人工标签，当前者 temperature=0 时，两者相等。pseudo label 要比 temperature sharpening 要简单，因为少了一个 temperature 超参数。</p>
+<p>如果不考虑 entropy minimization，那么 temperature sharpening 和 pseudo label 其实都是不需要的，只需要两次随机注入 noise 的 unlabeled instance 输出近似，就可以保证 consistency regularization。</p>
+<p>或者说，得到 unlabeled data 的人工标签，可以使得 entropy minimization 和 consistency regularization 通过一项 loss 来完成。</p>
+<h2 id="结合-consistency-regularization-和-entropy-minimization">结合 Consistency Regularization 和 Entropy Minimization</h2>
+<p>一般来说，半监督学习中的 unlabeled data 会使用全部训练数据集，即有标签的样本也会作为无标签样本来使用。</p>
+<p>半监督学习中，labeled data 的标签都是给定的，而 unlabeled data 的标签都是不知道的。那么如何获得 unlabeled data 的人工标签（artificial label），MixMatch、UDA、ReMixMatch 和 FixMatch 的做法或多或少都不相同：</p>
+<ul>
+<li>MixMatch：平均 K 次 weak augmentation（如 shifting 和 flipping）的 predictions ，然后经过 temperature sharpening；</li>
+<li>UDA：一次 weak augmentation 的 prediction，然后经过 temperature sharpening；</li>
+<li>ReMixMatch：一次 weak augmentation 的 prediction，然后经过 distribution alignment，最后经过 temperature sharpening；</li>
+<li>FixMatch：一次 weak augmentation 的 prediction，然后 argmax 得到 hard label（pseudo label）。</li>
+</ul>
+<center>
+    <img src="https://img2020.cnblogs.com/blog/1351564/202004/1351564-20200418232816997-645797392.png" width = "800px" /><br>
+    <div style="color:gray;
+    display: inline-block;
+    padding: 2px;">Fig.1  MixMatch 人工标签 (soft label)</div>
+</center>
+<p>得到了人工标签，我们就可以按照监督学习的方式来训练，这种思考方式就利用了 entropy minimization。而从 unlabeled data 的 consistency regularization 角度思考，我们需要注入不同的 noise，使得 unlabeled data 的 predictions 和它们的人工标签一致。</p>
+<p>MixMatch、UDA、ReMixMatch 和 FixMatch 都利用 data augmentation 改变输入样本来注入 noise，不同的是 data augmentation 的具体方式和强度：</p>
+<ul>
+<li>MixMatch：一次 weak augmentation 得到 prediction，这就和正常的监督训练一样，只是 unlabeled loss 用的是 L2 而已；</li>
+<li>UDA：一次 strong augmentation（RandAugment） 得到 prediction；</li>
+<li>ReMixMatch：多次 strong augmentation（CTAugment）得到 predictions，然后同时参与 unlabeled loss 的计算，即一个 unlabeled instance 一个 step 多次增强后计算多次 loss；</li>
+<li>FixMatch：一次 strong augmentation（RandAugment 或 CTAugment）得到 prediction。</li>
+</ul>
+<center>
+    <img src="https://img2020.cnblogs.com/blog/1351564/202004/1351564-20200418233934253-1929269634.png" width = "600px" /><br>
+    <div style="color:gray;
+    display: inline-block;
+    padding: 2px;">Fig.2  FixMatch 流程图</div>
+</center>
+<p>从 UDA 和 ReMixMatch 开始，strong augmentation 引入了半监督训练。UDA 使用了作者之前提出的 RandAugment 的 strong augmentation 方式，而 ReMixMatch 提出了一种 CTAugment。FixMatch 就把 UDA 和 ReMixMatch 中用到的 strong augmentation 都拿来用了一遍。</p>
+<center>
+    <img src="https://img2020.cnblogs.com/blog/1351564/202004/1351564-20200418205316691-1603803034.png" width = "800px" /><br>
+    <div style="color:gray;
+    display: inline-block;
+    padding: 2px;">Fig.3  weak augmentaion、strong augmentation 及 temperature sharpening 使用情况</div>
+</center>
+<p>对于 unlabeled data 部分的 loss：</p>
+<ul>
+<li>MixMatch：L2 loss；</li>
+<li>UDA：KL divergency；</li>
+<li>ReMixMatch：cross entropy（包括自监督的 rotation loss 和没有使用 mixup 的 pre-mixup unlabeled loss）；</li>
+<li>FixMatch：带阈值的 cross entropy。</li>
+</ul>
+<h2 id="fixmatch-simplifying-ssl-with-consistency-and-confidence">FixMatch: Simplifying SSL with Consistency and Confidence</h2>
+<p>FixMatch 简化了 MixMatch、UDA 和 ReMixMatch，然后获得了更好的效果:</p>
+<ul>
+<li>首先，temperature sharpening 换成 pseudo label，这是一个简化；</li>
+<li>其次，FixMatch 通过设定一个阈值，在计算 unlabeled loss 时，对 prediction 的 confidence 超过阈值的 unlabeled instance 才算入 unlabeled loss，这样使得 unlabeled loss 的权重可以固定，这是第二个简化。</li>
+</ul>
+<center>
+    <img src="https://img2020.cnblogs.com/blog/1351564/202004/1351564-20200418215121735-961092816.png" width = "800px" /><br>
+    <div style="color:gray;
+    display: inline-block;
+    padding: 2px;">Fig.4  Error rates for CIFAR-10, CIFAR-100 and SVHN on 5 different folds.</div>
+</center>
+<h2 id="references">References</h2>
+<p>[1] Berthelot, D., Carlini, N., Goodfellow, I., Papernot, N., Oliver, A., Raffel, C. (2019). MixMatch: A Holistic Approach to Semi-Supervised Learning arXiv <a href="https://arxiv.org/abs/1905.02249">https://arxiv.org/abs/1905.02249</a><br>
+[2] Berthelot, D., Carlini, N., Cubuk, E., Kurakin, A., Sohn, K., Zhang, H., Raffel, C. (2019). ReMixMatch: Semi-Supervised Learning with Distribution Alignment and Augmentation Anchoring arXiv <a href="https://arxiv.org/abs/1911.09785">https://arxiv.org/abs/1911.09785</a><br>
+[3] Xie, Q., Dai, Z., Hovy, E., Luong, M., Le, Q. (2019). Unsupervised Data Augmentation for Consistency Training arXiv <a href="https://arxiv.org/abs/1904.12848">https://arxiv.org/abs/1904.12848</a><br>
+[4] Sohn, K., Berthelot, D., Li, C., Zhang, Z., Carlini, N., Cubuk, E., Kurakin, A., Zhang, H., Raffel, C. (2020). FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence arXiv <a href="https://arxiv.org/abs/2001.07685">https://arxiv.org/abs/2001.07685</a></p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-18 22:56</span>&nbsp;
+<a href="https://www.cnblogs.com/wuliytTaotao/">wuliytTaotao</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12727922" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12727922);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 418495, cb_blogApp = 'wuliytTaotao', cb_blogUserGuid = '86c2e494-5af1-4b57-b5f3-08d58662b770';
+    var cb_entryId = 12727922, cb_entryCreatedDate = '2020-04-18 22:56', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 wuliytTaotao
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
+<script src="https://blog-static.cnblogs.com/files/wuliytTaotao/cp.js"></script>
+    </div>
+</body>
+</html>

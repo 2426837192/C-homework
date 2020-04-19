@@ -1,0 +1,411 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="SpringCloud Config 简介 在分布式系统中，由于服务组件过多，为了方便争对不通的环境下的服务配置文件统一管理，实时更新，所以出现了分布式配置中心组件。市面上开源的配置中心有很多，360" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>SpringCloud入门(十)： Config 统一配置中心 - 愚蠢的猴子 - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    <link id="MainCss" rel="stylesheet" href="/skins/arrow/bundle-arrow.min.css?v=L-STHnRipM9Vp-O5CxV_IvvLLLSaib7U0fJDhFfRZZ8" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/arrow/bundle-arrow-mobile.min.css?v=g8joWIb9zf0v6qSSYjzuwnPNxYNYutz3bgwMjs-jMEg" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/jiangyaxiong1990/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/jiangyaxiong1990/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/jiangyaxiong1990/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 131608;
+        var currentBlogApp = 'jiangyaxiong1990';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'arrow';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <!--done-->
+<div id="header">
+	
+<!--done-->
+<div class="header">
+	<div class="headerText">
+		<a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/jiangyaxiong1990/">愚蠢的猴子</a>
+<br>
+		
+
+
+	</div>
+</div>
+
+
+</div>
+<div id="mylinks">
+<!--done-->
+<a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+&nbsp;&nbsp;&nbsp;
+
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/jiangyaxiong1990/">
+首页</a>
+&nbsp;&nbsp;&nbsp;
+
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+&nbsp;&nbsp;&nbsp;
+
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%84%9A%E8%A0%A2%E7%9A%84%E7%8C%B4%E5%AD%90">
+联系</a>&nbsp;&nbsp;&nbsp;
+
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/jiangyaxiong1990/rss/">
+订阅</a>
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/jiangyaxiong1990/rss/">
+    <img src="/skins/arrow/images/xml.gif" alt="订阅" />
+</a>&nbsp;&nbsp;&nbsp;
+
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+
+
+</div>
+<div id="mytopmenu">
+	
+		<div class="blogStats">随笔 - 
+39&nbsp;
+文章 - 
+4&nbsp;评论 - 
+2&nbsp;trackbacks - 
+0
+</div>
+
+
+	
+</div>
+<div id="leftcontent">
+	
+		<DIV id="leftcontentcontainer">
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script><br>
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script></DIV>		
+	
+</div>
+<div id="centercontent">
+	<!--done-->
+<div id="post_detail">
+    <div class="post">
+        <div class="postTitle">
+            <h1>
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/jiangyaxiong1990/p/12725806.html">SpringCloud入门(十)： Config 统一配置中心</a>
+</h1>
+        </div>
+        
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p><strong>SpringCloud Config 简介</strong></p>
+<p>　　在分布式系统中，由于服务组件过多，为了方便争对不通的环境下的服务配置文件统一管理，实时更新，所以出现了分布式配置中心组件。市面上开源的配置中心有很多，360的QConf、淘宝的diamond、百度的disconf都是解决这类问题。国外也有很多开源的配置中心Apache的Apache Commons Configuration等。SpringCloud中选用的是SpringCloud Config。</p>
+<p>　　SpringCloud Config分为Config Server和Config Client两部分，为分布式系统外部化配置提供了支持。&nbsp;由于Config Server和Config Client都实现了对Spring Environment和PropertySource抽象的映射，因此SpringCloud Config非常适合Spring应用程序，当然也可与其他语言应用程序配合使用。</p>
+<p>&nbsp;　　Config Server是一个可横向扩展、集中式的配置服务器，它用于集中管理应用程序各个环境下的配置（开发，测试，生产，灰度），默认使用Git存储配置内容(也可使用Subversion、本地文件系统或Vault存储配置),因此可以方便的实现对配置的版本控制与内容审计。 Config Client 是Config Server的客户端，用于操作存储在Config Server中的配置属性。</p>
+<p>&nbsp;</p>
+<p><strong>SpringCloud Config带来的便利</strong></p>
+<p>1、集中管理配置，通过Config来对集群中所有组件服务的配置信息进行集中管理；</p>
+<p>2、争对不同的环境进行不同的配置（开发，联调，测试，灰度，生产）；</p>
+<p>3、运行期间可动态调整，根据服务器的负载情况动态的设置连接池信息或者熔断阈值；</p>
+<p>4、配置修改后，不需要关闭服务可自动更新配置；</p>
+<p>&nbsp;</p>
+<p><strong>SpringCloud Config入门</strong></p>
+<p>1、申请一个自己的git仓库，将测试项目得yml或properties文件上传至Git目录；</p>
+<p>2、构建Config Service</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- <span style="color: #800080;">1</span>、引入Jar包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-config-server&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- <span style="color: #800080;">2</span>、配置属性信息 --&gt;<span style="color: #000000;">
+server:
+  port: </span><span style="color: #800080;">9005</span><span style="color: #000000;">
+spring:
+  application:
+    name: ms</span>-cfg-<span style="color: #000000;">service
+  cloud:
+    config:
+      server:
+        git:
+          uri: https:</span><span style="color: #008000;">//</span><span style="color: #008000;">gitee.com/******/springcloudconfig.git</span>
+          username: ******<span style="color: #000000;">
+          password: </span>******<br /><br />&lt;!-- 3、加注解@EnableConfigServer --&gt;</pre>
+<pre>@SpringBootApplication<br />@EnableConfigServer<br />public class ConfigServiceApplication {<br /><br />    public static void main(String[] args) {<br />        SpringApplication.run(ConfigServiceApplication.class, args);<br />    }<br />}</pre>
+</div>
+<p><span style="color: #ff0000;">备注：配置文件有三种访问方式，分别是：</span></p>
+<p><span style="color: #ff0000;">1）通过application-{profiles}.yml来访问，eg：http://localhost:8080/application-dev.yml</span></p>
+<p><span style="color: #ff0000;">2）通过/application/{profiles}/{lable}来访问， eg：http://localhost:8080/application/dev/master</span></p>
+<p><span style="color: #ff0000;">3）通过/{lable}/application-{profiles}.yml来访问，eg：http://localhost:8080/master/application-dev.yml</span></p>
+<p>3、构建Config Client</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- 1. 引入Jar包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- 2. 创建配置文件bootstrap.yml --&gt;<span style="color: #000000;">
+spring:
+  application:
+    name: application
+  cloud:
+    config:
+      uri: http:</span><span style="color: #008000;">//</span><span style="color: #008000;">localhost:8080/</span>
+<span style="color: #000000;">      profile: dev  
+      label: master    </span></pre>
+</div>
+<p><span style="color: #ff0000;">备注： spring.application.name 对应访问规则中的{application}</span></p>
+<p><span style="color: #ff0000;">　　　 spring.cloud.config.profile&nbsp;对应访问规则中的{profiles}</span></p>
+<p><span style="color: #ff0000;">　　　 spring.cloud.config.label 对应访问规则中的{lable}</span></p>
+<p>&nbsp;</p>
+<p><strong>SpringCloud config的常规用法</strong></p>
+<p>我们定义一个openTest开关，来控制业务逻辑代码走新的逻辑分支还是走老的业务逻辑分支</p>
+<p>方法一：</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- 1、在属性文件中定义一个变量 --&gt;<span style="color: #000000;">
+ycdhz.openTest</span>=<span style="color: #000000;">dev
+
+</span>&lt;!-- 2、在代码中通过@Value注解引用 --&gt;<span style="color: #000000;">
+@Value(</span>"${ycdhz.openTest}"<span style="color: #000000;">)
+</span><span style="color: #0000ff;">private</span><span style="color: #000000;"> String openTest;
+
+</span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> findInfo(){
+    </span><span style="color: #0000ff;">if</span>(openTest.equal("dev"<span style="color: #000000;">)){
+        System.out.print(</span>"开发环境"<span style="color: #000000;">)
+    } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (openTest.equal("test"<span style="color: #000000;">)){
+        System.out.print(</span>"测试环境"<span style="color: #000000;">)
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        System.out.print(</span>"生产环境"<span style="color: #000000;">)
+    }
+}
+
+</span>&lt;!-- 3、修改属性文件，重启生效--&gt;</pre>
+</div>
+<p>方法二：</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- 1、再Client端工程，引入jar包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;    
+
+&lt;!-- 2、再Client端工程，开启refresh的监控端点 --&gt;<span style="color: #000000;">
+management:
+  endpoints:
+    web:
+      exposure:
+        include: </span>"*"<span style="color: #000000;">   开启所有的端点
+
+</span>&lt;!-- 3、在读取配置文件中的类上加入@RefreshScope --&gt;<span style="color: #000000;">    
+@RestController
+@RequestMapping(</span>"/order"<span style="color: #000000;">)
+@RefreshScope
+</span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OrderController {
+
+    @Value(</span>"${openTest}"<span style="color: #000000;">)
+    </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> String openTest;
+}
+
+</span>&lt;!-- 4、在git上修改openTest的配置文件 --&gt;<span style="color: #000000;">    
+通过Post请求，执行http:</span><span style="color: #008000;">//</span><span style="color: #008000;">localhost:8001/actuator/refresh刷新接口</span></pre>
+</div>
+<p>备注：不在需要重启，只需要通过Post执行刷新方法即可。但是当需要在集群中大面积修改的情况下依旧很繁琐，需要对每一个服务进行刷新。</p>
+<p>方法三：</p>
+<p>配置Config Client</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- 1、在client端工程，引入jar包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-bus-amqp&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- 2、在client端工程，配置属性 --&gt;<span style="color: #000000;">
+spring:
+  application:
+    name: application
+  cloud:
+    config:
+      uri: http:</span><span style="color: #008000;">//</span><span style="color: #008000;">localhost:9000/</span>
+<span style="color: #000000;">      label: master
+  rabbitmq:
+    host: </span>****IP地址****<span style="color: #000000;">
+    port: </span>****端口号****<span style="color: #000000;">
+    virtual</span>-host: ****host名****<span style="color: #000000;">
+    username: root
+    password: root
+    connection</span>-timeout: 10000<span style="color: #000000;">
+    template:
+      mandatory: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: </span>"*"<span style="color: #000000;">
+  server:
+    port: </span>8080</pre>
+</div>
+<p>配置 config Service</p>
+<div class="cnblogs_code">
+<pre>&lt;!-- 1、在Service端工程，引入jar包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-bus-amqp&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- 2、在Service端工程，配置属性 --&gt;<span style="color: #000000;">
+server:
+  port: </span>9000<span style="color: #000000;">
+spring:
+  application:
+    name: ms</span>-cfg-<span style="color: #000000;">service
+  cloud:
+    config:
+      server:
+        git:
+          uri: https:</span><span style="color: #008000;">//</span><span style="color: #008000;">gitee.com/******/springcloudconfig.git</span>
+          username: ******<span style="color: #000000;">
+          password: </span>******<span style="color: #000000;">
+  rabbitmq:
+    host: </span>****IP地址****<span style="color: #000000;">
+    port: </span>****端口号****<span style="color: #000000;">
+    virtual</span>-host: ****host名****<span style="color: #000000;">
+    username: root
+    password: root
+    connection</span>-timeout: 10000<span style="color: #000000;">
+    template:
+      mandatory: </span><span style="color: #0000ff;">true</span>
+      
+&lt;!-- 3、在Git上更新配置信息，访问bus-refresh刷新服务配置 --&gt;<span style="color: #000000;">
+访问监控端点http:</span><span style="color: #008000;">//</span><span style="color: #008000;">localhost:9000/actuator/bus-refresh刷新所有服务的配置信息</span></pre>
+</div>
+<p>备注：使用消息总线bus来实现，不再需要去争对一个个服务组件做刷新。原理如图：</p>
+<p>&nbsp;<img src="https://img2020.cnblogs.com/blog/403345/202004/403345-20200419004014421-2147164429.png" alt="" width="371" height="326" /></p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+        <div class="postDesc">posted on 
+<span id="post-date">2020-04-19 00:44</span>&nbsp;
+<a href="https://www.cnblogs.com/jiangyaxiong1990/">愚蠢的猴子</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12725806" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12725806);return false;">收藏</a></div>
+    </div>
+</div>
+
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 131608, cb_blogApp = 'jiangyaxiong1990', cb_blogUserGuid = 'd0e465a7-b78f-e111-aa3f-842b2b196315';
+    var cb_entryId = 12725806, cb_entryCreatedDate = '2020-04-19 00:44', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+
+	<!--done-->
+<div class="footer">
+	Copyright &copy; 2020 愚蠢的猴子
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+ Powered by: <a href="http://www.cnblogs.com" class="footerlink">博客园</a><br>
+</div>
+
+
+</div>
+
+
+
+
+    
+</body>
+</html>

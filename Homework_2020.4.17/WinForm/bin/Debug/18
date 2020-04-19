@@ -1,0 +1,691 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="语言 CPP 前言 虽然 VSCodeC&#x2B;&#x2B; 编辑器非常受大家的欢迎，无论是大佬还是小白都说对其爱不释手... 我...用了一段时间后发现实在是麻烦，配置往往花费我大量时间。可以说真的是吃力不讨好(个" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>G++编译链接的那些事!G++的特殊使用方法[常用] - 海之恋SF - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    <link id="MainCss" rel="stylesheet" href="/skins/darkgreentrip/bundle-darkgreentrip.min.css?v=4KE41eS1YQSSwl64fGzzTUj6ijs-YQFat4AaN-g_jxc" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/seafever/custom.css?v=9NNS3FAs5eVOKA4Y1w0u6HmwEqg=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/darkgreentrip/bundle-darkgreentrip-mobile.min.css?v=0pGk3D9Ik_jI4q1TALBT2ybOjIePHS_80_0J4DDOQiY" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/seafever/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/seafever/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/seafever/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 576027;
+        var currentBlogApp = 'seafever';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'darkgreentrip';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    <div id="page_begin_html">
+        <a href="https://github.com/derek5-seafever" class="github-corner" aria-label="View source on Github" style="position: absolute;top: 0;right: 0;">
+<svg width="80" height="80" viewBox="0 0 250 250" style="fill:#828282; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+<path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+<path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+<path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+</svg>
+</a>
+<style>
+.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+</style>
+    </div>
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/seafever/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/seafever/">海之恋SF</a>
+</h1>
+<h2>
+热爱这个世界吧~
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/seafever/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%B5%B7%E4%B9%8B%E6%81%8BSF">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/seafever/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+8&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+6</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/seafever/p/12660507.html">G++编译链接的那些事!G++的特殊使用方法[常用]</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <h1 id="语言-cpp">语言 CPP</h1>
+<h2 id="前言">前言</h2>
+<p>  虽然 VSCodeC++ 编辑器非常受大家的欢迎，无论是大佬还是小白都说对其爱不释手...<br>
+  我...用了一段时间后发现实在是麻烦，配置往往花费我大量时间。可以说真的是吃力不讨好(个人观点，不代表其他人)!所以，用了一段时间后我又默默的用起了自己的 HBuilderX ！<br>
+  淦！ HBuilderX 不是主力前端吗？额~是的，CPP在这里不是很受宠，但没关系啊(主要是真的好用)！CPP的基本语法还是支持的，再加上自己完善了一下“自定义CPP代码块”后更是如虎添翼！HBuilderX NB！<br>
+  不过，有个最大的问题就是编译链接！因为 HBuilderX 本身并不是为CPP开发的，所以根本不会有这一功能，更苦的是连个插件都没得...一切都只能靠命令行！<br>
+  经过一段时间的摸索，最后打算写一篇总结。力求简洁、明了！<br>
+  不定期更新！<br>
+  <strong>提示</strong>：文件结构如下</p>
+<pre><code>+-- demo.cpp
+|
++-- demo.ico
+|
++-- demo.rc
+
+</code></pre>
+<h2 id="第一章---静态编译">第一章 - 静态编译</h2>
+<h3 id="手动编译"><strong>手动编译</strong>:</h3>
+<ol>
+<li>打开 CMD 命令窗口；</li>
+<li>执行命令 <code>g++ -c demo.cpp -o step_one.o</code> ；</li>
+<li>执行命令 <code>ar -cr libstep_two.a step_one.o</code> ；</li>
+<li>执行命令 <code>g++ demo.cpp -L. -Istep_two -static -o release.exe</code> ；</li>
+<li>得到 release.exe 应用程序。</li>
+</ol>
+<h3 id="注释："><strong>注释</strong>：</h3>
+<ol>
+<li>原理我不多说了，有兴趣的自行了解！力求简洁、明了！</li>
+<li>step_one 与 step_two 字符可替换；</li>
+<li>release.exe 为输出应用程序的名字;</li>
+</ol>
+<h3 id="批处理脚本"><strong>批处理脚本</strong>:</h3>
+<pre><code>::使用方法 - 直接将 demo.cpp 托入批处理运行即可，也可使用 CMD 命令传参数的方式执行。
+@echo off
+set start=%1
+:get_o
+if exist %1 (g++ -c %start% -o step_one.o) else (goto get_o)
+:get_a
+if exist .\o.o (ar -cr libstep_two.a step_one.o) else (goto get_a)
+:get_exe
+if exist .\liba.a (g++ %start% -L. -Istep_two -static -o release) else (goto get_exe)
+:del
+del DEL /F /A /Q step_one.o
+del DEL /F /A /Q libstep_two.a
+call release.exe
+:end
+</code></pre>
+<h2 id="第二章---自定义程序-ico">第二章 - 自定义程序 ICO</h2>
+<h3 id="手动操作："><strong>手动操作</strong>：</h3>
+<ol>
+<li>在 demo.rc 文件中添加 <code>id ICON &quot;path/to/my.ico&quot;</code>；</li>
+<li>执行命令 <code>windres demo.rc -O coff -o demo.res</code>；</li>
+<li>执行命令 <code>g++ demo.cpp demo.res -o release.exe</code>；</li>
+<li>得到带 ICO 的应用程序。</li>
+</ol>
+<h3 id="注释：-2"><strong>注释</strong>：</h3>
+<ol>
+<li>原理大致为： 资源文件(.res) + 源文件(.cpp) =编译=&gt; 带资源的应用程序(.exe)；</li>
+<li>第三步也可以使用静态编译：<code>g++ -c demo.cpp -o step_one.o</code> -&gt; <code>ar -cr libstep_two.a step_one.o</code> -&gt; <code>g++ demo.cpp demo.res -L. -Istep_two -static -o release.exe</code>。</li>
+</ol>
+<h3 id="批处理脚本："><strong>批处理脚本</strong>：</h3>
+<p>还没写</p>
+<h2 id="第三章---添加版本信息">第三章 - 添加版本信息</h2>
+<h3 id="手动操作：-2"><strong>手动操作</strong>：</h3>
+<ol>
+<li>在 demo.rc 文件中添加</li>
+</ol>
+<pre><code>1 VERSIONINFO
+FILEVERSION    1,0,0,0 // 文件版本
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK &quot;StringFileInfo&quot;
+  BEGIN
+    BLOCK &quot;080904E4&quot; // 语言(修改前四位)
+   BEGIN
+     VALUE &quot;CompanyName&quot;, &quot;公司名&quot;
+     VALUE &quot;FileDescription&quot;, &quot;文件描述&quot;
+     VALUE &quot;FileVersion&quot;, &quot;1.0&quot;
+     VALUE &quot;InternalName&quot;, &quot;内部名称&quot;
+     VALUE &quot;LegalCopyright&quot;, &quot;版权&quot;
+     VALUE &quot;OriginalFilename&quot;, &quot;原始文件名&quot;
+     VALUE &quot;ProductName&quot;, &quot;产品名称&quot;
+     VALUE &quot;ProductVersion&quot;, &quot;产品版本&quot;
+   END
+  END
+
+  BLOCK &quot;VarFileInfo&quot;
+  BEGIN
+    VALUE &quot;Translation&quot;, 0x809, 1252 // 翻译
+  END
+END
+</code></pre>
+<ol start="2">
+<li>执行命令 <code>windres demo.rc -O coff -o demo.res</code>；</li>
+<li>执行命令 <code>g++ demo.cpp demo.res -o release.exe</code>；</li>
+<li>得到带版本信息的应用程序。</li>
+</ol>
+<h3 id="注释：-3"><strong>注释</strong>：</h3>
+<ol>
+<li>.RC 文件使用的是微软定义的脚本语言；</li>
+<li>更改语言时需要同时更改 “语言” 和 “翻译” 两处内容。“语言” 行(&quot;080904E4&quot;)修改前四个数字；“翻译” 行(0x809)修改后三位数字。
+<ul>
+<li>Example： 简体中文的 langID 为 0x0804
+<ol>
+<li>修改“语言”行前四位为 “0804”；</li>
+<li>修改“翻译”行后三位为 “804”；</li>
+<li>修改“语言”信息为“简体中文”。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>.RC资源文件详情请参考<a href="https://docs.microsoft.com/zh-cn/windows/win32/menurc/about-resource-files?redirectedfrom=MSDN">MSDN</a>。</li>
+</ol>
+<h2 id="原创说明">原创说明</h2>
+<p>本文原作者：SeaFever<br>
+<strong>转载请留言！</strong><br>
+原文链接：<a href="https://www.cnblogs.com/seafever/p/12660507.html">https://www.cnblogs.com/seafever/p/12660507.html</a></p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-19 10:13</span>&nbsp;
+<a href="https://www.cnblogs.com/seafever/">海之恋SF</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12660507" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12660507);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 576027, cb_blogApp = 'seafever', cb_blogUserGuid = '0a3e6163-ddde-46e8-360f-08d7a7ab70c7';
+    var cb_entryId = 12660507, cb_entryCreatedDate = '2020-04-19 10:13', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 海之恋SF
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <a id="goToTop" href="#top">回到顶部</a>
+<script>
+var toTop = document.getElementById("goToTop");
+setInterval(function(){ 
+    if(document.documentElement.scrollTop >= window.innerHeight ) {
+        toTop.style.display = "block";
+    } else {
+        toTop.style.display = "none";
+    }
+},500);
+</script>
+<script>
+window.onload = function(){//右侧博文推荐
+    var divDigg = document.getElementById("div_digg");
+    var diggShowAll = false;
+    divDigg.onclick = function(){
+        if(!diggShowAll){
+            divDigg.style.height = "auto";
+            divDigg.childNodes[1].onclick=function(){event.stopPropagation();}
+            divDigg.childNodes[3].onclick=function(){event.stopPropagation();}
+        } else {
+            divDigg.style.height = "54px";
+            divDigg.childNodes[1].onclick=function(){}
+            divDigg.childNodes[3].onclick=function(){}
+        }
+        diggShowAll = !diggShowAll;
+    }
+     if(document.documentElement.scrollTop >= window.innerHeight ) {
+        divDigg.style.display = "block";
+    } 
+}
+</script>
+<script src="https://blog-static.cnblogs.com/files/seafever/sakuraPlus.js"></script>
+<script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+<script>
+L2Dwidget.init({
+"model": {
+jsonPath: "https://unpkg.com/live2dapi@1.0.0/miku/miku.model.json",
+"scale": 1
+},
+"display": {
+"position": "right",
+"width": 93,
+"height": 238,
+"hOffset": -32,
+"vOffset": -85
+},
+"mobile": {
+"show": true,
+"scale": 0.5
+},
+"react": {
+"opacityDefault": 1.0,
+"opacityOnHover": 0.2
+}
+});
+</script>
+<script type="text/javascript" language="javascript">
+　　//Setting ico for MyCnblog
+　　var linkObject = document.createElement('link');
+　　linkObject.rel = "shortcut icon";
+　　linkObject.href = "https://unpkg.com/miku.cursor@5.0.4/top.png";
+       linkObject.type = "image/png";
+　　document.getElementsByTagName("head")[0].appendChild(linkObject);
+</script>
+<script>
+class Circle {
+  constructor({ origin, speed, color, angle, context }) {
+    this.origin = origin
+    this.position = { ...this.origin }
+    this.color = color
+    this.speed = speed
+    this.angle = angle
+    this.context = context
+    this.renderCount = 0
+  }
+
+  draw() {
+    this.context.fillStyle = this.color
+    this.context.beginPath()
+    this.context.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2)
+    this.context.fill()
+  }
+
+  move() {
+    this.position.x = (Math.sin(this.angle) * this.speed) + this.position.x
+    this.position.y = (Math.cos(this.angle) * this.speed) + this.position.y + (this.renderCount * 0.3)
+    this.renderCount++
+  }
+}
+
+class Boom {
+  constructor ({ origin, context, circleCount = 10, area }) {
+    this.origin = origin
+    this.context = context
+    this.circleCount = circleCount
+    this.area = area
+    this.stop = false
+    this.circles = []
+  }
+
+  randomArray(range) {
+    const length = range.length
+    const randomIndex = Math.floor(length * Math.random())
+    return range[randomIndex]
+  }
+
+  randomColor() {
+    const range = ['8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+    return '#' + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range)
+  }
+
+  randomRange(start, end) {
+    return (end - start) * Math.random() + start
+  }
+
+  init() {
+    for(let i = 0; i < this.circleCount; i++) {
+      const circle = new Circle({
+        context: this.context,
+        origin: this.origin,
+        color: this.randomColor(),
+        angle: this.randomRange(Math.PI - 1, Math.PI + 1),
+        speed: this.randomRange(1, 6)
+      })
+      this.circles.push(circle)
+    }
+  }
+
+  move() {
+    this.circles.forEach((circle, index) => {
+      if (circle.position.x > this.area.width || circle.position.y > this.area.height) {
+        return this.circles.splice(index, 1)
+      }
+      circle.move()
+    })
+    if (this.circles.length == 0) {
+      this.stop = true
+    }
+  }
+
+  draw() {
+    this.circles.forEach(circle => circle.draw())
+  }
+}
+
+class CursorSpecialEffects {
+  constructor() {
+    this.computerCanvas = document.createElement('canvas')
+    this.renderCanvas = document.createElement('canvas')
+
+    this.computerContext = this.computerCanvas.getContext('2d')
+    this.renderContext = this.renderCanvas.getContext('2d')
+
+    this.globalWidth = window.innerWidth
+    this.globalHeight = window.innerHeight
+
+    this.booms = []
+    this.running = false
+  }
+
+  handleMouseDown(e) {
+    const boom = new Boom({
+      origin: { x: e.clientX, y: e.clientY },
+      context: this.computerContext,
+      area: {
+        width: this.globalWidth,
+        height: this.globalHeight
+      }
+    })
+    boom.init()
+    this.booms.push(boom)
+    this.running || this.run()
+  }
+
+  handlePageHide() {
+    this.booms = []
+    this.running = false
+  }
+
+  init() {
+    const style = this.renderCanvas.style
+    style.position = 'fixed'
+    style.top = style.left = 0
+    style.zIndex = '999999999999999999999999999999999999999999'
+    style.pointerEvents = 'none'
+
+    style.width = this.renderCanvas.width = this.computerCanvas.width = this.globalWidth
+    style.height = this.renderCanvas.height = this.computerCanvas.height = this.globalHeight
+
+    document.body.append(this.renderCanvas)
+
+    window.addEventListener('mousedown', this.handleMouseDown.bind(this))
+    window.addEventListener('pagehide', this.handlePageHide.bind(this))
+  }
+
+  run() {
+    this.running = true
+    if (this.booms.length == 0) {
+      return this.running = false
+    }
+
+    requestAnimationFrame(this.run.bind(this))
+
+    this.computerContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
+    this.renderContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
+
+    this.booms.forEach((boom, index) => {
+      if (boom.stop) {
+        return this.booms.splice(index, 1)
+      }
+      boom.move()
+      boom.draw()
+    })
+    this.renderContext.drawImage(this.computerCanvas, 0, 0, this.globalWidth, this.globalHeight)
+  }
+}
+
+const cursorSpecialEffects = new CursorSpecialEffects()
+cursorSpecialEffects.init()
+</script>
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'o(*//·//▽//·//*)q';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(*≧︶≦))(￣▽￣* )ゞ';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },3000);
+        }
+    });
+})();
+</script><!--
+<script>
+	// 反调试函数,参数：开关，执行代码
+	function endebug(off, code) {
+		if (!off) {
+			!function (e) {
+				function n(e) {
+					function n() {
+						return u
+					}
+					function o() {
+						window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized ? t("on") : (a = "off", console.log(d), console.clear(), t(a))
+					}
+					function t(e) {
+						u !== e && (u = e, "function" == typeof c.onchange && c.onchange(e))
+					}
+					function r() {
+						l || (l = !0, window.removeEventListener("resize", o), clearInterval(f))
+					}
+					"function" == typeof e && (e = {
+						onchange: e
+					});
+					var i = (e = e || {}).delay || 500,
+						c = {};
+					c.onchange = e.onchange;
+					var a, d = new Image;
+					d.__defineGetter__("id", function () {
+						a = "on"
+					});
+					var u = "unknown";
+					c.getStatus = n;
+					var f = setInterval(o, i);
+					window.addEventListener("resize", o);
+					var l;
+					return c.free = r, c
+				}
+				var o = o || {};
+				o.create = n, "function" == typeof define ? (define.amd || define.cmd) && define(function () {
+					return o
+				}) : "undefined" != typeof module && module.exports ? module.exports = o : window.jdetects = o
+			}(), jdetects.create(function (e) {
+				var a = 0;
+				var n = setInterval(function () {
+					if ("on" == e) {
+						setTimeout(function () {
+							if (a == 0) {
+								a = 1;
+								setTimeout(code);
+							}
+						}, 200)
+					}
+				}, 100)
+			})
+		}
+	}
+</script>
+<script type="text/javascript">
+	endebug(false, function () {
+		// 非法调试执行的代码(不要使用控制台输出的提醒)
+		document.write("检测到非法调试,请关闭后刷新重试!");
+		self.location='https://unpkg.com/debug_seafever@1.0.1/index.html';
+	});
+</script>
+<script type="text/javascript">
+    window.onload = function(){
+        //屏蔽键盘事件
+        document.onkeydown = function (){
+            var e = window.event || arguments[0];
+            //F12
+            if(e.keyCode == 123){
+                return false;
+            //Ctrl+Shift+I
+            }else if((e.ctrlKey) && (e.shiftKey) && (e.keyCode == 73)){
+                return false;
+            //Shift+F10
+            }else if((e.shiftKey) && (e.keyCode == 121)){
+                return false;
+            //Ctrl+U
+            }else if((e.ctrlKey) && (e.keyCode == 85)){
+                return false;
+            //Ctrl+S
+            }else if((e.ctrlKey)&&(e.keyCode == 83)){
+                return false;
+            }
+        };
+        //屏蔽鼠标右键
+        document.oncontextmenu = function (){
+            return false;
+        }
+    }
+</script>-->
+    </div>
+</body>
+</html>

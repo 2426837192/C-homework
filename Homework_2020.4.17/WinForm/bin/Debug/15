@@ -1,0 +1,1492 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="never" />
+    <meta property="og:description" content="结构型模式（Structural Pattern） 用于将类或对象结合在一起形成更强大的结构，就像搭积木，可以通过简单的积木组合出复杂、功能强大的模型。 | 结构型模式 | 重要程度 | | | | " />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>超详细-七种常见结构型模式的描述总结与代码分析 - 农夫三拳有点疼~ - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/songjilong/custom.css?v=9NHuvPVco0G/3gSfBgLOaWOGz4I=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/SimpleMemory/bundle-SimpleMemory-mobile.min.css" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/songjilong/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/songjilong/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/songjilong/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 561152;
+        var currentBlogApp = 'songjilong';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleMemory';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/songjilong/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/songjilong/">农夫三拳有点疼</a>
+</h1>
+<h2>
+种一棵树最好的时间是十年前，其次是现在
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/songjilong/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E5%86%9C%E5%A4%AB%E4%B8%89%E6%8B%B3%E6%9C%89%E7%82%B9%E7%96%BC~">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/songjilong/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+61&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+31</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/songjilong/p/12729129.html">超详细-七种常见结构型模式的描述总结与代码分析</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p><strong>结构型模式（Structural Pattern）</strong>用于将类或对象结合在一起形成更强大的结构，就像搭积木，可以通过简单的积木组合出复杂、功能强大的模型。</p>
+<table>
+<thead>
+<tr>
+<th>结构型模式</th>
+<th>重要程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>适配器模式(Adapter)</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>桥接模式(Bridge)</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>组合模式(Composite)</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>装饰者模式(Decorator)</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>外观模式(Facade)</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>享元模式(Flyweight)</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td>代理模式(Proxy)</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<h1 id="一、适配器模式adapter">一、适配器模式(Adapter)</h1>
+<blockquote>
+<p>生活中，充电插头有两脚的、三脚的，还有圆形的，如果想使这些插头都能工作，就需要一个多功能适配器</p>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200327171032.png" alt=""></p>
+</blockquote>
+<h2 id="基本介绍">基本介绍</h2>
+<p>适配器模式（Adapter Pattern）属于<strong>结构性模式</strong>，它可以将某个类的接口转换为客户端期望的另一个接口表示，主要目的是<strong>兼容性</strong>，让原本因接口不匹配不能一起工作的两个类可以协同工作，其别名为<strong>包装器</strong>（Wrapper）。适配器模式主要分为三类：<strong>类适配器模式</strong>、<strong>对象适配器模式</strong>、<strong>接口适配器模式</strong>。</p>
+<h2 id="工作原理">工作原理</h2>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200327172553.png" alt=""></p>
+<ol>
+<li>让原本接口不兼容的类可以兼容</li>
+<li>从用户的角度看不到被适配者，是解耦的</li>
+<li>用户调用适配器转化出来的目标接口方法，适配器去再调用被适配者的相关接口方法</li>
+</ol>
+<h2 id="类适配器模式">类适配器模式</h2>
+<h3 id="实现原理">实现原理</h3>
+<p>Adapter 类继承 src 类，实现 dst 接口，完成 src 对 dst 的适配。</p>
+<h3 id="案例">案例</h3>
+<p>插座（Voltage220V）的输出电压是220V，充电插头（Voltage5V）输出电压是5V，这时候就需要一个适配器（VoltageAdapter）转换电压，才能给手机（Phone）充电</p>
+<h3 id="代码实现">代码实现</h3>
+<p>电源输出电压为220V</p>
+<pre><code class="language-java">public class Voltage220V {
+    public int output220V() {
+        int src = 220;
+        System.out.println(&quot;电源输出&quot; + src + &quot;V&quot;);
+        return src;
+    }
+}
+</code></pre>
+<p>充电器输出电压为5V</p>
+<pre><code class="language-java">public interface Voltage5V {
+    int output5V();
+}
+</code></pre>
+<p>适配器需要将220V转为5V</p>
+<pre><code class="language-java">public class VoltageAdapter extends Voltage220V implements Voltage5V {
+    @Override
+    public int output5V() {
+        int src = super.output220V();
+        int dst = src / 44;
+        System.out.println(&quot;转换为&quot; + dst + &quot;V&quot;);
+        return dst;
+    }
+}
+</code></pre>
+<p>手机接收5V电压，判断电压是否为5V</p>
+<pre><code class="language-java">public class Phone {
+    public static void charging(Voltage5V voltage5V){
+        int v = voltage5V.output5V();
+        if(v == 5){
+            System.out.println(&quot;接收电压为5V，正常充电&quot;);
+        }else if(v &gt; 5){
+            System.out.println(&quot;电压高于5V，无法充电&quot;);
+        }
+    }
+}
+</code></pre>
+<p>测试方法</p>
+<pre><code class="language-java">@Test
+public void test01(){
+    System.out.println(&quot;====类适配器模式====&quot;);
+    Phone.charging(new VoltageAdapter());
+}
+</code></pre>
+<p>运行结果</p>
+<pre><code>====类适配器模式====
+电源输出220V
+转换为5V
+接收电压为5V，正常充电
+</code></pre>
+<h3 id="分析">分析</h3>
+<ul>
+<li>由于 Java 是单继承机制，所以类适配器模式有一定的<strong>局限性</strong></li>
+<li>src 类的方法再 Adapter 中都会暴露出来，<strong>增加了使用的成本</strong></li>
+<li>由于继承了 src 类，所以它可以重写父类方法，使 Adapter 的<strong>灵活性增强了</strong></li>
+</ul>
+<h2 id="对象适配器模式">对象适配器模式</h2>
+<h3 id="实现原理-2">实现原理</h3>
+<p>基本的思路和类的适配器模式相同，只是将 Adapter 类做修改，<strong>使用聚合关系替代继承关系</strong></p>
+<h3 id="代码实现-2">代码实现</h3>
+<p>沿用前面的代码，新建一个适配器，只是将原来的 Adapter 继承 src 类换为聚合的关系</p>
+<pre><code class="language-java">public class VoltageAdapter2 implements Voltage5V {
+
+    private Voltage220V voltage220V;
+
+    public VoltageAdapter2(){
+        this.voltage220V = new Voltage220V();
+    }
+
+    @Override
+    public int output5V() {
+        int src = this.voltage220V.output220V();
+        int dst = src / 44;
+        return dst;
+    }
+}
+</code></pre>
+<p>测试方法</p>
+<pre><code class="language-java">@Test
+public void test02(){
+    System.out.println(&quot;====对象适配器模式====&quot;);
+    Phone.charging(new VoltageAdapter2(new Voltage220V()));
+}
+</code></pre>
+<p>运行结果</p>
+<pre><code>====对象适配器模式====
+电源输出220V
+转换为5V
+接收电压为5V，正常充电
+</code></pre>
+<h2 id="接口适配器模式">接口适配器模式</h2>
+<blockquote>
+<p>接口适配器模式也可称为<strong>缺省适配器模式</strong>，当不需要实现接口的全部方法时，可先设计一个抽象类实现接口，并为该接口的每个方法都提供一个<strong>默认实现</strong>，那么该抽象类的子类就可以<strong>有选择的</strong>覆盖父类的某些方法来实现需求。</p>
+</blockquote>
+<p><strong>适用于一个接口不想使用其所有的方法的情况</strong></p>
+<h3 id="代码实现-3">代码实现</h3>
+<p>写一个接口，里面定义一些方法</p>
+<pre><code class="language-java">public interface InterfaceMethod {
+    void m1();
+    void m2();
+    void m3();
+    void m4();
+}
+</code></pre>
+<p>一个抽象类，实现该接口</p>
+<pre><code class="language-java">public abstract class AbstractAdapter implements InterfaceMethod {
+    @Override
+    public void m1() {
+    }
+
+    @Override
+    public void m2() {
+    }
+
+    @Override
+    public void m3() {
+    }
+
+    @Override
+    public void m4() {
+    }
+}
+</code></pre>
+<p>测试方法</p>
+<pre><code class="language-java">@Test
+public void test(){
+    //使用匿名内部类的方式
+    AbstractAdapter adapter = new AbstractAdapter() {
+        @Override
+        public void m1() {
+            System.out.println(&quot;我要用m1方法&quot;);
+        }
+    };
+    adapter.m1();
+}
+</code></pre>
+<p>运行结果</p>
+<pre><code>我要用m1方法
+</code></pre>
+<h2 id="三种适配器模式总结">三种适配器模式总结</h2>
+<ul>
+<li>三种命名方式是根据 src 是以怎样的形式给到 Adapter (在Adapter里的形式)来命名的。
+<ul>
+<li>
+<p>类适配器：以类给到，在 Adapter 里，就是将 src 当做类，<strong>继承</strong></p>
+</li>
+<li>
+<p>对象适配器：以对象给到，在 Adapter 里， 将 src 作为一个对象，<strong>持有</strong></p>
+</li>
+<li>
+<p>接口适配器：以接口给到，在 Adapter 里，将 src 作为一个接口，<strong>实现</strong></p>
+</li>
+</ul>
+</li>
+<li>Adapter模式最大的作用还是将原本不兼容的接口融合在一起工作。</li>
+</ul>
+<h1 id="二、桥接模式bridge">二、桥接模式(Bridge)</h1>
+<h2 id="基本介绍-2">基本介绍</h2>
+<ul>
+<li>桥接模式是一种<strong>结构型</strong>设计模式。</li>
+<li>将实现与抽象放在两个不同的类层次中，使两个层次可以独立改变。</li>
+<li>基于<strong>类的最小设计原则</strong>，通过封装、聚合、继承等行为让不同的类承担不同的职责。</li>
+<li>它的主要特点是<strong>把抽象与行为实现分离</strong>，从而可以保持各部分的独立性以及应对它们的功能扩展。</li>
+</ul>
+<h2 id="模式结构">模式结构</h2>
+<p>桥接模式包含如下角色：</p>
+<ul>
+<li><strong>Abstraction：抽象类</strong></li>
+<li><strong>RefinedAbstraction：扩充抽象类</strong></li>
+<li><strong>Implementor：实现类接口</strong></li>
+<li><strong>ConcreteImplementor：具体实现类</strong></li>
+</ul>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200331111609.png" alt=""></p>
+<h2 id="简单案例">简单案例</h2>
+<blockquote>
+<p>我们以手机为例，手机有品牌（诺基亚、摩托罗拉）和样式（折叠式、直立式），我们需要生产不同的品牌和样式，比如折叠式诺基亚、直立式摩托罗拉... ...</p>
+</blockquote>
+<p><strong>「实现类接口」</strong> - 手机品牌，都有开机和关机的功能</p>
+<pre><code class="language-java">public interface PhoneBrand {
+    void open();
+    void close();
+}
+</code></pre>
+<p><strong>「具体实现类」</strong> - 手机品牌 Nokia 和 Moto</p>
+<pre><code>public class Nokia implements PhoneBrand {
+    @Override
+    public void open() {
+        System.out.println(&quot;诺基亚开机...&quot;);
+    }
+
+    @Override
+    public void close() {
+        System.out.println(&quot;诺基亚关机...&quot;);
+    }
+}
+</code></pre>
+<pre><code>public class Moto implements PhoneBrand {
+    @Override
+    public void open() {
+        System.out.println(&quot;摩托罗拉开机...&quot;);
+    }
+
+    @Override
+    public void close() {
+        System.out.println(&quot;摩托罗拉关机...&quot;);
+    }
+}
+</code></pre>
+<p><strong>「抽象类」</strong> - 手机类，以<strong>聚合</strong>的方式与品牌产生联系，充当着<strong>“桥”</strong>的角色</p>
+<pre><code class="language-java">public abstract class AbsPhone{
+
+    private PhoneBrand brand;
+
+    public AbsPhone(PhoneBrand brand) {
+        this.brand = brand;
+    }
+
+    protected void open(){
+        brand.open();
+    }
+
+    protected void close(){
+        brand.close();
+    }
+}
+</code></pre>
+<p><strong>「扩充抽象类」</strong> - 折叠式手机 和 直立式手机</p>
+<pre><code class="language-java">public class FoldingPhone extends AbsPhone{
+
+    public FoldingPhone(PhoneBrand brand) {
+        super(brand);
+    }
+
+    @Override
+    protected void open() {
+        System.out.print(&quot;折叠式 - &quot;);
+        super.open();
+    }
+
+    @Override
+    protected void close() {
+        System.out.print(&quot;折叠式 - &quot;);
+        super.close();
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class UpRightPhone extends AbsPhone{
+
+    public UpRightPhone(PhoneBrand brand) {
+        super(brand);
+    }
+
+    @Override
+    protected void open() {
+        System.out.print(&quot;直立式 - &quot;);
+        super.open();
+    }
+
+    @Override
+    protected void close() {
+        System.out.print(&quot;直立式 - &quot;);
+        super.close();
+    }
+}
+</code></pre>
+<p>测试</p>
+<pre><code class="language-java">@Test
+public void test(){
+    AbsPhone p1 = new FoldingPhone(new Nokia());
+    p1.open();
+    p1.close();
+    System.out.println();
+    AbsPhone p2 = new UpRightPhone(new Moto());
+    p2.open();
+    p2.close();
+}
+</code></pre>
+<p>结果</p>
+<pre><code>折叠式 - 诺基亚开机...
+折叠式 - 诺基亚关机...
+
+直立式 - 摩托罗拉开机...
+直立式 - 摩托罗拉关机...
+</code></pre>
+<p>如果我们想创建其他类型的手机，只需要改变创建方式即可。</p>
+<h2 id="模式分析">模式分析</h2>
+<ol>
+<li>实现了抽象和实现部分的分离，从而极大的提供了系统的灵活性，这有助于系统进行分层设计，从而产生更好的结构化系统。</li>
+<li>对于系统的高层部分，只需要知道抽象部分和实现部分的接口就可以了，其它的部分由具体业务来完成。</li>
+<li>桥接模式替代多层继承方案，可以减少子类的个数，降低系统的管理和维护成本。</li>
+<li>桥接模式的引入增加了系统的理解和设计难度，由于聚合关联关系建立在抽象层，要求开发者针对抽象进行设计和编程。</li>
+<li>桥接模式要求正确识别出系统中两个独立变化的维度，因此其使用范围有一定的局限性，即需要有这样的应用场景。</li>
+</ol>
+<h2 id="桥接模式在-jdbc-中的应用">桥接模式在 JDBC 中的应用</h2>
+<blockquote>
+<p>在 Java 中我们通常使用 JDBC 连接数据库，但是数据库的种类有很多（MySQL、Oracle...），它们的连接方式、协议都不尽相同，很显然不能为每种数据库都写一个接口，这样就违背了精简设计原则，于是Java设计师就提供一套接口给厂商们自己实现，一套接口给用户调用。</p>
+</blockquote>
+<p>我们在使用 JDBC 的时候需要写这样的代码</p>
+<pre><code class="language-java">Class.forName(&quot;数据库驱动名&quot;);
+Connection conn = DriverManager.getConnection(&quot;数据库url&quot;, &quot;用户名&quot;, &quot;密码&quot;);
+</code></pre>
+<p>其过程是这样的：</p>
+<ul>
+<li>
+<p><code>Class.forName()</code> 的时候，通过反射机制，将 <code>.class</code> 文件加载进Java虚拟机内存中，<code>Driver</code> 类初始化，执行以下代码，向 <code>DriverManager</code> 中注册一个驱动。<code>DriverManager</code>是个 <code>Driver</code> 容器，管理不同的 <code>Driver</code></p>
+<pre><code class="language-java">static {
+    try {
+        DriverManager.registerDriver(new Driver());
+    } catch (SQLException var1) {
+        throw new RuntimeException(&quot;Can't register driver!&quot;);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>我们获取连接时，<code>DriverManager</code> 就会根据驱动返回一个相应的数据库连接</p>
+<pre><code class="language-java">@CallerSensitive
+public static Connection getConnection(String url,
+    java.util.Properties info) throws SQLException {
+    return (getConnection(url, info, Reflection.getCallerClass()));
+}
+</code></pre>
+</li>
+</ul>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200330182256.png" alt=""></p>
+<h2 id="实际应用场景">实际应用场景</h2>
+<blockquote>
+<p>对于那些不希望使用继承或因为多层次继承导致系统类的个数急剧增加的系统，桥接模式尤为适用。</p>
+</blockquote>
+<ul>
+<li>银行转账系统
+<ul>
+<li>转账分类：网上转账，柜台转账，AMT 转账</li>
+<li>转账用户类型：普通用户，银卡用户，金卡用户...</li>
+</ul>
+</li>
+<li>消息管理
+<ul>
+<li>消息类型：即时消息，延时消息</li>
+<li>消息分类：手机短信，邮件消息，QQ 消息...</li>
+</ul>
+</li>
+</ul>
+<h1 id="三、组合模式composite">三、组合模式(Composite)</h1>
+<h2 id="基本介绍-3">基本介绍</h2>
+<p>1、组合模式（Composite Pattern）又叫部分整体模式，他创建了<strong>对象组的树形结构</strong>，将对象组合成树状结构以表示「<strong>整体 - 部分</strong>」的层次关系。</p>
+<p>2、组合模式使得用户对单个对象和组合对象的访问具有一致性，即：组合能让客户以一致的方式处理个别对象以及组合对象</p>
+<h2 id="模式结构-2">模式结构</h2>
+<p><strong>Component（抽象构件）</strong>：定义参加组合对象的公有方法和属性，可以定义一些默认的行为和属性。</p>
+<p><strong>Composite（容器构件）</strong>：树枝对象，它的作用是组合树枝结点和叶子结点形成一个树形结构。</p>
+<p><strong>Leaf（叶子构件）</strong>：叶子构件的下面没有其他分支，也就是遍历的最小单位。</p>
+<hr>
+<p>组合模式有两种实现：<strong>安全模式和透明模式</strong>，其结构如下图所示</p>
+<ul>
+<li>安全组合模式：在抽象构件角色中没有声明任何用于管理成员对象的方法，而是在容器构件 <code>Composite</code> 类中声明并实现这些方法。</li>
+<li>透明组合模式：抽象构建角色中声明了所有用于管理成员对象的方法，对其它构件公开透明。</li>
+</ul>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200407115121.png" alt=""></p>
+<h2 id="简单案例-2">简单案例</h2>
+<blockquote>
+<p>要求：在页面展示出公司的部门组成（一个公司有多个部门，每个部门有多个小组）；</p>
+<p>这是一种很明显的树形结构，因此可以用组合模式解决</p>
+</blockquote>
+<p><strong>「抽象构件」：</strong>OrganizationComponent</p>
+<pre><code class="language-java">public abstract class OrganizationComponent {
+    private String name;
+
+    public OrganizationComponent(String name) {
+        this.name = name;
+    }
+
+    protected void add(OrganizationComponent component) {
+        throw new UnsupportedOperationException(&quot;不支持添加操作&quot;);
+    }
+
+    protected void remove(OrganizationComponent component) {
+        throw new UnsupportedOperationException(&quot;不支持删除操作&quot;);
+    }
+
+    protected abstract void print();
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+</code></pre>
+<p><strong>「容器构件」：</strong>Company、Department</p>
+<pre><code class="language-java">public class Company extends OrganizationComponent {
+    private List&lt;OrganizationComponent&gt; components = new ArrayList&lt;&gt;();
+
+    public Company(String name) {
+        super(name);
+    }
+
+    @Override
+    protected void add(OrganizationComponent component) {
+        components.add(component);
+    }
+
+    @Override
+    protected void remove(OrganizationComponent component) {
+        components.remove(component);
+    }
+
+    @Override
+    protected void print() {
+        System.out.println(&quot;=======&quot;+getName()+&quot;=======&quot;);
+        for (OrganizationComponent component : components) {
+            component.print();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class Department extends OrganizationComponent {
+    private List&lt;OrganizationComponent&gt; components = new ArrayList&lt;&gt;();
+
+    public Department(String name) {
+        super(name);
+    }
+
+    @Override
+    protected void add(OrganizationComponent component) {
+        components.add(component);
+    }
+
+    @Override
+    protected void remove(OrganizationComponent component) {
+        components.remove(component);
+    }
+
+    @Override
+    protected void print() {
+        System.out.println(&quot;=======&quot;+getName()+&quot;=======&quot;);
+        for (OrganizationComponent component : components) {
+            component.print();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+}
+</code></pre>
+<p><strong>「叶子构件」：</strong>Group，叶子构件不没有子节点了，所以不需要添加、删除之类的方法</p>
+<pre><code class="language-java">public class Group extends OrganizationComponent {
+    public Group(String name) {
+        super(name);
+    }
+
+    @Override
+    protected void print() {
+        System.out.println(getName());
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+}
+</code></pre>
+<p><strong>「测试类」：</strong>Client</p>
+<pre><code class="language-java">public class Client {
+    @Test
+    public void test01(){
+        OrganizationComponent company = new Company(&quot;阿里巴巴&quot;);
+
+        OrganizationComponent department1 = new Department(&quot;市场部&quot;);
+        OrganizationComponent department2 = new Department(&quot;技术部&quot;);
+
+        OrganizationComponent group1 = new Group(&quot;市场一组&quot;);
+        OrganizationComponent group2 = new Group(&quot;市场二组&quot;);
+        OrganizationComponent group3 = new Group(&quot;技术一组&quot;);
+        OrganizationComponent group4 = new Group(&quot;技术二组&quot;);
+
+        //添加部门
+        company.add(department1);
+        company.add(department2);
+        //添加小组
+        department1.add(group1);
+        department1.add(group2);
+        department2.add(group3);
+        department2.add(group4);
+
+        //打印结果
+        company.print();
+    }
+}
+</code></pre>
+<p><strong>「运行结果」</strong></p>
+<pre><code>=======阿里巴巴=======
+=======市场部=======
+市场一组
+市场二组
+=======技术部=======
+技术一组
+技术二组
+</code></pre>
+<h2 id="在-hashmap-中的应用">在 HashMap 中的应用</h2>
+<p>在 Java（jdk 1.8为例） 的集合类 HashMap 中，抽象构件是 Map，容器构件是 HashMap，叶子构件是 Node</p>
+<p>进入源码可以看见，在 Map 中定义了许多公共方法</p>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200407132837.png" alt=""></p>
+<p>HashMap 实现了 Map，并对一些方法重写，而且 HashMap 中有一个静态内部类 Node，它就充当了叶子构件的角色，Node 中去除了 put、putAll 等方法，下面也没有子结点了</p>
+<p>使用：</p>
+<pre><code class="language-java">@Test
+public void test02(){
+    Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
+    map.put(&quot;k1&quot;, &quot;v1&quot;);
+    map.put(&quot;k2&quot;, &quot;v2&quot;);
+    System.out.println(map);
+}
+</code></pre>
+<p>当我们 put 一个键值对的时候，在 HashMap 内部会调用 putVal 方法，将键值对封装为 Node。</p>
+<h2 id="总结">总结</h2>
+<p>1、简化客户端操作。客户端只需要面对一致的对象而不用考虑整体部分或者节点叶子的问题。</p>
+<p>2、具有较强的扩展性。当我们要更改组合对象时，我们只需要调整内部的层次关系，客户端不用做出任何改动。</p>
+<p>3、方便创建出复杂的层次结构。客户端不用理会组合里面的组成细节，容易添加节点或者叶子从而创建出复杂的树形结构。</p>
+<p>4、需要遍历组织机构，或者处理的对象具有树形结构时，非常适合使用组合模式。</p>
+<p>5、要求较高的抽象性。如果节点和叶子有很多差异性的话，比如很多方法和属性都不一样，不适合使用组合模式。</p>
+<h1 id="四、装饰者模式decorator">四、装饰者模式(Decorator)</h1>
+<h2 id="基本">基本</h2>
+<p>装饰者模式属于<strong>结构型模式</strong>，它可以<strong>动态的</strong>将新功能<strong>附加到对象上</strong>，同时又<strong>不改变其结构</strong>。在对象功能扩展方面，它比继承更有弹性，装饰者模式也体现了开闭原则（OCP）。</p>
+<h2 id="模式结构-3">模式结构</h2>
+<blockquote>
+<p>装饰者和被装饰者有<strong>相同的超类型</strong>，因为装饰者和被装饰者必须是一样的类型，<strong>利用继承是为了达到类型的匹配，而不是利用继承获取行为</strong></p>
+</blockquote>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200403155948.png" alt=""></p>
+<ul>
+<li><strong>Component</strong>：装饰者和被装饰者共同的父类，是一个接口或者抽象类，用来定义基本行为</li>
+<li><strong>ConcreteComponent</strong>：定义具体对象，即被装饰者</li>
+<li><strong>Decorator</strong>：抽象装饰者，继承自 Component，从外类来扩展 ConcreteComponent。对于 ConcreteComponent来说，不需要知道Decorator的存在，Decorator 是一个接口或抽象类</li>
+<li><strong>ConcreteDecorator</strong>：具体装饰者，用于扩展 ConcreteComponent</li>
+</ul>
+<h2 id="举例说明">举例说明</h2>
+<blockquote>
+<p>在咖啡店客人想点一杯<strong>加两份糖一份牛奶的摩卡咖啡</strong>，各个商品的价格如下，我们需要根据用户点的咖啡、加的配料，动态的计算价格</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">商品</th>
+<th style="text-align:left">价格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">拿铁咖啡（LatteCoffee）</td>
+<td style="text-align:left">4.5</td>
+</tr>
+<tr>
+<td style="text-align:left">摩卡咖啡（MochaCoffe）</td>
+<td style="text-align:left">5.5</td>
+</tr>
+<tr>
+<td style="text-align:left">糖（Sugar）</td>
+<td style="text-align:left">1.0</td>
+</tr>
+<tr>
+<td style="text-align:left">牛奶（Milk）</td>
+<td style="text-align:left">2.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>「实体类」</strong> Coffee</p>
+<pre><code class="language-java">public abstract class Coffee{
+    public String des = &quot;咖啡&quot;; //描述
+    private float price = 0.0f; //价格
+
+    protected abstract float cost(); //计算费用
+    
+    //省略getter setter方法
+}
+</code></pre>
+<p><strong>「被装饰者」</strong>LatteCoffee</p>
+<pre><code class="language-java">public class LatteCoffee extends Coffee{
+    public LatteCoffee() {
+        setDes(&quot;拿铁咖啡&quot;);
+        setPrice(4.5f);
+    }
+
+    @Override
+    protected float cost() {
+        return getPrice();
+    }
+}
+</code></pre>
+<p><strong>「被装饰者」</strong>MochaCoffee</p>
+<pre><code class="language-java">public class MochaCoffee extends Coffee {
+    public MochaCoffee() {
+        setDes(&quot;摩卡咖啡&quot;);
+        setPrice(5.5f);
+    }
+
+    @Override
+    protected float cost() {
+        return getPrice();
+    }
+}
+</code></pre>
+<p><strong>「抽象装饰者」</strong>Decorator</p>
+<pre><code class="language-java">public class Decorator extends Coffee {
+
+    private Coffee coffee;
+
+    public Decorator(Coffee drink) {
+        this.coffee = drink;
+    }
+
+    @Override
+    protected float cost() {
+        return getPrice() + coffee.cost();
+    }
+
+    @Override
+    public String getDes() {
+        return coffee.getDes() + &quot;加&quot; + super.getDes();
+    }
+}
+</code></pre>
+<p><strong>「具体装饰者」</strong>SugarDecorator</p>
+<pre><code class="language-java">public class SugarDecorator extends Decorator{
+    public SugarDecorator(Coffee coffee) {
+        super(coffee);
+        setDes(&quot;糖&quot;);
+        setPrice(1.0f);
+    }
+}
+</code></pre>
+<p><strong>「具体装饰者」</strong>MilkDecorator</p>
+<pre><code class="language-java">public class MilkDecorator extends Decorator{
+    public MilkDecorator(Coffee coffee) {
+        super(coffee);
+        setDes(&quot;牛奶&quot;);
+        setPrice(2.0f);
+    }
+}
+</code></pre>
+<p><strong>「测试类」</strong>Client</p>
+<pre><code class="language-java">public class Client {
+    /**
+     * 点一杯 加两份糖一份牛奶的摩卡咖啡
+     */
+    @Test
+    public void test01() {
+        Coffee order = new MochaCoffee();
+        System.out.println(order.getDes() + &quot;，价格：&quot; + order.cost());
+        //加两份糖
+        order = new SugarDecorator(new SugarDecorator(order));
+        System.out.println(order.getDes() + &quot;，价格：&quot; + order.cost());
+        //加一份牛奶
+        order = new MilkDecorator(order);
+        System.out.println(order.getDes() + &quot;，价格：&quot; + order.cost());
+    }
+}
+</code></pre>
+<p><strong>「结果」</strong>result</p>
+<pre><code>摩卡咖啡，价格：5.5
+摩卡咖啡加糖加糖，价格：7.5
+摩卡咖啡加糖加糖加牛奶，价格：9.5
+</code></pre>
+<h2 id="在-java-io-流中的应用">在 Java IO 流中的应用</h2>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200403153813.png" alt=""></p>
+<p>在上图所示的关系中</p>
+<ul>
+<li>实体类是 InputStream</li>
+<li>被装饰者是FileInputStream、StringBufferInputStream、ByteArrayInputStream</li>
+<li>抽象装饰者是FilterInputStream</li>
+<li>具体装饰者是BufferInputStream、DataInputStream、LineNumberInputStream</li>
+</ul>
+<p>具体使用如下：</p>
+<pre><code class="language-java">BufferedInputStream bis = new BufferedInputStream(new FileInputStream(&quot;G:\\a.txt&quot;));
+</code></pre>
+<h2 id="装饰者模式总结">装饰者模式总结</h2>
+<p>1、利用<strong>继承</strong>设计子类，只能在编译时静态决定，并且所有子类都会继承相同的行为；利用<strong>组合</strong>扩展对象，就可以在运行时动态的进行扩展。</p>
+<p>2、装饰者和被装饰者对象<strong>有相同的超类型</strong>，所以在任何需要原始对象（被装饰者）的场合，都可以用装饰过的对象代替原始对象。</p>
+<p>3、可以用一个或多个装饰者包装一个对象（被装饰者）。</p>
+<p>4、<strong>装饰者可以在所委托的装饰者行为之前或之后加上自己的行为，以达到特定的目的。</strong></p>
+<p>5、被装饰者可以在任何时候被装饰，所以可以在运行时动态地、不限量地用你喜欢的装饰者来装饰对象。</p>
+<p>6、装饰者会导致出现很多小对象，如果过度使用，会让程序变得复杂。</p>
+<h1 id="五、外观模式facade">五、外观模式(Facade)</h1>
+<h2 id="基本介绍-4">基本介绍</h2>
+<blockquote>
+<p>外观模式（Facade Pattern）：外部与一个子系统的通信必须通过一个统一的外观对象进行，<strong>它为子系统中的一组接口提供一个统一的高层接口，使子系统更容易被使用</strong>。</p>
+<p>外观模式又称为门面模式，它是一种对象结构型模式。</p>
+</blockquote>
+<h2 id="模式结构-4">模式结构</h2>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200413223610.png" alt=""></p>
+<p>1、Client（客户端）：调用者</p>
+<p>2、Facade（外观类）：即上述所讲的高层接口</p>
+<p>3、SubSystem（子系统）：被调用者</p>
+<h2 id="举例说明-2">举例说明</h2>
+<blockquote>
+<p>想要使用电脑，你只需要按一下开机键（客户端），电脑的各个部件（子系统）就开始工作了，你不需要关心硬盘如何启动的，CPU怎么运转的等等，一切都交给内部程序（外观类）处理。</p>
+</blockquote>
+<p>编写简单的程序模拟一下</p>
+<p><strong>「SubSystem」</strong>：电脑的几个部件 CPU、内存、硬盘</p>
+<pre><code class="language-java">public class Cpu {
+    //使用「单例模式--饿汉式」创建对象
+    private static Cpu instance = new Cpu();
+
+    private Cpu() {
+    }
+
+    public static Cpu getInstance() {
+        return instance;
+    }
+
+    public void start() {
+        System.out.println(&quot;CPU启动&quot;);
+    }
+
+    public void stop() {
+        System.out.println(&quot;CPU停止工作&quot;);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class Memory {
+    private static Memory instance = new Memory();
+
+    private Memory() {
+    }
+
+    public static Memory getInstance() {
+        return instance;
+    }
+
+    public void start() {
+        System.out.println(&quot;内存启动&quot;);
+    }
+
+    public void stop() {
+        System.out.println(&quot;内存停止工作&quot;);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class HardDisk {
+    private static HardDisk instance = new HardDisk();
+
+    private HardDisk() {
+    }
+
+    public static HardDisk getInstance() {
+        return instance;
+    }
+
+    public void start() {
+        System.out.println(&quot;硬盘启动&quot;);
+    }
+
+    public void stop() {
+        System.out.println(&quot;硬盘停止工作&quot;);
+    }
+}
+</code></pre>
+<p><strong>「Facade」</strong>：电脑，统一管理开机关机中硬件的启动与停止</p>
+<pre><code class="language-java">public class Computer {
+    private Cpu cpu;
+    private Memory memory;
+    private HardDisk hardDisk;
+
+    public Computer() {
+        this.cpu = Cpu.getInstance();
+        this.memory = Memory.getInstance();
+        this.hardDisk = HardDisk.getInstance();
+    }
+
+    /**
+     * 开机
+     */
+    public void boot(){
+        cpu.start();
+        memory.start();
+        hardDisk.start();
+    }
+
+    /**
+     * 关机
+     */
+    public void shutdown(){
+        cpu.stop();
+        memory.stop();
+        hardDisk.stop();
+    }
+}
+</code></pre>
+<p><strong>「Client」</strong>：电源键，可控制开机、关机</p>
+<pre><code class="language-java">public class Client {
+    Computer computer = new Computer();
+
+    @Test
+    public void boot(){
+        computer.boot();
+    }
+
+    @Test
+    public void shutdown(){
+        computer.shutdown();
+    }
+}
+</code></pre>
+<h2 id="模式分析-2">模式分析</h2>
+<p><strong>优点：</strong></p>
+<ul>
+<li>实现了客户端与子系统的<strong>低耦合</strong>，使得子系统的变化不会影响客户端，只需要调整外观类即可。</li>
+<li>对客户端屏蔽子系统，减少了客户端处理的对象数目，操作变得更简单。</li>
+<li>降低了大型软件系统中的编译依赖性，并简化了系统在不同平台之间的移植过程，因为编译一个子系统一般不需要编译所有其他的子系统。一个子系统的修改对其他子系统没有任何影响，而且子系统内部变化也不会影响到外观对象。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>不能很好的限制客户端对子系统的使用，如果对其做了太多限制会降低可变性和灵活性。</li>
+<li>在不引入「抽象外观类」的情况下，如果增加新的子系统，需要修改外观类代码，<strong>违背了「开闭原则」</strong>。</li>
+</ul>
+<h2 id="适用场景">适用场景</h2>
+<ul>
+<li>当要为一个复杂子系统提供一个简单接口时可以使用外观模式。该接口可以满足大多数用户的需求，而且用户也可以越过外观类直接访问子系统。</li>
+<li>客户程序与多个子系统之间存在很大的依赖性。引入外观类将子系统与客户以及其他子系统解耦，可以提高子系统的独立性和可移植性。</li>
+<li>在层次化结构中，可以使用外观模式定义系统中每一层的入口，层与层之间不直接产生联系，而通过外观类建立联系，降低层之间的耦合度。</li>
+</ul>
+<h1 id="六、享元模式flyweight">六、享元模式(Flyweight)</h1>
+<h2 id="基本介绍-5">基本介绍</h2>
+<p>享元模式（Flyweight Pattern）也叫蝇量模式，<strong>运用共享技术有效地支持大量细粒度对象的复用</strong>。常用于系统底层开发，解决系统性能问题。例如数据库连接池，里面都是创建好的连接对象，如果有我们需要的，直接拿来用，避免重新创建，可以<strong>解决重复对象对内存造成浪费的问题</strong>。</p>
+<h2 id="内部状态和外部状态">内部状态和外部状态</h2>
+<blockquote>
+<p>享元模式提出了细粒度和共享对象，这里就涉及了内部状态和外部状态的概念，即可以把对象的信息分为两个部分：内部状态和外部状态</p>
+</blockquote>
+<p><strong>内部状态（Intrinsic State）：可以共享的相同内容</strong></p>
+<p><strong>外部状态（Extrinsic State）：需要外部环境来设置的不能共享的内容</strong></p>
+<p>举个栗子，围棋理论上有 361 个位置可以放棋子，每盘棋可能会产生两三百个棋子对象，由于内存有限，一台服务器很难支持更多玩家进行围棋对战，如果用享元模式来处理棋子，将棋子的颜色（黑与白）作为内部状态，棋子的位置（不确定）作为外部状态，就可以将棋子对象减少到两个实例（黑棋、白棋），这样就可以很好的解决内存开销问题。</p>
+<h2 id="模式结构-5">模式结构</h2>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/20200414123721.png" alt=""></p>
+<ul>
+<li>Flyweight：抽象享元类</li>
+<li>ConcreteFlyweight：具体享元类</li>
+<li>UnsharedConcreteFlyweight：非共享具体享元类</li>
+<li>FlyweightFactory：享元工厂类</li>
+</ul>
+<h2 id="举例说明-3">举例说明</h2>
+<blockquote>
+<p>一个开发团队接了这样的项目，客户希望做一个产品展示网站，但网站需要有多种发布形式，每个用户可以以新闻形式发布、以博客形式发布、以微信公众号形式发布...</p>
+</blockquote>
+<p><strong>「抽象享元类」</strong></p>
+<pre><code class="language-java">public abstract class AbstractWebsite {
+    public abstract void publish(User user);
+}
+</code></pre>
+<p><strong>「非共享具体享元类」</strong></p>
+<pre><code class="language-java">public class User {
+    private String name;
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+</code></pre>
+<p><strong>「具体享元类」</strong></p>
+<pre><code class="language-java">public class ConcreteWebsite extends AbstractWebsite {
+    /**
+     * 发布类型
+     */
+    private String type = &quot;&quot;;
+
+    public ConcreteWebsite(String type) {
+        this.type = type;
+    }
+
+    /**
+     * 发布
+     */
+    @Override
+    public void publish(User user) {
+        System.out.println(&quot;用户「&quot;+user.getName()+&quot;」发布的网站形式为「&quot; + type+&quot;」&quot;);
+    }
+}
+</code></pre>
+<p><strong>「享元工厂类」</strong></p>
+<pre><code class="language-java">public class WebsiteFactory {
+
+    /**
+     * 以 HashMap 作为对象池
+     */
+    private Map&lt;String, ConcreteWebsite&gt; pool = new HashMap&lt;&gt;();
+
+    /**
+     * 从对象池中返回指定类型的对象，没有则创建
+     */
+    public AbstractWebsite getWebsite(String type) {
+        if (!pool.containsKey(type)) {
+            pool.put(type, new ConcreteWebsite(type));
+        }
+        return pool.get(type);
+    }
+
+    /**
+     * 计算对象池中对象的个数
+     */
+    public int count() {
+        return pool.size();
+    }
+}
+</code></pre>
+<p><strong>「测试类」</strong></p>
+<pre><code class="language-java">public class Client {
+    @Test
+    public void test(){
+        WebsiteFactory factory = new WebsiteFactory();
+
+        AbstractWebsite website1 = factory.getWebsite(&quot;新闻&quot;);
+        website1.publish(new User(&quot;张三&quot;));
+        website1.publish(new User(&quot;李四&quot;));
+
+        AbstractWebsite website2 = factory.getWebsite(&quot;博客&quot;);
+        website2.publish(new User(&quot;王五&quot;));
+        website2.publish(new User(&quot;赵六&quot;));
+
+        AbstractWebsite website3 = factory.getWebsite(&quot;公众号&quot;);
+        website3.publish(new User(&quot;陈七&quot;));
+        website3.publish(new User(&quot;胡八&quot;));
+
+        System.out.println(&quot;对象的个数：&quot; + factory.count());
+    }
+}
+</code></pre>
+<p><strong>「运行结果」</strong></p>
+<pre><code>用户「张三」发布的网站形式为「新闻」
+用户「李四」发布的网站形式为「新闻」
+用户「王五」发布的网站形式为「博客」
+用户「赵六」发布的网站形式为「博客」
+用户「陈七」发布的网站形式为「公众号」
+用户「胡八」发布的网站形式为「公众号」
+对象的个数：3
+</code></pre>
+<h2 id="享元模式在integer中的应用">享元模式在Integer中的应用</h2>
+<p>首先我们看一段代码，运行结果是什么？</p>
+<pre><code class="language-java">public class IntegerSource {
+    public static void main(String[] args) {
+        Integer v1 = 127;
+        Integer v2 = 127;
+        System.out.println(&quot;v1等于v2？ &quot; + (v1 == v2));
+        Integer v3 = 128;
+        Integer v4 = 128;
+        System.out.println(&quot;v3等于v4？ &quot; + (v3 == v4));
+    }
+}
+</code></pre>
+<details>
+    <summary style="color: red;font-weight: bold;">答案</summary>
+<pre><code class="language-java">v1等于v2？ true
+v3等于v4？ false
+</code></pre>
+</details>
+<p><strong>分析：</strong>查看 Integer 源码，找到 <code>valueOf</code> 方法，可以看到，如果 <code>i</code> 在某个范围内，就不会产生新的对象，直接从缓存数组中获取，点进 <code>IntegerCache</code> 里就会发现 <code>low = -128</code> <code>high = 127</code>，因此，我们可以理解为这个数组就是「内部状态」</p>
+<pre><code class="language-java">public static Integer valueOf(int i) {
+    //low = -128 , high = 127
+    if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)
+        //IntegerCache.cache是一个常量数组：static final Integer cache[];
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+</code></pre>
+<h2 id="模式分析-3">模式分析</h2>
+<p><strong>优点：</strong></p>
+<ul>
+<li>
+<p>可以极大减少内存中对象的数量，使得相同对象或相似对象在内存中只保存一份。</p>
+</li>
+<li>
+<p>享元模式的外部状态相对独立，而且不会影响其内部状态，从而使得享元对象可以在不同的环境中被共享。</p>
+</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>享元模式使得系统更加复杂，需要分离出内部状态和外部状态，这使得程序的逻辑复杂化。</li>
+<li>为了使对象可以共享，享元模式需要将享元对象的状态外部化，而读取外部状态使得运行时间变长。</li>
+</ul>
+<p><strong>适用场景：</strong></p>
+<ul>
+<li>
+<p>一个系统有大量相同或者相似的对象，由于这类对象的大量使用，造成内存的大量耗费。</p>
+</li>
+<li>
+<p>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中。</p>
+</li>
+<li>
+<p>使用享元模式需要维护一个存储享元对象的享元池，而这需要耗费资源，因此，应当在多次重复使用享元对象时才值得使用享元模式。</p>
+</li>
+</ul>
+<h1 id="七、代理模式proxy">七、代理模式(Proxy)</h1>
+<h2 id="代理模式介绍">代理模式介绍</h2>
+<p>代理模式提供了对目标对象额外的访问方式，即通过代理对象访问目标对象，这样可以<strong>在不修改原目标对象的前提下，提供额外的功能操作，扩展目标对象的功能。</strong></p>
+<p><img src="https://gitee.com/songjilong/FigureBed/raw/master/img/18202945_lHIa.png" alt=""></p>
+<p><strong>代理模式分为三类：</strong></p>
+<ul>
+<li>静态代理</li>
+<li>动态代理</li>
+<li>Cglib 代理</li>
+</ul>
+<h2 id="静态代理（不推荐使用）">静态代理（不推荐使用）</h2>
+<h3 id="介绍">介绍</h3>
+<p><strong>要求目标对象和代理对象实现同一个接口</strong>，调用的时候调用代理对象的方法，从而达到增强的效果</p>
+<p>优点：</p>
+<p>可以在不修改目标对象的前提下，增强目标对象方法的功能（所有代理模式都可以实现，因此不推荐使用此方法）</p>
+<p>缺点：</p>
+<p>① 冗余。目标对象和代理对象实现同一个接口，会产生过多的代理类。</p>
+<p>② 不易维护。当接口方法增加，目标对象与代理对象都要进行修改。</p>
+<h3 id="代码实现-4">代码实现</h3>
+<blockquote>
+<p><strong>场景</strong>：厂家生产了商品，但是没有足够的精力、人力去销售，这时候就需要一个代理商帮他售卖，但是代理商需要从中抽取 20% 的利润。</p>
+</blockquote>
+<p>公共接口</p>
+<pre><code class="language-java">public interface IProducer {
+    void sale(float money);
+}
+</code></pre>
+<p>被代理对象</p>
+<pre><code class="language-java">public class Producer implements IProducer {
+    @Override
+    public void sale(float money) {
+        System.out.println(&quot;卖出产品，厂家获得&quot; + money + &quot;元&quot;);
+    }
+}
+</code></pre>
+<p>代理对象</p>
+<pre><code class="language-java">public class ProxyProducer implements IProducer{
+
+    private IProducer producer;
+
+    public ProxyProducer(IProducer producer) {
+        this.producer = producer;
+    }
+
+    @Override
+    public void sale(float money) {
+        producer.sale(money * 0.8f);
+    }
+}
+</code></pre>
+<p>测试类</p>
+<pre><code class="language-java">public class Client {
+    @Test
+    public void test(){
+        IProducer producer = new Producer();
+        ProxyProducer proxyProducer = new ProxyProducer(producer);
+        proxyProducer.sale(1000f);
+    }
+}
+</code></pre>
+<p>运行结果</p>
+<pre><code>卖出产品，厂家获得800.0元
+</code></pre>
+<h2 id="动态代理">动态代理</h2>
+<h3 id="介绍-2">介绍</h3>
+<p>动态代理也称：JDK 代理、接口代理，<strong>需要目标对象实现接口，否则不能用动态代理</strong>，利用 JDK 的 API（java.lang.reflect.Proxy），<strong>动态地在内存中构建代理对象</strong>。</p>
+<p>静态代理和动态代理的区别：</p>
+<ul>
+<li>静态代理在编译时就已经实现，编译完后的代理类是一个实际的 class 文件</li>
+<li>动态代理实在运行时动态生成的，编译后没有实际的 class 文件，而是在运行时动态的生成类字节码，并加载到 JVM 中</li>
+</ul>
+<h3 id="代码实现-5">代码实现</h3>
+<p>以静态代理的情景为例，我们只需要修改代理对象的代码，代理对象不需要实现公共接口了。</p>
+<pre><code class="language-java">public class ProxyProducer {
+    /**
+     * 维护一个目标对象
+     */
+    private Object target;
+
+    public ProxyProducer(Object target) {
+        this.target = target;
+    }
+
+    public Object getProxyInstance() {
+        return Proxy.newProxyInstance(
+                target.getClass().getClassLoader(),
+                target.getClass().getInterfaces(),
+                new InvocationHandler() {
+                    /**
+                     * 执行被代理对象的任何接口方法都会经过这里
+                     * @param proxy 代理对象的引用
+                     * @param method 当前执行的方法
+                     * @param args 当前执行方法的参数
+                     * @return 和被代理对象具有相同的返回值
+                     * @throws Throwable
+                     */
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        //代理过程中执行一些方法
+                        float money = (float) args[0] * 0.8f;
+                        //反射机制调用目标对象的方法
+                        Object invoke = method.invoke(target, money);
+                        return invoke;
+                    }
+                });
+    }
+}
+</code></pre>
+<h2 id="cglib-代理">Cglib 代理</h2>
+<h3 id="介绍-3">介绍</h3>
+<p>Cglib 代理也叫子类代理，<strong>目标对象不需要实现任何接口</strong>，它是在内存中构建一个子类对象从而实现对目标对象功能的扩展。</p>
+<p>Cglib 是一个强大的高性能的代码生成包，它可以在运行期间扩展 Java 类与实现 Java 接口，它广泛地被许多 AOP 的框架使用，例如 Spring AOP，用于实现方法拦截。</p>
+<p>Cglib 包底层实通过使用字节码处理框架 ASM 来转换字节码并生成新的类。</p>
+<p><strong>在 AOP 编程中选择哪种代理模式？</strong></p>
+<ul>
+<li><strong>目标对象需要实现接口，用 JDK 代理</strong></li>
+<li><strong>目标对象不需要实现接口，用 Cglib 代理</strong></li>
+</ul>
+<h3 id="代码实现-6">代码实现</h3>
+<p><u><em>使用之前需要导入相关 jar 包，可去 maven 仓库下载</em></u></p>
+<p>被代理对象，无需实现接口</p>
+<pre><code class="language-java">public class Producer {
+    public void sale(float money) {
+        System.out.println(&quot;卖出产品，厂家获得&quot; + money + &quot;元&quot;);
+    }
+}
+</code></pre>
+<p>代理对象</p>
+<pre><code class="language-java">public class ProxyProducer implements MethodInterceptor {
+    /**
+     * 维护一个目标对象
+     */
+    private Object target;
+
+    public ProxyProducer(Object target) {
+        this.target = target;
+    }
+
+    /**
+     * 为目标对象生成代理对象
+     */
+    public Object getProxyInstance(){
+        //创建一个工具类
+        Enhancer enhancer = new Enhancer();
+        //设置父类
+        enhancer.setSuperclass(target.getClass());
+        //设置回调函数
+        enhancer.setCallback(this);
+        //创建子类对象（代理对象）
+        return enhancer.create();
+    }
+
+    /**
+     * 会拦截被代理对象的所有方法
+     * @param obj 增强对象
+     * @param method 被代理对象的方法
+     * @param args 被代理对象方法的参数
+     * @param methodProxy 代理对象
+     */
+    @Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        System.out.println(&quot;obj：&quot; + obj.getClass());
+        Object returnValue = null;
+        float money = (float) args[0] * 0.8f;
+        if(&quot;sale&quot;.equals(method.getName())){
+            returnValue = method.invoke(target, money);
+        }
+        return returnValue;
+    }
+}
+</code></pre>
+<p>测试类</p>
+<pre><code class="language-java">public class Client {
+    @Test
+    public void test() {
+        Producer producer = new Producer();
+        Producer proxyInstance = (Producer) new ProxyProducer(producer).getProxyInstance();
+        proxyInstance.sale(1000f);
+    }
+}
+</code></pre>
+<hr>
+<p>🎉 以上所有代码和笔记均可在 <a href="https://github.com/songjilong/Design-Pattern">我的GitHub</a> 获取</p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-18 23:37</span>&nbsp;
+<a href="https://www.cnblogs.com/songjilong/">农夫三拳有点疼~</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12729129" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12729129);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 561152, cb_blogApp = 'songjilong', cb_blogUserGuid = '316a7fce-4c2f-498e-9b44-08d765b2412c';
+    var cb_entryId = 12729129, cb_entryCreatedDate = '2020-04-18 23:37', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 农夫三拳有点疼~
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <!-- require APlayer -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<!-- require MetingJS -->
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+<meting-js
+        id="594243151"
+        lrc-type="0"
+        server="netease"
+        order="random"
+        type="playlist"
+        fixed="true"
+        list-olded="true">
+</meting-js>
+    </div>
+</body>
+</html>

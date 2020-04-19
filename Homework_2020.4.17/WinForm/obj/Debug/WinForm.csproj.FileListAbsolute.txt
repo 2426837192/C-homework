@@ -1,0 +1,13 @@
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\WinForm.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\WinForm.exe
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\WinForm.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\Homework_2020.4.17.exe
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\Homework_2020.4.17.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\bin\Debug\Homework_2020.4.17.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.csprojAssemblyReference.cache
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.MainForm.resources
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.csproj.GenerateResource.cache
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.csproj.CoreCompileInputs.cache
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.csproj.CopyComplete
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.exe
+C:\Users\zhong\source\repos\Homework_2020.4.17\WinForm\obj\Debug\WinForm.pdb

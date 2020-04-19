@@ -1,0 +1,584 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="never" />
+    <meta property="og:description" content="SpringBoot事件监听机制源码分析(上) SpringBoot源码(九)" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>SpringBoot事件监听机制源码分析(上) SpringBoot源码(九) - 源码笔记 - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
+    <link id="MainCss" rel="stylesheet" href="/skins/red_autumnal_leaves/bundle-red_autumnal_leaves.min.css?v=XYaHoXnfxIDko8oNhF5m3BYALnsNSBprp32AE1eRULc" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/red_autumnal_leaves/bundle-red_autumnal_leaves-mobile.min.css?v=ADiCwO2hOTdd5yYidcx7eob7ix2VJI4o_TXjEycTHjs" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/ymbj/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/ymbj/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/ymbj/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script>
+        var currentBlogId = 583809;
+        var currentBlogApp = 'ymbj';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'red_autumnal_leaves';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/ymbj/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/ymbj/">源码笔记</a>
+</h1>
+<h2>
+公众号【源码笔记】，专注于Java后端系列框架的源码分析。
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/ymbj/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/ymbj/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+13&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+3</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/ymbj/p/12730522.html">SpringBoot事件监听机制源码分析(上) SpringBoot源码(九)</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+    <div id="cnblogs_post_description" style="display: none">
+        SpringBoot事件监听机制源码分析(上) SpringBoot源码(九)
+    </div>
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p><strong>SpringBoot中文注释项目Github地址：</strong></p>
+<p><a href="https://github.com/yuanmabiji/spring-boot-2.1.0.RELEASE">https://github.com/yuanmabiji/spring-boot-2.1.0.RELEASE</a></p>
+<p>本篇接 <a href="https://juejin.im/post/5e82bac9518825737a314096">SpringApplication对象是如何构建的？ SpringBoot源码（八）</a></p>
+<h1 id="1-温故而知新">1 温故而知新</h1>
+<p>温故而知新，我们来简单回顾一下上篇的内容，上一篇我们分析了<strong>SpringApplication对象的构建过程及SpringBoot自己实现的一套SPI机制</strong>，现将关键步骤再浓缩总结下：</p>
+<ol>
+<li><code>SpringApplication</code>对象的构造过程其实就是给<code>SpringApplication</code>类的<strong>6</strong>个成员变量赋值；</li>
+<li>SpringBoot通过以下步骤实现自己的SPI机制：</li>
+</ol>
+<ul>
+<li>1)首先获取线程上下文类加载器;</li>
+<li>2)然后利用上下文类加载器从<code>spring.factories</code>配置文件中<strong>加载所有的SPI扩展实现类并放入缓存中</strong>;</li>
+<li>3)根据SPI接口从缓存中取出相应的SPI扩展实现类;</li>
+<li>4)实例化从缓存中取出的SPI扩展实现类并返回。</li>
+</ul>
+<h1 id="2-引言">2 引言</h1>
+<p>在SpringBoot启动过程中，每个不同的启动阶段会分别广播不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如<code>ConfigFileApplicationListener</code>会监听<code>onApplicationEnvironmentPreparedEvent</code>事件来加载配置文件<code>application.properties</code>的环境变量等。</p>
+<p>因此本篇内容将来分析下SpringBoot的事件监听机制的源码。</p>
+<h1 id="3-springboot广播内置生命周期事件流程分析">3 SpringBoot广播内置生命周期事件流程分析</h1>
+<p>为了探究SpringBoot广播内置生命周期事件流程，我们再来回顾一下SpringBoot的启动流程代码：</p>
+<pre><code class="language-java">// SpringApplication.java
+
+public ConfigurableApplicationContext run(String... args) {
+	StopWatch stopWatch = new StopWatch();
+	stopWatch.start();
+	ConfigurableApplicationContext context = null;
+	Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList&lt;&gt;();
+	configureHeadlessProperty();
+	// 【0】新建一个SpringApplicationRunListeners对象用于发射SpringBoot启动过程中的生命周期事件
+	SpringApplicationRunListeners listeners = getRunListeners(args);
+	// 【1】》》》》》发射【ApplicationStartingEvent】事件，标志SpringApplication开始启动
+	listeners.starting();
+	try {
+		ApplicationArguments applicationArguments = new DefaultApplicationArguments(
+				args);
+		// 【2】》》》》》发射【ApplicationEnvironmentPreparedEvent】事件，此时会去加载application.properties等配置文件的环境变量，同时也有标志环境变量已经准备好的意思
+		ConfigurableEnvironment environment = prepareEnvironment(listeners,
+				applicationArguments);
+		configureIgnoreBeanInfo(environment);
+		Banner printedBanner = printBanner(environment);
+		context = createApplicationContext();
+		exceptionReporters = getSpringFactoriesInstances(
+				SpringBootExceptionReporter.class,
+				new Class[] { ConfigurableApplicationContext.class }, context); 
+		// 【3】》》》》》发射【ApplicationContextInitializedEvent】事件，标志context容器被创建且已准备好
+		// 【4】》》》》》发射【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
+		prepareContext(context, environment, listeners, applicationArguments,
+				printedBanner);
+		refreshContext(context);
+		afterRefresh(context, applicationArguments);
+		stopWatch.stop();
+		if (this.logStartupInfo) {
+			new StartupInfoLogger(this.mainApplicationClass)
+					.logStarted(getApplicationLog(), stopWatch);
+		}
+		// 【5】》》》》》发射【ApplicationStartedEvent】事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
+		listeners.started(context);
+		callRunners(context, applicationArguments);
+	}
+	// 【6】》》》》》发射【ApplicationFailedEvent】事件，标志SpringBoot启动失败
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, listeners);
+		throw new IllegalStateException(ex);
+	}
+	try {
+		// 【7】》》》》》发射【ApplicationReadyEvent】事件，标志SpringApplication已经正在运行即已经成功启动，可以接收服务请求了。
+		listeners.running(context);
+	}
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, null);
+		throw new IllegalStateException(ex);
+	}
+	return context;
+}
+</code></pre>
+<p>可以看到SpringBoot在启动过程中首先会先新建一个<code>SpringApplicationRunListeners</code>对象用于发射SpringBoot启动过程中的各种生命周期事件，比如发射<code>ApplicationStartingEvent</code>,<code>ApplicationEnvironmentPreparedEvent</code>和<code>ApplicationContextInitializedEvent</code>等事件，然后相应的监听器会执行一些SpringBoot启动过程中的初始化逻辑。那么，监听这些SpringBoot的生命周期事件的监听器们是何时被加载实例化的呢？还记得上篇文章在分析<code>SpringApplication</code>的构建过程吗？没错，这些执行初始化逻辑的监听器们正是在<code>SpringApplication</code>的构建过程中根据<code>ApplicationListener</code>接口去<code>spring.factories</code>配置文件中加载并实例化的。</p>
+<h1 id="31-为广播springboot内置生命周期事件做前期准备">3.1 为广播SpringBoot内置生命周期事件做前期准备</h1>
+<h1 id="311-加载applicationlistener监听器实现类">3.1.1 加载ApplicationListener监听器实现类</h1>
+<p>我们再来回顾下<a href="https://juejin.im/post/5e82bac9518825737a314096">SpringApplication对象是如何构建的？ SpringBoot源码（八）</a>一文中讲到在构建<code>SpringApplication</code>对象时的<code>setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));</code>这句代码。</p>
+<p>这句代码做的事情就是从<code>spring.factories</code>中加载出<code>ApplicationListener</code>事件监听接口的SPI扩展实现类然后添加到<code>SpringApplication</code>对象的<code>listeners</code>集合中，用于后续监听SpringBoot启动过程中的事件，来执行一些初始化逻辑工作。</p>
+<p>SpringBoot启动时的具体监听器们都实现了<code>ApplicationListener</code>接口，其在<code>spring.factories</code>部分配置如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/4/12/1716f1b4e4687069?w=1150&amp;h=498&amp;f=png&amp;s=75210" alt=""></p>
+<p>不过在调试时，会从所有的spring.factories配置文件中加载监听器，最终加载了10个监听器。如下图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/4/13/17170eb8ae034bbd?w=712&amp;h=584&amp;f=png&amp;s=53731" alt=""></p>
+<h1 id="312-加载spi扩展类eventpublishingrunlistener">3.1.2 加载SPI扩展类EventPublishingRunListener</h1>
+<p>前面讲到，在SpringBoot的启动过程中首先会先新建一个<code>SpringApplicationRunListeners</code>对象用于发射SpringBoot启动过程中的生命周期事件，即我们现在来看下<code>SpringApplicationRunListeners listeners = getRunListeners(args);</code>这句代码：</p>
+<pre><code class="language-java">// SpringApplication.java
+
+private SpringApplicationRunListeners getRunListeners(String[] args) {
+	// 构造一个由SpringApplication.class和String[].class组成的types
+	Class&lt;?&gt;[] types = new Class&lt;?&gt;[] { SpringApplication.class, String[].class };
+	// 1) 根据SpringApplicationRunListener接口去spring.factories配置文件中加载其SPI扩展实现类
+	// 2) 构建一个SpringApplicationRunListeners对象并返回
+	return new SpringApplicationRunListeners(logger, getSpringFactoriesInstances(
+			SpringApplicationRunListener.class, types, this, args));
+}
+
+</code></pre>
+<p>我们将重点放到<code>getSpringFactoriesInstances( 			SpringApplicationRunListener.class, types, this, args)</code>这句代码，<code>getSpringFactoriesInstances</code>这个方法我们已经很熟悉，在上一篇分析SpringBoot的SPI机制时已经详细分析过这个方法。可以看到SpringBoot此时又是根据<code>SpringApplicationRunListener</code>这个SPI接口去<code>spring.factories</code>中加载相应的SPI扩展实现类，我们直接去<code>spring.factories</code>中看看<code>SpringApplicationRunListener</code>有哪些SPI实现类：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/4/18/1718d054c88bebb9?w=692&amp;h=117&amp;f=png&amp;s=13088" alt=""><br>
+由上图可以看到，<code>SpringApplicationRunListener</code>只有<code>EventPublishingRunListener</code>这个SPI实现类<br>
+<code>EventPublishingRunListener</code>这个哥们在SpringBoot的启动过程中尤其重要，由其在SpringBoot启动过程的不同阶段发射不同的SpringBoot的生命周期事件，<strong>即<code>SpringApplicationRunListeners</code>对象没有承担广播事件的职责，而最终是委托<code>EventPublishingRunListener</code>这个哥们来广播事件的。</strong></p>
+<p>因为从<code>spring.factories</code>中加载<code>EventPublishingRunListener</code>类后还会实例化该类，那么我们再跟进<code>EventPublishingRunListener</code>的源码，看看其是如何承担发射SpringBoot生命周期事件这一职责的？</p>
+<pre><code class="language-java">// EventPublishingRunListener.java
+
+public class EventPublishingRunListener implements SpringApplicationRunListener, Ordered {
+
+	private final SpringApplication application;
+
+	private final String[] args;
+	/**
+	 * 拥有一个SimpleApplicationEventMulticaster事件广播器来广播事件
+	 */
+	private final SimpleApplicationEventMulticaster initialMulticaster;
+
+	public EventPublishingRunListener(SpringApplication application, String[] args) {
+		this.application = application;
+		this.args = args;
+		// 新建一个事件广播器SimpleApplicationEventMulticaster对象
+		this.initialMulticaster = new SimpleApplicationEventMulticaster();
+		// 遍历在构造SpringApplication对象时从spring.factories配置文件中获取的事件监听器
+		for (ApplicationListener&lt;?&gt; listener : application.getListeners()) {
+			// 将从spring.factories配置文件中获取的事件监听器们添加到事件广播器initialMulticaster对象的相关集合中
+			this.initialMulticaster.addApplicationListener(listener);
+		}
+	}
+
+	@Override
+	public int getOrder() {
+		return 0;
+	}
+	// 》》》》》发射【ApplicationStartingEvent】事件
+	@Override
+	public void starting() {
+		this.initialMulticaster.multicastEvent(
+				new ApplicationStartingEvent(this.application, this.args));
+	}
+	// 》》》》》发射【ApplicationEnvironmentPreparedEvent】事件
+	@Override
+	public void environmentPrepared(ConfigurableEnvironment environment) {
+		this.initialMulticaster.multicastEvent(new ApplicationEnvironmentPreparedEvent(
+				this.application, this.args, environment));
+	}
+	// 》》》》》发射【ApplicationContextInitializedEvent】事件
+	@Override
+	public void contextPrepared(ConfigurableApplicationContext context) {
+		this.initialMulticaster.multicastEvent(new ApplicationContextInitializedEvent(
+				this.application, this.args, context));
+	}
+	// 》》》》》发射【ApplicationPreparedEvent】事件
+	@Override
+	public void contextLoaded(ConfigurableApplicationContext context) {
+		for (ApplicationListener&lt;?&gt; listener : this.application.getListeners()) {
+			if (listener instanceof ApplicationContextAware) {
+				((ApplicationContextAware) listener).setApplicationContext(context);
+			}
+			context.addApplicationListener(listener);
+		}
+		this.initialMulticaster.multicastEvent(
+				new ApplicationPreparedEvent(this.application, this.args, context));
+	}
+	// 》》》》》发射【ApplicationStartedEvent】事件
+	@Override
+	public void started(ConfigurableApplicationContext context) {
+		context.publishEvent(
+				new ApplicationStartedEvent(this.application, this.args, context));
+	}
+	// 》》》》》发射【ApplicationReadyEvent】事件
+	@Override
+	public void running(ConfigurableApplicationContext context) {
+		context.publishEvent(
+				new ApplicationReadyEvent(this.application, this.args, context));
+	}
+	// 》》》》》发射【ApplicationFailedEvent】事件
+	@Override
+	public void failed(ConfigurableApplicationContext context, Throwable exception) {
+		ApplicationFailedEvent event = new ApplicationFailedEvent(this.application,
+				this.args, context, exception);
+		if (context != null &amp;&amp; context.isActive()) {
+			// Listeners have been registered to the application context so we should
+			// use it at this point if we can
+			context.publishEvent(event);
+		}
+		else {
+			// An inactive context may not have a multicaster so we use our multicaster to
+			// call all of the context's listeners instead
+			if (context instanceof AbstractApplicationContext) {
+				for (ApplicationListener&lt;?&gt; listener : ((AbstractApplicationContext) context)
+						.getApplicationListeners()) {
+					this.initialMulticaster.addApplicationListener(listener);
+				}
+			}
+			this.initialMulticaster.setErrorHandler(new LoggingErrorHandler());
+			this.initialMulticaster.multicastEvent(event);
+		}
+	}
+	
+	// ...省略非关键代码
+}
+
+</code></pre>
+<p>可以看到<code>EventPublishingRunListener</code>类实现了<code>SpringApplicationRunListener</code>接口，<code>SpringApplicationRunListener</code>接口定义了SpringBoot启动时发射生命周期事件的接口方法，而<code>EventPublishingRunListener</code>类正是通过实现<code>SpringApplicationRunListener</code>接口的<code>starting</code>,<code>environmentPrepared</code>和<code>contextPrepared</code>等方法来广播SpringBoot不同的生命周期事件，我们直接看下<code>SpringApplicationRunListener</code>接口源码好了：</p>
+<pre><code class="language-java">// SpringApplicationRunListener.java
+
+public interface SpringApplicationRunListener {
+
+	void starting();
+
+	void environmentPrepared(ConfigurableEnvironment environment);
+
+	void contextPrepared(ConfigurableApplicationContext context);
+
+	void contextLoaded(ConfigurableApplicationContext context);
+
+	void started(ConfigurableApplicationContext context);
+
+	void running(ConfigurableApplicationContext context);
+
+	void failed(ConfigurableApplicationContext context, Throwable exception);
+}
+</code></pre>
+<p>我们再接着分析<code>EventPublishingRunListener</code>这个类，可以看到其有一个重要的成员属性<code>initialMulticaster</code>，该成员属性是<code>SimpleApplicationEventMulticaster</code>类对象，该类正是承担了广播SpringBoot启动时生命周期事件的职责,<strong>即<code>EventPublishingRunListener</code>对象没有承担广播事件的职责，而最终是委托<code>SimpleApplicationEventMulticaster</code>这个哥们来广播事件的。</strong> 从<code>EventPublishingRunListener</code>的源码中也可以看到在<code>starting</code>,<code>environmentPrepared</code>和<code>contextPrepared</code>等方法中也正是通过调用<code>SimpleApplicationEventMulticaster</code>类对象的<code>multicastEvent</code>方法来广播事件的。</p>
+<blockquote>
+<p><strong>思考</strong> SpringBoot启动过程中发射事件时事件广播者是层层委托职责的，起初由<code>SpringApplicationRunListeners</code>对象承担，然后<code>SpringApplicationRunListeners</code>对象将广播事件职责委托给<code>EventPublishingRunListener</code>对象，最终<code>EventPublishingRunListener</code>对象将广播事件的职责委托给<code>SimpleApplicationEventMulticaster</code>对象。<strong>为什么要层层委托这么做呢？</strong> 这个值得大家思考。</p>
+</blockquote>
+<p>前面讲到从<code>spring.factories</code>中加载出<code>EventPublishingRunListener</code>类后会实例化，而实例化必然会通过<code>EventPublishingRunListener</code>的构造函数来进行实例化，因此我们接下来分析下<code>EventPublishingRunListener</code>的构造函数源码：</p>
+<pre><code class="language-java">// EventPublishingRunListener.java
+
+public EventPublishingRunListener(SpringApplication application, String[] args) {
+	this.application = application;
+	this.args = args;
+	// 新建一个事件广播器SimpleApplicationEventMulticaster对象
+	this.initialMulticaster = new SimpleApplicationEventMulticaster();
+	// 遍历在构造SpringApplication对象时从spring.factories配置文件中获取的事件监听器
+	for (ApplicationListener&lt;?&gt; listener : application.getListeners()) {
+		// 将从spring.factories配置文件中获取的事件监听器们添加到事件广播器initialMulticaster对象的相关集合中
+		this.initialMulticaster.addApplicationListener(listener);
+	}
+}
+</code></pre>
+<p>可以看到在<code>EventPublishingRunListener</code>的构造函数中有一个<code>for</code>循环会遍历之前从<code>spring.factories</code>中加载的监听器们，然后添加到集合中缓存起来，用于以后广播各种事件时直接从这个集合中取出来即可，而不用再去<code>spring.factories</code>中加载，提高效率。</p>
+<h1 id="32-广播springboot的内置生命周期事件">3.2 广播SpringBoot的内置生命周期事件</h1>
+<p>从<code>spring.factories</code>配置文件中加载并实例化<code>EventPublishingRunListener</code>对象后，那么在在SpringBoot的启动过程中会发射一系列SpringBoot内置的生命周期事件，我们再来回顾下SpringBoot启动过程中的源码：</p>
+<pre><code class="language-java">// SpringApplication.java
+
+public ConfigurableApplicationContext run(String... args) {
+	StopWatch stopWatch = new StopWatch();
+	stopWatch.start();
+	ConfigurableApplicationContext context = null;
+	Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList&lt;&gt;();
+	configureHeadlessProperty();
+	// 【0】新建一个SpringApplicationRunListeners对象用于发射SpringBoot启动过程中的生命周期事件
+	SpringApplicationRunListeners listeners = getRunListeners(args);
+	// 【1】》》》》》发射【ApplicationStartingEvent】事件，标志SpringApplication开始启动
+	listeners.starting();
+	try {
+		ApplicationArguments applicationArguments = new DefaultApplicationArguments(
+				args);
+		// 【2】》》》》》发射【ApplicationEnvironmentPreparedEvent】事件，此时会去加载application.properties等配置文件的环境变量，同时也有标志环境变量已经准备好的意思
+		ConfigurableEnvironment environment = prepareEnvironment(listeners,
+				applicationArguments);
+		configureIgnoreBeanInfo(environment);
+		Banner printedBanner = printBanner(environment);
+		context = createApplicationContext();
+		exceptionReporters = getSpringFactoriesInstances(
+				SpringBootExceptionReporter.class,
+				new Class[] { ConfigurableApplicationContext.class }, context); 
+		// 【3】》》》》》发射【ApplicationContextInitializedEvent】事件，标志context容器被创建且已准备好
+		// 【4】》》》》》发射【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
+		prepareContext(context, environment, listeners, applicationArguments,
+				printedBanner);
+		refreshContext(context);
+		afterRefresh(context, applicationArguments);
+		stopWatch.stop();
+		if (this.logStartupInfo) {
+			new StartupInfoLogger(this.mainApplicationClass)
+					.logStarted(getApplicationLog(), stopWatch);
+		}
+		// 【5】》》》》》发射【ApplicationStartedEvent】事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
+		listeners.started(context);
+		callRunners(context, applicationArguments);
+	}
+	// 【6】》》》》》发射【ApplicationFailedEvent】事件，标志SpringBoot启动失败
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, listeners);
+		throw new IllegalStateException(ex);
+	}
+	try {
+		// 【7】》》》》》发射【ApplicationReadyEvent】事件，标志SpringApplication已经正在运行即已经成功启动，可以接收服务请求了。
+		listeners.running(context);
+	}
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, null);
+		throw new IllegalStateException(ex);
+	}
+	return context;
+}
+</code></pre>
+<p>可以看到在SpringBoot的启动过程中总共会发射7种不同类型的生命周期事件，来标志SpringBoot的不同启动阶段，同时，这些生命周期事件的监听器们也会执行一些启动过程中的初始化逻辑，关于这些监听器的初始化逻辑将在下一篇内容中会分析。以下是SpringBoot启动过程中要发射的事件类型，其中<code>ApplicationFailedEvent</code>在SpringBoot启动过程中遇到异常才会发射：</p>
+<ol>
+<li><code>ApplicationStartingEvent</code></li>
+<li><code>ApplicationEnvironmentPreparedEvent</code></li>
+<li><code>ApplicationContextInitializedEvent</code></li>
+<li><code>ApplicationPreparedEvent</code></li>
+<li><code>ApplicationStartedEvent</code></li>
+<li><code>ApplicationFailedEvent</code></li>
+<li><code>ApplicationReadyEvent</code></li>
+</ol>
+<p>我们以<code>listeners.starting();</code>这句代码为例，看看<code>EventPublishingRunListener</code>对象发射事件的源码：</p>
+<pre><code class="language-java">// SpringApplicationRunListeners.java
+
+public void starting() {
+	// 遍历listeners集合，这里实质取出的就是刚才从spring.factories中取出的SPI实现类EventPublishingRunListener
+	// 而EventPublishingRunListener对象承担了SpringBoot启动过程中负责广播不同的生命周期事件
+	for (SpringApplicationRunListener listener : this.listeners) {
+	        // 调用EventPublishingRunListener的starting方法来广播ApplicationStartingEvent事件
+		listener.starting();
+	}
+}
+</code></pre>
+<p>继续跟进<code>listener.starting();</code>的源码:</p>
+<pre><code class="language-java">EventPublishingRunListener.java
+
+// 》》》》》发射【ApplicationStartingEvent】事件
+public void starting() {
+	// EventPublishingRunListener对象将发布ApplicationStartingEvent这件事情委托给了initialMulticaster对象
+	// 调用initialMulticaster的multicastEvent方法来发射ApplicationStartingEvent事件
+	this.initialMulticaster.multicastEvent(
+			new ApplicationStartingEvent(this.application, this.args));
+}
+</code></pre>
+<p>可以看到，<code>EventPublishingRunListener</code>对象将发布<code>ApplicationStartingEvent</code>这件事情委托给了<code>SimpleApplicationEventMulticaster</code>对象<code>initialMulticaster</code>,<br>
+,而<code>initialMulticaster</code>对象最终会调用其<code>multicastEvent</code>方法来发射<code>ApplicationStartingEvent</code>事件。关于<code>SimpleApplicationEventMulticaster</code>类如何广播事件，笔者已经在<a href="https://juejin.im/post/5e421bfc6fb9a07cd80f1354">Spring是如何实现事件监听机制的？ Spring源码（二）</a>这篇文章已经详细分析，这里不再赘述。</p>
+<p>关于SpringBoot启动过程中发射其他生命周期事件的源码这里不再分析</p>
+<h1 id="4-springboot的内置生命周期事件总结">4 SpringBoot的内置生命周期事件总结</h1>
+<p>好了，前面已经分析了SpringBoot启动过程中要发射的各种生命周期事件，下面列一个表格总结下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/4/18/1718d7dce64e30d2?w=881&amp;h=870&amp;f=png&amp;s=88780" alt=""></p>
+<h1 id="5-小结">5 小结</h1>
+<p>SpringBoot启动过程中广播生命周期事件的源码分析就到此结束了，下一篇会继续介绍监听这些生命周期事件的监听器们。我们再回顾本篇内容总结下关键点：</p>
+<p>SpringBoot启动过程中会发射7种类型的生命周期事件，标志不同的启动阶段，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作；</p>
+<p><strong>【源码笔记】Github源码分析项目上线啦！！！下面是笔记的Github地址：</strong></p>
+<p><a href="https://github.com/yuanmabiji/Java-SourceCode-Blogs">https://github.com/yuanmabiji/Java-SourceCode-Blogs</a></p>
+<p><strong>点赞和转发是对笔者最大的激励哦！</strong></p>
+<hr>
+<p>公众号【<strong>源码笔记</strong>】，专注于Java后端系列框架的源码分析。<br>
+<img src="https://user-gold-cdn.xitu.io/2020/3/15/170dd9bb2b5b59de?w=142&amp;h=135&amp;f=png&amp;s=39743" alt=""></p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-19 10:47</span>&nbsp;
+<a href="https://www.cnblogs.com/ymbj/">源码笔记</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12730522" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12730522);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 583809, cb_blogApp = 'ymbj', cb_blogUserGuid = '0e0bf99e-f9ee-4942-78d3-08d73853e76a';
+    var cb_entryId = 12730522, cb_entryCreatedDate = '2020-04-19 10:47', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 源码笔记
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+</body>
+</html>
