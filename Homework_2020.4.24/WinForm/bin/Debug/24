@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="随着VSCode的不断完善和强大，是时候将部分开发迁移到VS Code中了。 目前使用VS2019开发.NET Core应用，一直有一个想法，在VS Code中复刻VS的开发环境，同时迁移到VS Co" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>玩转VSCode-完整构建VSCode开发调试环境 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11874558.html">玩转VSCode-完整构建VSCode开发调试环境</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>随着VSCode的不断完善和强大，是时候将部分开发迁移到VS Code中了。</p>
+<p>目前使用VS2019开发.NET Core应用，一直有一个想法，在VS Code中复刻VS的开发环境，同时迁移到VS Code。</p>
+<p>那么现在就开始吧。</p>
+<p>首先，安装最新版的VS Code：<a href="https://code.visualstudio.com/">https://code.visualstudio.com/</a>，安装完成后可能会提示升级，升级即可，升级后的版本信息：</p>
+<div class="cnblogs_code">
+<pre>版本: <span style="color: #800080;">1.40</span>.<span style="color: #800080;">1</span><span style="color: #000000;"> (system setup)
+提交: 8795a9889db74563ddd43eb0a897a2384129a619
+日期: </span><span style="color: #800080;">2019</span>-<span style="color: #800080;">11</span>-13T16:<span style="color: #800080;">49</span>:<span style="color: #800080;">35</span><span style="color: #000000;">.976Z
+Electron: </span><span style="color: #800080;">6.1</span>.<span style="color: #800080;">2</span><span style="color: #000000;">
+Chrome: </span><span style="color: #800080;">76.0</span>.<span style="color: #800080;">3809.146</span><span style="color: #000000;">
+Node.js: </span><span style="color: #800080;">12.4</span>.<span style="color: #800080;">0</span><span style="color: #000000;">
+V8: </span><span style="color: #800080;">7.6</span>.<span style="color: #800080;">303.31</span>-electron.<span style="color: #800080;">0</span><span style="color: #000000;">
+OS: Windows_NT x64 </span><span style="color: #800080;">10.0</span>.<span style="color: #800080;">16299</span></pre>
+</div>
+<p>接下来的操作分为几个步骤：</p>
+<p>1. 安装各种强大VS Code插件</p>
+<p>2. 创建.NET Core解决方案和工程</p>
+<p>3. 调试运行</p>
+<p>好的，那我们开始吧。</p>
+<p><span style="font-size: 16px;"><strong>一、安装各种强大的VS Code插件</strong></span></p>
+<p>1.&nbsp;C# extension for Visual Studio Code</p>
+<p>这个插件最重要的功能：</p>
+<ul>
+<li>Lightweight development tools for&nbsp;<a title="https://dotnet.github.io" href="https://dotnet.github.io/">.NET Core</a>.</li>
+<li>Great C# editing support, including Syntax Highlighting, IntelliSense, Go to Definition, Find All References, etc.</li>
+<li>Debugging support for .NET Core (CoreCLR). NOTE: Mono debugging is not supported. Desktop CLR debugging has&nbsp;<a title="https://github.com/OmniSharp/omnisharp-vscode/wiki/Desktop-.NET-Framework" href="https://github.com/OmniSharp/omnisharp-vscode/wiki/Desktop-.NET-Framework">limited support</a>.</li>
+<li>Support for project.json and csproj projects on Windows, macOS and Linux.</li>
+</ul>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116223107121-1374307824.png" alt="" /></p>
+<p>2.&nbsp;<span class="name clickable" title="扩展名">C# Extensions</span></p>
+<p>这个插件最有用的功能是可以右键新建C#类和C#接口，同时支持各种code snippets，例如 ctor 、prop等，具体功能特性，可以查看插件的说明。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116223647555-152515035.png" alt="" /></p>
+<p>&nbsp;3.&nbsp;Auto-Using for C#</p>
+<p>这个插件自动添加using引用。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116223819671-972028203.png" alt="" /></p>
+<p>4.&nbsp;vscode-solution-explorer</p>
+<p>这个插件给VS Code增加了解决方案tab, 支持新建解决方案、新建工程、添加引用、Nuget包，这个插件非常有用</p>
+<p>Adds a Solution Explorer panel where you can find a Visual Studio Solution File Explorer.</p>
+<ul>
+<li>
+<p>Can load any .sln version</p>
+</li>
+<li>
+<p>Supports csproj, vcxproj, fsproj and vbproj (from vs2017 and before)</p>
+</li>
+<li>
+<p>Supports dotnet core projects</p>
+</li>
+<li>
+<p>You can create, delete, rename or move project folders and files.</p>
+</li>
+<li>
+<p>You can create, delete, rename or move solution, solution folders and projects.</p>
+</li>
+<li>
+<p>You can add or remove packages and references when the project is of kind CPS (dotnet core).</p>
+</li>
+</ul>
+<p><span class="name clickable" style="cursor: pointer; flex: 0 1 0%; font-size: 26px; line-height: 30px; font-weight: 600; white-space: nowrap; color: #cccccc; font-family: 'Segoe WPC', 'Segoe UI', 'Microsoft YaHei', sans-serif; background-color: #1e1e1e;" title="扩展名"><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224115650-1909428785.png" alt="" /></span></p>
+<p>&nbsp;</p>
+<p>5. Code Runner（韩俊老师出品，必属精品）</p>
+<p>Run code snippet or code file for multiple languages:&nbsp;<strong>C, C++, Java, JavaScript, PHP, Python, Perl, Perl 6, Ruby, Go, Lua, Groovy, PowerShell, BAT/CMD, BASH/SH, F# Script, F# (.NET Core), C# Script, C# (.NET Core), VBScript, TypeScript, CoffeeScript, Scala, Swift, Julia, Crystal, OCaml Script, R, AppleScript, Elixir, Visual Basic .NET, Clojure, Haxe, Objective-C, Rust, Racket, Scheme, AutoHotkey, AutoIt, Kotlin, Dart, Free Pascal, Haskell, Nim, D, Lisp, Kit</strong>, and custom command</p>
+<p>即选中一段代码，直接run</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224309233-439651238.png" alt="" /></p>
+<p>6.&nbsp;<span class="name clickable" title="扩展名">vscode-icons</span></p>
+<p>通过这个插件，给各个文件和文件夹一个你更熟悉的图标</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224415866-1514804724.png" alt="" /></p>
+<p>7.&nbsp;Visual Studio IntelliCode</p>
+<p>VS代码智能提示，根据上下文语境，自动推荐你下一步用到的代码，后台基于AI的</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224557664-231040006.png" alt="" /></p>
+<p>8.&nbsp;NuGet Package Manager</p>
+<p>Nuget包管理，快速查询定位Nuget包，并安装。不过尝试了一下午自定义Nuget源，没搞定，估计是URL不对</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224730570-1935243959.png" alt="" /></p>
+<p>9. Docker</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224800451-1404785321.png" alt="" /></p>
+<p>10.&nbsp;Kubernetes</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116224832214-2073861928.png" alt="" /></p>
+<p>其他的还需要配置GitHub、TFS类似的源代码管理，TFS搞了两个插件，都不好使，后续搞定后再更新一次。</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>二、创建.NET Core解决方案和工程</strong></span></p>
+<p>此时，VS Code的环境基本配置差不多了，接下来有两种模式，创建解决方案和工程。</p>
+<p><strong>1. 通过vscode-solution-explorer</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225123269-1255973048.png" alt="" /></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225214960-1302636527.jpg" alt="" /></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225236311-965364529.png" alt="" /></p>
+<p>解决方案有了，很熟悉的感觉。</p>
+<p>我们可以继续创建工程：右键sln，Add new project：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225409915-638684587.png" alt="" /></p>
+<p>此时会弹出工程模板，此时我们选择ASP.NET Core Web API工程</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225441838-1748805414.png" alt="" /></p>
+<p><strong>选择C#</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225619826-463729342.png" alt="" /></p>
+<p>然后继续输入工程名称：例如 TestWebApi</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116225821497-1463083834.png" alt="" /></p>
+<p>熟悉的感觉来了。此时就可以开始coding了。</p>
+<p>以上是我们通过vscode-solution-explorer新建解决方案和工程。同时我们可以通过命令行来搞定。</p>
+<p><strong><strong>2. 通过Dotnet CLI命令行</strong></strong></p>
+<p>新建sln：</p>
+<div class="cnblogs_code">
+<pre>dotnet <span style="color: #800000;">"</span><span style="color: #800000;">new</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">sln</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">-n</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">EricTest</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">-o</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">e:\Work\ServiceDependency</span><span style="color: #800000;">"</span><span style="color: #000000;"><br /></span></pre>
+</div>
+<p>新建ASP.NET Core WebAPI工程</p>
+<div class="cnblogs_code">
+<pre>dotnet <span style="color: #800000;">"</span><span style="color: #800000;">new</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">webapi</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">-lang</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">-n</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">TestWebApi</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">-o</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">TestWebApi</span><span style="color: #800000;">"</span></pre>
+</div>
+<p>将TestWebApi工程添加到解决方案EricTest</p>
+<div class="cnblogs_code">
+<pre>dotnet <span style="color: #800000;">"</span><span style="color: #800000;">sln</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">e:\Work\ServiceDependency\EricTest.sln</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">add</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">e:\Work\ServiceDependency\TestWebApi\TestWebApi.csproj</span><span style="color: #800000;">"</span></pre>
+</div>
+<p><span style="font-size: 16px;"><strong>三、调试运行</strong></span></p>
+<p><span style="font-size: 16px;">在Debug选项卡中新增调试配置，重点设置要调试的program</span></p>
+<p><span style="font-size: 16px;"><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116232300570-1372643971.png" alt="" /></span></p>
+<p><span style="font-size: 16px;"><strong>保存后，启动调试：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="https://img2018.cnblogs.com/blog/23525/201911/23525-20191116232421614-1735396197.png" alt="" /></strong></span></p>
+<p>&nbsp;</p>
+<p>程序中增加断点，然后</p>
+<div class="cnblogs_code">
+<pre>输入URL：https://localhost:5001/WeatherForecast</pre>
+</div>
+<p>&nbsp;既可以调试了。</p>
+<p>&nbsp;</p>
+<p>以上是今天集中配置VS Code开发调试环境的总结，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019//11/16</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-11-16 23:26</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11874558" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11874558);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11874558, cb_entryCreatedDate = '2019-11-16 23:26', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="最近团队在搞流量安全控制，为了应对不断增大的流量安全风险。Waf防护能做一下接入端的拦截，但是实际流量会打到整个分布式系统的每一环：Nginx、API网关、RPC服务、MQ消息应用中心、数据库。瞬间的" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>统一流控服务开源-1：场景&amp;业界做法&amp;算法篇 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9044155.html">统一流控服务开源-1：场景&amp;业界做法&amp;算法篇</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>最近团队在搞流量安全控制，为了应对不断增大的流量安全风险。Waf防护能做一下接入端的拦截，但是实际流量会打到整个分布式系统的每一环：Nginx、API网关、RPC服务、MQ消息应用中心、数据库。瞬间的大流量对系统的整体的冲击还是很大的，一些连锁反应时刻刺激着我们的神经！所以，我们要设计开发我们自己的流控中心。解决我们的系统痛点问题。</p>
+<p><strong>一、首先，我们从系统需求说起：</strong></p>
+<p>1. 接入点IOT设备，瞬间批量上线&amp;离线：几十万设备同时离线、上线后，带来的三遥数据、状态数据，瞬间打到后端。虽然有MQ扛了一层，但是MQ消费端是并发处理的，后端业务扛不住了</p>
+<p>2. 大型促销发券活动，几十万用户瞬间异步发出上百万张优惠券。</p>
+<p>3. API网关，时候接受第三方合作伙伴的定时访问，请求密集、数据访问大，后端RPC服务疲于应对。</p>
+<p>4. DB层，上述场景最后60%的请求会落到DB端，磁盘、CPU压力大</p>
+<p>5. Redis，大范围访问Redis中的缓存数据，TPS瞬间就上去了。</p>
+<p><strong>&nbsp;通过分析以上这些问题，都是由于瞬间流量过大造成，因此必须对大流量进行控制。流量控制越靠近链路开端，带来的效果越明显。</strong></p>
+<p><strong>二、在设计流控之前，我们要看一下互联网业绩怎么做的！</strong></p>
+<p>我们借鉴了阿里的做法，毕竟作为云厂商和双11缔造者，流控方面的经验还是经过实际业务验证的！</p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201805/23525-20180516085132615-1706877325.png" alt="" width="840" height="416" /></p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201805/23525-20180516085149356-813933833.png" alt="" width="843" height="362" /></p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201805/23525-20180516085217802-2140992206.png" alt="" width="891" height="442" /></p>
+<p>总结一下：</p>
+<ul>
+<li>流控说白了就是控制速率，在系统各个层面防止被大流量打爆</li>
+<li>在系统的各个层面，流控策略和方式是不同的，API网关的、RPC服务的、MQ的</li>
+<li>流量控制的维度可以是全局的、进程的、请求来源、用户及自定义维度</li>
+<li>流量控制是动态的，应该根据系统的&ldquo;并发特点&rdquo;动态调配、控制</li>
+<li>流控的根本目的就是保证系统的高可用性。</li>
+</ul>
+<p>总结梳理了业界流量控制的做法之后，我们再看一下具体的流控算法及实现！</p>
+<p><strong>三、流控算法及实现</strong></p>
+<p>目前业界的流控算法的就这么几种：漏桶、令牌桶、计数器，我们一一展开介绍一下。</p>
+<p><strong>1.&nbsp;漏桶(Leaky Bucket)算法</strong></p>
+<p><strong><img src="https://images2018.cnblogs.com/blog/23525/201805/23525-20180516085529643-1371647045.png" alt="" /></strong></p>
+<p>水(请求)先进入到漏桶里，漏桶以一定的速度出水(接口有响应速率),</p>
+<p>当水流入速度过大会直接溢出(访问频率超过接口响应速率), 然后就拒绝请求,</p>
+<p>可以看出漏桶算法能强行限制数据的传输速率.</p>
+<p>有两个变量：</p>
+<ul>
+<li>一个是桶的大小,支持流量突发增多时可以存多少的水(burst),</li>
+<li>另一个是水桶漏洞的大小(rate)。</li>
+</ul>
+<p>漏桶算法的问题：</p>
+<ul>
+<li>水满了直接不让进、丢弃</li>
+<li>桶容量问题</li>
+<li>漏出速度控制问题</li>
+</ul>
+<p><strong>2. 令牌桶算法(Token Bucket)</strong></p>
+<p><strong><img src="https://images2018.cnblogs.com/blog/23525/201805/23525-20180516085728179-393098537.png" alt="" /></strong></p>
+<p>&nbsp;</p>
+<p>随着时间流逝,系统会按恒定1/QPS时间间隔(如果QPS=100,则间隔是10ms)</p>
+<p>往桶里加入Token(想象和漏洞漏水相反,有个水龙头在不断的加水),</p>
+<p>如果桶已经满了就不再加了. 新请求来临时,</p>
+<p>会各自拿走一个Token,如果没有Token可拿了就阻塞或者拒绝服务.</p>
+<p>令牌添加速度支持动态变化，实时控制处理的速率.</p>
+<p>令牌桶算法的问题：</p>
+<ul>
+<li>令牌满了，请求无法处理</li>
+<li>桶容量问题</li>
+<li>令牌添加速度控制问题</li>
+</ul>
+<p><strong>3. 漏桶和令牌桶算法对比</strong></p>
+<ul>
+<li>令牌桶是按照固定速率往桶中添加令牌，请求是否被处理需要看桶中令牌是否足够，当令牌数减为零时则拒绝新的请求；</li>
+<li>漏桶则是按照常量固定速率流出请求，流入请求速率任意，当流入的请求数累积到漏桶容量时，则新流入的请求被拒绝；</li>
+<li>令牌桶限制的是平均流入速率（允许突发请求，只要有令牌就可以处理，支持一次拿3个令牌，4个令牌），并允许一定程度突发流量；</li>
+<li>漏桶限制的是常量流出速率（即流出速率是一个固定常量值，比如都是1的速率流出，而不能一次是1，下次又是2），从而平滑突发流入速率；</li>
+<li>令牌桶允许一定程度的突发，而漏桶主要目的是平滑流入速率；</li>
+<li>两个算法实现可以一样，但是方向是相反的，对于相同的参数得到的限流效果是一样的。</li>
+</ul>
+<p><strong>4. 计数器</strong></p>
+<p>主要用来限制总并发数，比如数据库连接池、线程池、并发数；只要全局总请求数超过设定的阀值则进行限流，是简单粗暴的总数量限流，而不是平均速率限流。</p>
+<ul>
+<li>限制总并发数（比如数据库连接池、线程池）</li>
+<li>限制瞬时并发数（如nginx的limit_conn模块，用来限制瞬时并发连接数）</li>
+<li>限制时间窗口内的平均速率（如Guava的RateLimiter、nginx的limit_req模块，限制每秒的平均速率）</li>
+<li>限制远程接口调用速率</li>
+<li>限制MQ的消费速率。</li>
+<li>可以根据网络连接数、网络流量、CPU或内存负载等来限流</li>
+</ul>
+<p><strong>总结一下：</strong></p>
+<p>从流控算法上看，主要有三个核心要素：</p>
+<ul>
+<li><strong>可用容量</strong></li>
+<li><strong>速率控制</strong></li>
+<li><strong>容量打满后的处理策略：丢弃 or 阻塞</strong></li>
+</ul>
+<p>流控算法只是流量控制中核心的一环，并不是全部。实际应用上，<strong>需要结合实际的业务场景，采用适合的流控算法实现流量控制</strong>！</p>
+<p><strong>四、流控中心设计</strong></p>
+<p>通过上面需求分析、业界对标&amp;对比、流控算法对比，我们规划了流控中心的产品特性，在此基础上完成一个V1.0版本的流控框架实现，同时准备开源出去，让更多的人可以直接使用。</p>
+<p>管理时（设计时）：</p>
+<ul>
+<li>提供统一的流控策略定义，流控策略中可以指定使用具体控制方式，支持QPS、指定时间内访问量、并发数、延迟时间四种控制方式
+<ul>
+<li>支持对API网关服务、RPC服务、MQ等不同的主体，绑定不同的流控策略和阈值。</li>
+<li>对于API网关服务，支持按服务、来源、用户、集群、进程设置QPS流量控制策略，同时支持按指定时间范围（分钟、小时、天）设置访问次数对应的流控策略。</li>
+<li>对于RPC服务，支持按服务、集群、进程设置QPS流量控制策略，同时支持按指定时间范围（分钟、小时、天）设置访问次数对应的流控策略。</li>
+<li>对于MQ，支持按队列、集群、进程设置消息消费的并发流量控制策略，同时支持延迟消费控制策略。</li>
+</ul>
+</li>
+<li>触发流控策略后，支持一种或者多种处理策略：请求失败、请求等待、预警等</li>
+<li>流控策略和阈值支持动态调配，通过配置中心实时同步到各个流控模块，配置动态实时生效。</li>
+<li>提供统一的流控日志查看功能，支持根据流控主体、时间实时查询流控触发情况。</li>
+</ul>
+<p>运行时：</p>
+<ul>
+<li>提供可独立运行的限流模块程序，Host在各类服务容器(API网关、RPC服务框架、MQ)中独立运行</li>
+<li>运行时支持对QPS、指定时间内访问量、并发数、延迟时间四种流量控制方式，根据流控策略的定义实时控制流量。</li>
+<li>提供对应用集群(全局)类的流控管理及应用进程（进程级）的流控管理</li>
+<li>触发流控后，支持实时将监控、预警信息实时推送到监控预警平台</li>
+<li>流控策略和阈值调整后，通过配置中心实时同步到各个限流模块程序，实时生效。</li>
+</ul>
+<p>这是目前我们流控中心大致的规划和整理，其实技术原型代码我们已经写出来了，昨天完成UT通过了，下一篇博客我们将把这个流控框架一点点分享给大家。</p>
+<p>提前剧透一下，我们借鉴了Git的RateLimiters</p>
+<p><a href="https://github.com/robertmircea/RateLimiters" target="_blank">https://github.com/robertmircea/RateLimiters</a></p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/5/16</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-05-16 09:10</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9044155" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9044155);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9044155, cb_entryCreatedDate = '2018-05-16 09:10', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>随笔列表第9页 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                
+
+
+
+<div id="homepage_top_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=8">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=7">7</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+    9
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=10">10</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=10">下一页</a>
+</div>
+</div>
+
+
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/03/09.html">2017年3月9日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6527106.html">
+    Azure Messaging-ServiceBus Messaging消息队列技术系列3-消息顺序保证
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上一篇:Window Azure ServiceBus Messaging消息队列技术系列2-编程SDK入门 http://www.cnblogs.com/tianqing/p/5944573.html 介绍了Azure Service Bus的编程SDK（主要的编程接口） 本文中我们以实际的使用场            <a href="https://www.cnblogs.com/tianqing/p/6527106.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-03-09 18:31 Eric zhou 阅读 (488) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6527106" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+            <div class="postSeparator"></div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6526238.html">
+    [博客迁移]探索Windows Azure 监控和自动伸缩系列3 - 启用Azure监控扩展收集自定义监控数据
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上一篇我们介绍了获取Azure的监控指标和监控数据： http://www.cnblogs.com/teld/p/5113376.html 本篇我们继续：监控虚拟机的自定义性能计数器。 随着我们应用规模的扩张，几十上百的虚拟机运行在Azure上面，实时监控应用的运行情况是我们智能化运维的需要。因此，            <a href="https://www.cnblogs.com/tianqing/p/6526238.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-03-09 16:14 Eric zhou 阅读 (181) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6526238" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+            <div class="postSeparator"></div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6526206.html">
+    [博客迁移]探索Windows Azure 监控和自动伸缩系列2 - 获取虚拟机的监控定义和监控数据
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上一篇博文介绍了如何连接Windows Azure:&#160;http://www.cnblogs.com/teld/p/5113063.html 本篇我们继续上次的示例代码，获取虚拟机的监控定义和监控数据。 有人会问，Azure Portal上已经有了监控数据，通过代码获取有意思吗？我们计划基于性能计数器            <a href="https://www.cnblogs.com/tianqing/p/6526206.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-03-09 16:10 Eric zhou 阅读 (227) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6526206" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+            <div class="postSeparator"></div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6526158.html">
+    [博客迁移]探索Windows Azure 监控和自动伸缩系列1 - 连接中国区Azure
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近准备基于Microsoft Azure Management Libraries&#160;实现虚拟机的监控。主要的需求就是获取虚拟机内置的性能计数器数据，基于性能计数器实现后续的监控和自动伸缩。 作为这一票研究的第一篇，我们以连接中国区的Azure作为起步吧。 通过Azure的订阅（Subscripti            <a href="https://www.cnblogs.com/tianqing/p/6526158.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-03-09 16:04 Eric zhou 阅读 (250) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6526158" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2016/12/27.html">2016年12月27日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/5944573.html">
+    Azure Messaging-ServiceBus Messaging消息队列技术系列2-编程SDK入门
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：各位，上一篇基本概念和架构中，我们介绍了Window Azure ServiceBus的消息队列技术的概览。接下来，我们进入编程模式和详细功能介绍模式，一点一点把ServiceBus技术研究出来。 本章我们主要介绍ServiceBus的编程SDK编程入门。 首先，微软提供了两个主要的Nuget Pa            <a href="https://www.cnblogs.com/tianqing/p/5944573.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2016-12-27 18:49 Eric zhou 阅读 (980) 评论 (6)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=5944573" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2016/09/19.html">2016年9月19日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/5884059.html">
+    Azure Messaging-ServiceBus Messaging消息队列技术系列1-基本概念和架构
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：前段时间研究了Window Azure ServiceBus Messaging消息队列技术，搞了很多技术研究和代码验证，最近准备总结一下，分享给大家。 首先，Windows Azure提供了两种类型的消息队列机制：Azure Queues和ServiceBus Queues。 其中，Azure Q            <a href="https://www.cnblogs.com/tianqing/p/5884059.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2016-09-19 12:41 Eric zhou 阅读 (1478) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=5884059" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2014/08/06.html">2014年8月6日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/3895898.html">
+    Oracle 12c In Memory Option初探
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：前情提要： Oracle OpenWorld 2013中Larry Ellison爆料的Oracle新特性:Oracle In Memory Database Option 1. 这个新特性将随着12.1.0.2发布； 2. In memory database option不会取代TimesTen            <a href="https://www.cnblogs.com/tianqing/p/3895898.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2014-08-06 22:22 Eric zhou 阅读 (4028) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=3895898" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2014/05/24.html">2014年5月24日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/3749729.html">
+    Oracle表结构修改触发视图无法正常使用问题
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：一.问题描述当对视图使用的基表进行表结构修改后，会触发视图的无效以及编译出错问题，必须重建视图解决。二.问题再现1.Oracle10g环境1.1 创建视图测试用两张基表：TestTable和TestUser1.2 创建测试视图VW_TABLEUSERALL和VW_TABLEUSER前者使用了Test...            <a href="https://www.cnblogs.com/tianqing/p/3749729.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2014-05-24 13:49 Eric zhou 阅读 (1081) 评论 (2)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=3749729" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2014/02/28.html">2014年2月28日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/3574191.html">
+    自定义GUID类
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：今天，同事发了个邮件说需要一个内部使用的GUID类，而不是System.Guid 结构体。什么意思呢？例如public void Test(string guidPara) 这个方法的参数是个string类型，但是是通过参数名称告诉调用者是Guid类型的参数，因此，他需要的应该是: public void Test(GUID para), 参数类型这么修改后，所有调用的地方需要统一改一遍，这不很恶。所以，实现了自定义的GUID类： 1 public class GUID 2 { 3 #region 构造函数 4 5 /// 6 ///...            <a href="https://www.cnblogs.com/tianqing/p/3574191.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2014-02-28 19:03 Eric zhou 阅读 (1638) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=3574191" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2010/05/17.html">2010年5月17日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2010/05/17/1737605.html">
+    求助，请教各位，如何牵头做一个项目
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：大家好： 好久没上来了，今天领导给定了2010财年的工作计划，整体感觉还行，自己能负责搞一块.先不说这个，请大家帮我出出主意. 今年接下来我要负责公司产品的《异步处理和并行计算》，充分利用异步处理和并行计算带来的性能提高和良好的用户体验，使公司产品GSP框架具有异步处理和并行计算的能力。所以说接下来我要专心做异步处理和并行计算这项任务了。 1、当前我拥有的资源： 1.1 公司给配了两个人，技术上没...            <a href="https://www.cnblogs.com/tianqing/archive/2010/05/17/1737605.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2010-05-17 18:45 Eric zhou 阅读 (2646) 评论 (13)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1737605" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+
+<div class="topicListFooter">
+    <div id="nav_next_page">
+        
+
+    </div>    
+</div>
+
+
+<div id="homepage_bottom_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=8">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=7">7</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+    9
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=10">10</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=10">下一页</a>
+</div>
+</div>
+
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

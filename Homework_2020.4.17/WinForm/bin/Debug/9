@@ -4,28 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin" />
-    <meta property="og:description" content="首先先确认方案 方案1：下单后减库存；用户下单，然后库存加锁，判断库存是否充足，用户下单完成，减库存，最后释放库存锁。 方案2：支付才减库存；用户支付，然后库存加锁，判断库存是否充足，用户支付完成，减" />
+    
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>商品订单库存一致性问题的思考 - YzdFly - 博客园</title>
+    <title>2005 年 3月 5 日 随笔档案 - 拓荒者 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/banlieue13/bundle-banlieue13.min.css?v=1J0RP_opHZcWv1yy974pRZewfj9S0p6tTP1QNRnmMiI" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001.min.css?v=vmUk-3Bh8LDsKXwjNHs2GDiFna-ZMTUgOJzjUaXTlPA" />
     
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/banlieue13/bundle-banlieue13-mobile.min.css?v=cTNtJQ6_6SB1QXNeWlP0QHJBE4K5SDodawH8t2CtJ3Y" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001-mobile.min.css?v=cJiDsI1JAuHHd-OAUWJeyE5JMXXsG4mmuUi2rVmEK1c" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/yzdtofly/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/yzdtofly/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/yzdtofly/wlwmanifest.xml" />
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/dstang2000/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/dstang2000/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/dstang2000/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 366326;
-        var currentBlogApp = 'yzdtofly';
+        var currentBlogId = 9986;
+        var currentBlogApp = 'dstang2000';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'Banlieue13';
+        var skinName = 'AnotherEon001';
     </script>
     
     
@@ -34,273 +34,146 @@
 <body>
     <a name="top"></a>
     
-    
-<!--done-->
-<div id="home">
+    <div id="wrapper">
 <div id="header">
-	<div id="blogTitle">
-	<a href="https://www.cnblogs.com/yzdtofly/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>			
-		
-<!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/yzdtofly/">YzdFly</a>
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/dstang2000/">拓荒者 dstang2000 <a href="http://www.dstang.com"><font size=-1 color=red>http://www.dstang.com</font></a>
 </h1>
-<h2>
+<div id="subtitle">
+KISS：Keeping things that work，Improve systems procedures styles，Start things of value，Stop things of no value 
+</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 
+4, 文章 - 
+1, 评论 - 
+17, 引用 - 
+0</div>
 
+</div>
+
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	
+        
+<p class="date">
+	<span>		  
+	<a>2005年3月5日</a>
+	</span>
+</p>
+
+		<div class="post">
+			<h2>
+
+<a class="postTitle2" href="https://www.cnblogs.com/dstang2000/archive/2005/03/05/113513.html">
+    分不清正数负数，是我错了，还是VS.NET错了
+</a>
 </h2>
-
-
-
-
-		
-	</div><!--end: blogTitle 博客的标题和副标题 -->
-</div><!--end: header 头部 -->
-
-<div id="main">
-	<div id="mainContent">
-	<div class="forFlow">
-		<div id="navigator">
+			<div class="postbody">
 			
-<ul id="navList">
-	<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+
+    <div class="c_b_p_desc">
+摘要：三年前做的一个ASP.NET的项目（www.SurveyStar.net），一直运行好好的， 前几天，客户打电话来说，出了问题。 反复跟踪，发现是一个正数、负数的判断与ToString()的问题。 将问题简化后，源程序可表示为只有4句的程序，如下： class&#160;Test { &#160;&#160;&#160;&#160;static&#160;void&#160;Main() &#16...            <a href="https://www.cnblogs.com/dstang2000/archive/2005/03/05/113513.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+			</div>
+			<p class="postfoot">		
+			
+
+posted @ 2005-03-05 14:45 拓荒者 阅读 (2510) 评论 (5)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=113513" rel="nofollow">
+    编辑
+</a>
+
+			</p>
+		</div>
+
+
+
+
+
+
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
 博客园</a>
-</li>
-	<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/yzdtofly/">
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/dstang2000/">
 首页</a>
-</li>
-	<li>
+
+    </li>
+    <li>
+        
 
 <a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
 新随笔</a>
-</li>
-	<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/YzdFly">
-联系</a></li>
-	<li>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%8B%93%E8%8D%92%E8%80%85">
+联系</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/dstang2000/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/dstang2000/rss/">
+    <img src="/skins/anothereon001/images/xml.gif" alt="订阅" />
+</a>
+    </li>
+    <li>
+        
 <a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
 管理</a>
-</li>
-	<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/yzdtofly/rss/">
-订阅</a>
-	
-<a id="blog_nav_rss_image" href="https://www.cnblogs.com/yzdtofly/rss/">
-    <img src="/skins/banlieue13/images/xml.gif" alt="订阅" />
-</a></li>
+
+    </li>
 </ul>
 
 
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
 
-			<div class="blogStats">
-				
-				<!--done-->
-随笔- 
-15&nbsp;
-文章- 
-0&nbsp;
-评论- 
-2&nbsp;
-
-
-
-				
-			</div><!--end: blogStats -->
-		</div><!--end: navigator 博客导航栏 -->
-		<div id="post_detail">
-<!--done-->
-<div id="topics">
-	<div class="post">
-		<h1 class = "postTitle">
-			
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/yzdtofly/p/12730811.html">商品订单库存一致性问题的思考</a>
-
-		</h1>
-		<div class="clear"></div>
-		<div class="postBody">
-			
-<div id="cnblogs_post_body" class="blogpost-body ">
-    <p class="MsoNormal" align="left"><strong><span style="font-size: 24.0pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;">首先先确认方案</span></strong></p>
-<p class="MsoNormal" style="text-indent: 21pt;" align="left"><span style="font-size: 12.0pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;">方案<span lang="EN-US">1</span>：下单后减库存；用户下单，然后库存加锁，判断库存是否充足，用户下单完成，减库存，最后释放库存锁。</span></p>
-<p class="MsoNormal" style="text-indent: 21pt;" align="left"><span style="font-size: 12.0pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;">方案<span lang="EN-US">2</span>：支付才减库存；用户支付，然后库存加锁，判断库存是否充足，用户支付完成，减库存，最后释放库存锁。</span></p>
-<p class="MsoNormal" style="text-indent: 21pt;" align="left"><span style="font-size: 12.0pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;">当然还有其他方案，这里只阐述我的思考。</span></p>
-<p align="left"><span style="font-size: 12.0pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA;">（库存加锁的过程有个小细节请看附<span lang="EN-US">1</span>）</span></p>
-<p align="left"><strong>两</strong><strong>种方案的比较</strong></p>
-<p align="left"><strong>方案1</strong></p>
-<p align="left">1）假如100个人同时下单，只有一个人能下单成功。</p>
-<p align="left">2）此时订单应该有一个过期状态，如果订单过期，库存加锁并回写库存后释放锁。</p>
-<p align="left"><strong>方案2</strong></p>
-<p align="left">1）100个人可以同时下单，但是100个人同时付款时，只有一个人付款成功。</p>
-<p align="left">正常情况下，商品加入购物车的用户&gt;&gt;&gt;下单的用户&gt;=付款的用户。如果从库存加锁的角度来说，在下单的时候加锁，那么高并发下用户体验可能比较差，因为同时下单只有一个人能下单成功，而且服务器性能可能会比较差；下单的请求变多，那么请求加锁的次数也变多了，而支付的用户可能小于下单的用户，请求加锁的次数理论上会少不少。</p>
-<p align="left"><strong>我的建议是：</strong></p>
-<p align="left">普通的电商项目我认为方案一就足够了，因为下单的流程简单，而支付可能涉及到很多业务，如果支付里面锁库存，考虑的东西会有点多。</p>
-<p align="left">但是在高并发下或者秒杀场景下，那可能就要在支付的时候锁库存。从业务角度来说，肯定是手快有，手快无；从代码的角度来说，支付跟减库存高度耦合，出现超卖、库存不一致情况大大降低，如果是下单锁库存，万一用户取消订单，那是不是库存要加回去，这种情况下高并发出现库存与实际消费不一致的可能性比较大。</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>实现方式以及优化</strong></p>
-<p align="left">商品订单库存这个业务不仅仅只有用户下单这个功能，还要在管理后台提供商家修改库存的入口。那么这样就有两处需要用到库存，必须要考虑竞争问题。</p>
-<p align="left"><strong>单体架构的实现</strong></p>
-<p align="left">单体架构实现这个业务是最简单的，但是性能也是最差的。</p>
-<p align="left"><img src="https://img2020.cnblogs.com/blog/1197347/202004/1197347-20200419114059750-734315653.png" alt="" /></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align="left">单体架构中，不管是用户操作还是管理员后台操作库存都放在里面，然后部署到机器上。此时库存锁是个全局锁，用户下单，管理员要修改库存都要从全局的库存锁拿到锁，执行完业务代码再释放。</p>
-<p align="left">这种单体架构就会出现一个问题，耦合度太高，一旦管理后台修改库存占用库存锁，那么用户就不能下单购买商品了。如果是购买量不多的业务，单体架构是可以满足基本需求的，这种实现成本低，易维护但不能支撑高并发。</p>
-<p align="left">像大部分中小型公司，一天的订单我感觉也就1000以内，单体架构完全够用了，并不需要改造成下面的方案，增加幂级的复杂度</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>优化方案</strong></p>
-<p align="left">如果说业务增长块订单量增大，那么上面的单体架构就有局限性了。特别是现在互联网公司的架构大部分都是微服务分布式。</p>
-<p align="left">1）首先，每次加锁后，都需要从数据库查询库存，判断库存，然后用户下完单也要操作数据库修改库存。数据库的操作是需要时间成本的，大流量下如果其中一个用户下单时间太慢，其他用户都要等待他处理完，用户体验太差</p>
-<p align="left">2）其次现在架构大部分是分布式、微服务的，用户下单减库存和管理后台修改库存一般都是拆分为两个服务--下单服务和库存服务</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>优化的第一步。</strong>要解决下单因为操作数据库耗时过长的问题，我们可以把库存放到缓存中（一般是redis），然后对redis中的库存加redis锁，执行下单，对redis中的库存进行减库存。这么做的好处是提升了用户下单的速率，加大了并发量；其次用户下单跟管理后台的业务解耦了，为以后拆分服务做扩展。如下图：</p>
-<p align="left"><img src="https://img2020.cnblogs.com/blog/1197347/202004/1197347-20200419114211044-1160081162.png" alt="" /></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align="left">虽然提升了性能，但是新问题出现了，数据一致性问题。现在业务是独立分开了，用户下单，redis加锁，操作redis的库存就可以了，同样管理后台修改库存，加锁操作数据库的库存就可以了。但是怎么保证这两个地方的库存一致性呢？</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>使用消息队列让数据库的库存进行减库存</strong></p>
-<p align="left">用户下单成功后向消息队列发送一条消息，然后在管理后台业务中消费消息，进行减库存，如图：</p>
-<p align="left"><img src="https://img2020.cnblogs.com/blog/1197347/202004/1197347-20200419114225326-1711798648.png" alt="" /></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align="left">如果保证了消息的可靠性传输，那么即可保证用户下单后的库存与数据库的库存达到最终一致性。</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>停售同步库存</strong></p>
-<p align="left">如果管理后台要修改库存并且同步到redis上去要怎么办？可行的方案是让商家停止出售商品，然后判断redis的库存跟数据库的库存是否一致，若一致，那么商家即可修改库存，修改后更新数据库库存和redis库存。如果不一致，那么你就要知道是否管理后台还没消费完消息队列，还是其他问题，没消费完让商家等一段时间就行了，是其他问题的话程序员就妥妥的背锅吧，必须从日志系统里面查查具体是哪里出问题。</p>
-<p align="left"><img src="https://img2020.cnblogs.com/blog/1197347/202004/1197347-20200419114240321-1525689572.png" alt="" /></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align="left"><strong>微服务分布式</strong></p>
-<p align="left">其实就是把单体架构拆分，具体解决思路不变。具体要看业务把，如果订单不多的话，没必要拆分为订单服务和库存服务或者把他们解耦出来，一开始的单体架构就够用了。至于优化的方案，我感觉独角兽或者大型公司才会用到。也可能我技术角度或者业务角度没达到那种高度。</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>其他问题</strong></p>
-<p align="left">因为之前面试，经常就问到商品库存这个问题，现在只是写个自己的思考，肯定有错误的地方。还有很多问题就不去考虑了，毕竟我没做过这个业务，例如生产上因为用户点击过快、网络问题导致的订单重复提交。</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>题外话</strong></p>
-<p align="left">算是给点建议吧，一开始找工作尽量找稳定的公司，然后干几年积累技术。我面试的时候因为简历是3年换了3家公司，每次面试都要问我为啥经常离职。而且大公司简历几乎就进不了面试，中小型公司技术面过了，但是HR面因为这个问题也可能会把你刷了。还有就是要从业务上考虑，业务才能驱动技术的提升。（PS：广州真的是一线城市么？工资是真的低，干IT别来广州，别来广州，别来）</p>
-<p align="left">&nbsp;</p>
-<p align="left"><strong>附1：</strong></p>
-<p align="left">高并发或者秒杀场景下，不管是方案1还是方案2，如果库存为0时，是否还是每次都锁库存去走一遍流程，即库存加锁，判断库存是否充足，用户下单完成，减库存，最后释放库存锁，答案肯定是否的。</p>
-<p align="left">想一想java实现单例模式的代码，用了两个判断语句，那么这个场景我们也可以使用这种方式。外面先去查询一次库存，再判断是否为0，如果为0直接返回，如果不为0 ，那么库存加锁，判断库存是否充足，用户下单（或支付）完成，减库存，最后释放库存锁。以下单锁库存为例：</p>
-<p align="left"><img src="https://img2020.cnblogs.com/blog/1197347/202004/1197347-20200419114253050-1776462171.png" alt="" /></p>
-<p>&nbsp;</p>
-<p><img id="uploading_image_15591" src="https://common.cnblogs.com/images/loading.gif" alt="" /></p>
-<p>&nbsp;</p>
-</div>
-<div id="MySignature"></div>
-<div class="clear"></div>
-<div id="blog_post_info_block">
-    <div id="blog_post_info"></div>
-    <div class="clear"></div>
-    <div id="post_next_prev"></div>
-</div>
-		</div>
-		<div class="postDesc">posted @ 
-<span id="post-date">2020-04-19 11:43</span>&nbsp;
-<a href="https://www.cnblogs.com/yzdtofly/">YzdFly</a>&nbsp;
-阅读(<span id="post_view_count">...</span>)&nbsp;
-评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12730811" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12730811);return false;">收藏</a></div>
-	</div>
-	
-	
-</div><!--end: topics 文章、评论容器-->
-<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
-<script>markdown_highlight();</script>
-<script>
-    var allowComments = true, cb_blogId = 366326, cb_blogApp = 'yzdtofly', cb_blogUserGuid = '829a3174-d3e9-4711-1652-08d49c352df3';
-    var cb_entryId = 12730811, cb_entryCreatedDate = '2020-04-19 11:43', cb_postType = 1; 
-    loadViewCount(cb_entryId);
-</script><a name="!comments"></a>
-<div id="blog-comments-placeholder"></div>
-<script>
-    var commentManager = new blogCommentManager();
-    commentManager.renderComments(0);
-</script>
-
-<div id="comment_form" class="commentform">
-    <a name="commentform"></a>
-    <div id="divCommentShow"></div>
-    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
-    <div id="comment_form_container"></div>
-    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
-    <div id="ad_t2"></div>
-    <div id="opt_under_post"></div>
-    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
-    <script>
-        var googletag = googletag || {};
-        googletag.cmd = googletag.cmd || [];
-    </script>
-    <script>
-        googletag.cmd.push(function () {
-            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
-            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
-            googletag.pubads().enableSingleRequest();
-            googletag.enableServices();
-        });
-    </script>
-    <div id="cnblogs_c1" class="c_ad_block">
-        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
-    </div>
-    <div id="under_post_news"></div>
-    <div id="cnblogs_c2" class="c_ad_block">
-        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
-            <script>
-                if (new Date() >= new Date(2018, 9, 13)) {
-                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
-                }
-            </script>
-        </div>
-    </div>
-    <div id="under_post_kb"></div>
-    <div id="HistoryToday" class="c_ad_block"></div>
-    <script type="text/javascript">
-        fixPostBody();
-        deliverBigBanner();
-setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
-        deliverAdC1();
-        deliverAdC2();
-        loadNewsAndKb();
-        loadBlogSignature();
-LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
-        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
-        loadOptUnderPost();
-        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
-    </script>
-</div></div>
-
-
-	</div><!--end: forFlow -->
-	</div><!--end: mainContent 主体内容容器-->
-
-	<div id="sideBar">
-		<div id="sideBarMain">
-			
 <div id="sidebar_news" class="newsItem">
             <script>loadBlogNews();</script>
 </div>
 
-			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script></div>
-			
-			<DIV id="leftcontentcontainer">
-				<div id="blog-sidecolumn"></div>
+<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-			</DIV>
-			
-		</div><!--end: sideBarMain -->
-	</div><!--end: sideBar 侧边栏容器 -->
-	<div class="clear"></div>
-	</div><!--end: main -->
-	<div class="clear"></div>
-	<div id="footer">
-		<!--done-->
-Copyright &copy; 2020 YzdFly
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br />
+	
+	
+<a href="https://www.cnblogs.com/" id="Footer1_Hyperlink3" style="font-size: 12px; font-family: Verdana">博客园</a>
+	<br />
+	Copyright &copy; 2020 拓荒者
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
+</p>
 
 
-	</div><!--end: footer -->
-</div><!--end: home 自定义的最大容器 -->
+</div>
+</div>
 
 
     

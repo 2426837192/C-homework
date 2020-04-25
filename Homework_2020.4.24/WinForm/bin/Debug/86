@@ -1,0 +1,1089 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文特来电混沌工程实践中，我们详细介绍了特来电混沌工程实践的设计和规划。目前我们已经启动了应用层的混沌实验。 在应用层的混沌实验中，我们经常需要模拟HSF服务容器的线程被打爆、CPU使用率25%，" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>特来电混沌工程实践-混沌事件注入 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10628751.html">特来电混沌工程实践-混沌事件注入</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文<a id="homepage1_HomePageDays_DaysList_ctl03_DayList_TitleUrl_0" class="postTitle1" href="https://www.cnblogs.com/tianqing/p/10499611.html">特来电混沌工程实践</a>中，我们详细介绍了特来电混沌工程实践的设计和规划。目前我们已经启动了应用层的混沌实验。</p>
+<p>在应用层的混沌实验中，我们经常需要模拟HSF服务容器的线程被打爆、CPU使用率25%，50%，75%、端口被打爆、内存泄露、服务超时、服务异常等场景。</p>
+<p>前期我们实现的时候，一般会选择一个典型的HSF服务去模拟注入上述混沌事件场景。但是每次注入，准备时间长、耗时长、控制复杂，遇到这些问题。</p>
+<p>后来和阿里的中亭老师交流，收获到了启发，我们应该写一个混沌事件注入工具。然后根据混沌实验场景，灵活的注入混沌事件。</p>
+<p>因此，我们启动了混沌实验注入工具的研发。先说一下具体的思路吧：</p>
+<ol>
+<li><span style="color: #0000ff;">统一混沌事件的注入接口，实现各类混沌事件注入</span></li>
+<li><span style="color: #0000ff;">设计一个统一的混沌事件注入器，支持各类混沌事件注入，支持混沌事件的热更新和取消</span></li>
+<li><span style="color: #0000ff;">在HSF、API网关、中间件SDK层面依赖注入混沌事件注入器</span></li>
+</ol>
+<p><span style="font-size: 16px;"><strong>一、统一混沌事件的注入接口，实现各类混沌事件注入</strong></span></p>
+<p>&nbsp; 1. 先定义混沌事件注入接口<strong>IChaosEvent，包含两个方法Inject注入和Stop停止</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">interface</span><span style="color: #000000;"> IChaosEvent
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context);
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span>     <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop();
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<p>&nbsp; 同时增加一个混沌事件枚举<strong>ChaosEventType</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">enum</span><span style="color: #000000;"> ChaosEventType
+    {
+        CPU25,
+
+        CPU50,
+
+        CPU75,
+
+        ServiceTimeout,
+
+        ServiceException,
+
+        Memory,
+
+        Threads,
+
+        Ports
+    }</span></pre>
+</div>
+<p><span style="font-size: 15px;"><strong>2. 实现各类混沌事件注入</strong></span></p>
+<p><strong>&nbsp; &nbsp;HighCpu-25%CPU使用率</strong></p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_HighCPU25 : IChaosEvent
+  {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_HighCPU25()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = (<span style="color: #800080;">25</span> / <span style="color: #800080;">100.0</span>) *<span style="color: #000000;"> Environment.ProcessorCount;
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; count; i++<span style="color: #000000;">)
+                {
+                    </span><span style="color: #0000ff;">var</span> cpuTask = <span style="color: #0000ff;">new</span> Task(() =&gt;<span style="color: #000000;">
+                    {
+                        </span><span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span> &amp;&amp; cts.IsCancellationRequested == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                        {
+
+                        }
+                    }, cts.Token, TaskCreationOptions.LongRunning);
+
+                    cpuTask.Start();
+                }
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+        }
+}</span></pre>
+</div>
+<p><strong>&nbsp; HighCpu-50%CPU使用率</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a5f680ee-f673-44c0-b25f-923c726e9db5')"><img id="code_img_closed_a5f680ee-f673-44c0-b25f-923c726e9db5" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_a5f680ee-f673-44c0-b25f-923c726e9db5" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a5f680ee-f673-44c0-b25f-923c726e9db5',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_a5f680ee-f673-44c0-b25f-923c726e9db5" class="cnblogs_code_hide">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_HighCPU50 : IChaosEvent
+    {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_HighCPU50()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = (<span style="color: #800080;">50</span> / <span style="color: #800080;">100.0</span>) *<span style="color: #000000;"> Environment.ProcessorCount;
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; count; i++<span style="color: #000000;">)
+                {
+                    </span><span style="color: #0000ff;">var</span> cpuTask = <span style="color: #0000ff;">new</span> Task(() =&gt;<span style="color: #000000;">
+                    {
+                        </span><span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span> &amp;&amp; cts.IsCancellationRequested == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                        {
+
+                        }
+                    }, cts.Token, TaskCreationOptions.LongRunning);
+
+                    cpuTask.Start();
+                }
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; HighCpu-75%CPU使用率</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('847a2e46-c25c-4c4f-869a-dfb32d7a11ce')"><img id="code_img_closed_847a2e46-c25c-4c4f-869a-dfb32d7a11ce" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_847a2e46-c25c-4c4f-869a-dfb32d7a11ce" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('847a2e46-c25c-4c4f-869a-dfb32d7a11ce',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_847a2e46-c25c-4c4f-869a-dfb32d7a11ce" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_HighCPU75 : IChaosEvent
+    {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_HighCPU75()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = (<span style="color: #800080;">75</span> / <span style="color: #800080;">100.0</span>) *<span style="color: #000000;"> Environment.ProcessorCount;
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; count; i++<span style="color: #000000;">)
+                {
+                    </span><span style="color: #0000ff;">var</span> cpuTask = <span style="color: #0000ff;">new</span> Task(() =&gt;<span style="color: #000000;">
+                    {
+                        </span><span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span> &amp;&amp; cts.IsCancellationRequested == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                        {
+
+                        }
+                    }, cts.Token, TaskCreationOptions.LongRunning);
+
+                    cpuTask.Start();
+                }
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; 内存泄露-2G</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('398a0e16-7d83-4032-8679-6b2ed1bf22ff')"><img id="code_img_closed_398a0e16-7d83-4032-8679-6b2ed1bf22ff" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_398a0e16-7d83-4032-8679-6b2ed1bf22ff" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('398a0e16-7d83-4032-8679-6b2ed1bf22ff',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_398a0e16-7d83-4032-8679-6b2ed1bf22ff" class="cnblogs_code_hide">
+<pre>  <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_Memory : IChaosEvent
+    {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> OneKB = <span style="color: #800000;">"</span><span style="color: #800000;">111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">static</span> List&lt;<span style="color: #0000ff;">string</span>&gt; list = <span style="color: #0000ff;">new</span> List&lt;<span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_Memory()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = System.Configuration.ConfigurationManager.AppSettings[<span style="color: #800000;">"</span><span style="color: #800000;">Chaos.MemoryMB</span><span style="color: #800000;">"</span><span style="color: #000000;">];
+                </span><span style="color: #0000ff;">if</span> (count == <span style="color: #0000ff;">null</span>) count = <span style="color: #800000;">"</span><span style="color: #800000;">2000</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">int</span><span style="color: #000000;"> c;
+                </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">int</span>.TryParse(count, <span style="color: #0000ff;">out</span><span style="color: #000000;"> c))
+                {
+                    Task task </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Task(
+                            () </span>=&gt;<span style="color: #000000;">
+                            {
+                                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> k = <span style="color: #800080;">0</span>; k &lt; c / <span style="color: #800080;">2</span>; k++<span style="color: #000000;">)
+                                {
+                                    StringBuilder builder </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> StringBuilder();
+                                    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">1024</span>; i++<span style="color: #000000;">)
+                                    {
+                                        builder.Append(OneKB);
+                                    }
+                                    list.Add(builder.ToString());
+                                }
+                            }, cts.Token, TaskCreationOptions.LongRunning);
+                    task.Start();
+                }
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+            list.Clear();
+            list </span>= <span style="color: #0000ff;">new</span> List&lt;<span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;">();
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; 端口被打爆：</strong><em id="__mceDel"><em id="__mceDel"></em></em></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('70a1d555-6449-407e-8f17-f19f312041fe')"><img id="code_img_closed_70a1d555-6449-407e-8f17-f19f312041fe" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_70a1d555-6449-407e-8f17-f19f312041fe" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('70a1d555-6449-407e-8f17-f19f312041fe',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_70a1d555-6449-407e-8f17-f19f312041fe" class="cnblogs_code_hide">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_Ports : IChaosEvent
+    {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">static</span> List&lt;Socket&gt;<span style="color: #000000;"> sockets;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_Ports()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+            sockets </span>= <span style="color: #0000ff;">new</span> List&lt;Socket&gt;<span style="color: #000000;">();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = Convert.ToInt32(context[<span style="color: #800000;">"</span><span style="color: #800000;">Count</span><span style="color: #800000;">"</span><span style="color: #000000;">]);
+                </span><span style="color: #0000ff;">var</span> server = Convert.ToString(context[<span style="color: #800000;">"</span><span style="color: #800000;">Server</span><span style="color: #800000;">"</span><span style="color: #000000;">]);
+                </span><span style="color: #0000ff;">var</span> sp = server.Split(<span style="color: #800000;">'</span><span style="color: #800000;">:</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+                </span><span style="color: #0000ff;">var</span> task = Task.Factory.StartNew(() =&gt;<span style="color: #000000;">
+                {
+                    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; count; i++<span style="color: #000000;">)
+                    {
+                        </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+                        {
+                            Socket socket </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, </span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+                            socket.Connect(sp[</span><span style="color: #800080;">0</span>], Convert.ToInt32(sp[<span style="color: #800080;">1</span><span style="color: #000000;">]));
+                            SetKeepAliveValues(socket, </span><span style="color: #0000ff;">true</span>, <span style="color: #800080;">36000000</span>, <span style="color: #800080;">1000</span><span style="color: #000000;">);
+
+                            sockets.Add(socket);
+                        }
+                        </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (Exception e) { }
+                    }
+                    </span><span style="color: #0000ff;">while</span> (cts.IsCancellationRequested == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                    {
+                        Thread.Sleep(</span><span style="color: #800080;">20</span> * <span style="color: #800080;">60000</span><span style="color: #000000;">);
+                    }
+                }, TaskCreationOptions.LongRunning);
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+            </span><span style="color: #0000ff;">if</span> (sockets != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> socket <span style="color: #0000ff;">in</span><span style="color: #000000;"> sockets)
+                {
+                    </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+                    {
+                        socket.Close();
+                    }
+                    </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+                }
+
+                sockets.Clear();
+                sockets </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+            }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span><span style="color: #000000;"> SetKeepAliveValues
+          (
+               System.Net.Sockets.Socket Socket,
+               </span><span style="color: #0000ff;">bool</span><span style="color: #000000;"> On_Off,
+               </span><span style="color: #0000ff;">uint</span><span style="color: #000000;"> KeepaLiveTime,
+               </span><span style="color: #0000ff;">uint</span><span style="color: #000000;"> KeepaLiveInterval
+           )
+        {
+            </span><span style="color: #0000ff;">int</span> Result = -<span style="color: #800080;">1</span><span style="color: #000000;">;
+
+            </span><span style="color: #0000ff;">unsafe</span><span style="color: #000000;">
+            {
+                TcpKeepAlive KeepAliveValues </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> TcpKeepAlive();
+
+                KeepAliveValues.On_Off </span>=<span style="color: #000000;"> Convert.ToUInt32(On_Off);
+                KeepAliveValues.KeepaLiveTime </span>=<span style="color: #000000;"> KeepaLiveTime;
+                KeepAliveValues.KeepaLiveInterval </span>=<span style="color: #000000;"> KeepaLiveInterval;
+
+                </span><span style="color: #0000ff;">byte</span>[] InValue = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">byte</span>[<span style="color: #800080;">12</span><span style="color: #000000;">];
+
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> I = <span style="color: #800080;">0</span>; I &lt; <span style="color: #800080;">12</span>; I++<span style="color: #000000;">)
+                    InValue[I] </span>=<span style="color: #000000;"> KeepAliveValues.Bytes[I];
+
+                Result </span>= Socket.IOControl(IOControlCode.KeepAliveValues, InValue, <span style="color: #0000ff;">null</span><span style="color: #000000;">);
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> Result;
+        }
+    }
+    [
+           System.Runtime.InteropServices.StructLayout
+           (
+               System.Runtime.InteropServices.LayoutKind.Explicit
+           )
+    ]
+    </span><span style="color: #0000ff;">unsafe</span> <span style="color: #0000ff;">struct</span><span style="color: #000000;"> TcpKeepAlive
+    {
+        [System.Runtime.InteropServices.FieldOffset(</span><span style="color: #800080;">0</span><span style="color: #000000;">)]
+        [
+              System.Runtime.InteropServices.MarshalAs
+               (
+                   System.Runtime.InteropServices.UnmanagedType.ByValArray,
+                   SizeConst </span>= <span style="color: #800080;">12</span><span style="color: #000000;">
+               )
+        ]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">fixed</span> <span style="color: #0000ff;">byte</span> Bytes[<span style="color: #800080;">12</span><span style="color: #000000;">];
+
+        [System.Runtime.InteropServices.FieldOffset(</span><span style="color: #800080;">0</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">uint</span><span style="color: #000000;"> On_Off;
+
+        [System.Runtime.InteropServices.FieldOffset(</span><span style="color: #800080;">4</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">uint</span><span style="color: #000000;"> KeepaLiveTime;
+
+        [System.Runtime.InteropServices.FieldOffset(</span><span style="color: #800080;">8</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">uint</span><span style="color: #000000;"> KeepaLiveInterval;
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; 线程被打爆：</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('505b9872-cf88-4452-91ec-8887cb43deed')"><img id="code_img_closed_505b9872-cf88-4452-91ec-8887cb43deed" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_505b9872-cf88-4452-91ec-8887cb43deed" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('505b9872-cf88-4452-91ec-8887cb43deed',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_505b9872-cf88-4452-91ec-8887cb43deed" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_Threads : IChaosEvent
+    {
+        CancellationTokenSource cts;
+        List</span>&lt;Task&gt; tasks = <span style="color: #0000ff;">new</span> List&lt;Task&gt;<span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_Threads()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">var</span> count = context[<span style="color: #800000;">"</span><span style="color: #800000;">Threads</span><span style="color: #800000;">"</span><span style="color: #000000;">];
+                </span><span style="color: #0000ff;">int</span><span style="color: #000000;"> c;
+                </span><span style="color: #0000ff;">if</span> (Int32.TryParse(count, <span style="color: #0000ff;">out</span><span style="color: #000000;"> c))
+                {
+                    </span><span style="color: #008000;">//</span><span style="color: #008000;">Parallel.For(0, c, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i) =&gt;</span>
+                    <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; c; i++<span style="color: #000000;">)
+                    {
+                        </span><span style="color: #0000ff;">var</span> task = <span style="color: #0000ff;">new</span> Task(() =&gt;<span style="color: #000000;">
+                        {
+                            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> j = <span style="color: #800080;">0</span>; j &lt; <span style="color: #800080;">120</span>; j++<span style="color: #000000;">)
+                            {
+                                </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (cts.IsCancellationRequested)
+                                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+                                Thread.Sleep(</span><span style="color: #800080;">10</span> * <span style="color: #800080;">1000</span><span style="color: #000000;">);
+
+                            }
+
+                        }, cts.Token);
+
+                        task.Start();
+                        tasks.Add(task);
+                    }
+                }
+            }
+            </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+            </span><span style="color: #0000ff;">if</span> (tasks != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> task <span style="color: #0000ff;">in</span><span style="color: #000000;"> tasks)
+                {
+                    </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+                    {
+                        task.Dispose();
+                    }
+                    </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> { }
+                }
+            }
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; 服务调用异常：</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('632353d9-1e40-4ba7-9bd3-ac4d4a296edb')"><img id="code_img_closed_632353d9-1e40-4ba7-9bd3-ac4d4a296edb" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_632353d9-1e40-4ba7-9bd3-ac4d4a296edb" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('632353d9-1e40-4ba7-9bd3-ac4d4a296edb',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_632353d9-1e40-4ba7-9bd3-ac4d4a296edb" class="cnblogs_code_hide">
+<pre>  <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_ServiceException : IChaosEvent
+    {
+        </span><span style="color: #0000ff;">bool</span> isStop = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_ServiceException()
+        {
+
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">if</span> (isStop == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> Exception(<span style="color: #800000;">"</span><span style="color: #800000;">Chaos_ServiceException</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            isStop </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; 服务调用超时：</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d6ea91ac-1173-4ef2-b83e-f133426e50af')"><img id="code_img_closed_d6ea91ac-1173-4ef2-b83e-f133426e50af" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_d6ea91ac-1173-4ef2-b83e-f133426e50af" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('d6ea91ac-1173-4ef2-b83e-f133426e50af',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_d6ea91ac-1173-4ef2-b83e-f133426e50af" class="cnblogs_code_hide">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Chaos_ServiceTimeout : IChaosEvent
+    {
+        CancellationTokenSource cts;
+
+        </span><span style="color: #0000ff;">bool</span> isStop = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> Chaos_ServiceTimeout()
+        {
+            cts </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> context)
+        {
+            </span><span style="color: #0000ff;">if</span> (isStop == <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+                Task.Delay(</span><span style="color: #800080;">10</span> * <span style="color: #800080;">1000</span><span style="color: #000000;">, cts.Token).Wait();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> Stop()
+        {
+            cts.Cancel();
+            isStop </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><span style="font-size: 16px;"><strong>二、设计一个统一的混沌事件注入器，支持各类混沌事件注入，支持混沌事件的热更新和取消</strong></span></p>
+<p><span style="font-size: 15px;"><strong>&nbsp; 1. ChaosEventInjecter</strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;支持混沌事件接口实现的创建、混沌事件注入（全局注入一次，每次调用都注入）、混沌事件取消（停止）</p>
+<p><strong>&nbsp; &nbsp; &nbsp;混沌事件接口实现的创建</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('2cb5cc01-a031-484c-b4e9-dacbfe1f0fe8')"><img id="code_img_closed_2cb5cc01-a031-484c-b4e9-dacbfe1f0fe8" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_2cb5cc01-a031-484c-b4e9-dacbfe1f0fe8" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('2cb5cc01-a031-484c-b4e9-dacbfe1f0fe8',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_2cb5cc01-a031-484c-b4e9-dacbfe1f0fe8" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">private</span><span style="color: #000000;"> IChaosEvent GetOrCreateChaosEvent(ChaosEventType chaosEventType)
+        {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">eventDic.ContainsKey(chaosEventType))
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">eventDic.ContainsKey(chaosEventType))
+                    {
+                        IChaosEvent chaosEvent </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+                        </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (chaosEventType)
+                        {
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU75:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU75();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU50:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU50();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU25:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU25();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Memory:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Memory();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Threads:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Threads();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceException:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_ServiceException();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceTimeout:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_ServiceTimeout();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Ports:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Ports();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                        }
+
+                        </span><span style="color: #0000ff;">if</span> (chaosEvent != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                        {
+                            eventDic.TryAdd(chaosEventType, chaosEvent);
+
+                            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> chaosEvent;
+                        }
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> eventDic[chaosEventType];
+        }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>&nbsp; &nbsp; 混沌事件注入（全局注入一次，每次调用都注入）</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> syncObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> eventObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> ChaosEventInjecter instance;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">private</span> ConcurrentDictionary&lt;ChaosEventType, IChaosEvent&gt;<span style="color: #000000;"> eventDic;
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">private</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;"> triggeredEvent;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">private</span><span style="color: #000000;"> ChaosEventInjecter()
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">11</span>             eventDic = <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, IChaosEvent&gt;<span style="color: #000000;">();
+</span><span style="color: #008080;">12</span>             triggeredEvent = <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;">();
+</span><span style="color: #008080;">13</span> }</pre>
+</div>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> SingletonInject(ChaosEventType chaosEventType, Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt; context = <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+        {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">triggeredEvent.ContainsKey(chaosEventType))
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (eventObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">triggeredEvent.ContainsKey(chaosEventType))
+                    {
+                        </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> GetOrCreateChaosEvent(chaosEventType);
+                        </span><span style="color: #0000ff;">if</span> (chaosEvent == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+                        chaosEvent.Inject(context);
+                        triggeredEvent.TryAdd(chaosEventType, chaosEventType);
+                    }
+                }
+            }
+        }</span></pre>
+</div>
+<p>&nbsp; <strong>按服务每次调用都注入</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> ServiceInject(List&lt;<span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> serviceId)
+        {
+            ChaosEventManager.GetIntance().StopInject </span>=<span style="color: #000000;"> StopInject;
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (ChaosEventManager.GetIntance().IsEmpty())
+            {
+                StopInject();
+            }
+
+            </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> service <span style="color: #0000ff;">in</span><span style="color: #000000;"> serviceId)
+            {
+                </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> ChaosEventManager.GetIntance().GetChaosEvent(service);
+                </span><span style="color: #0000ff;">if</span> (chaosEvent != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                {
+                    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (chaosEvent.ChaosEventType)
+                    {
+                        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceException:
+                        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceTimeout:
+                            Inject(chaosEvent.ChaosEventType, chaosEvent.ChaosValue);
+                            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                        </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                            SingletonInject(chaosEvent.ChaosEventType, chaosEvent.ChaosValue);
+                            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                    }
+                }
+            }
+        }</span></pre>
+</div>
+<p><strong>&nbsp; 停止混沌注入</strong></p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> StopInject()
+        {
+            </span><span style="color: #0000ff;">if</span> (triggeredEvent == <span style="color: #0000ff;">null</span> &amp;&amp; triggeredEvent.Count == <span style="color: #800080;">0</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+            </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> chaosEventType <span style="color: #0000ff;">in</span><span style="color: #000000;"> triggeredEvent)
+            {
+                </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> GetOrCreateChaosEvent(chaosEventType.Key);
+                </span><span style="color: #0000ff;">if</span> (chaosEvent == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+                chaosEvent.Stop();
+            }
+
+            triggeredEvent </span>= <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;">();
+        }</span></pre>
+</div>
+<p>&nbsp; 完整的<strong>ChaosEventInjecter</strong>代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('9e48c752-de04-4759-97eb-95718db36abc')"><img id="code_img_closed_9e48c752-de04-4759-97eb-95718db36abc" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_9e48c752-de04-4759-97eb-95718db36abc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('9e48c752-de04-4759-97eb-95718db36abc',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_9e48c752-de04-4759-97eb-95718db36abc" class="cnblogs_code_hide">
+<pre> <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 混沌事件注入器
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ChaosEventInjecter
+    {
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> syncObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> eventObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> ChaosEventInjecter instance;
+
+        </span><span style="color: #0000ff;">private</span> ConcurrentDictionary&lt;ChaosEventType, IChaosEvent&gt;<span style="color: #000000;"> eventDic;
+
+        </span><span style="color: #0000ff;">private</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;"> triggeredEvent;
+
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> ChaosEventInjecter()
+        {
+            eventDic </span>= <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, IChaosEvent&gt;<span style="color: #000000;">();
+            triggeredEvent </span>= <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;">();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> ChaosEventInjecter GetIntance()
+        {
+            </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    {
+                        instance </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> ChaosEventInjecter();
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> instance;
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> SingletonInject()
+        {
+            </span><span style="color: #0000ff;">var</span> eventType = System.Configuration.ConfigurationManager.AppSettings[<span style="color: #800000;">"</span><span style="color: #800000;">Chaos.Event</span><span style="color: #800000;">"</span><span style="color: #000000;">];
+            </span><span style="color: #0000ff;">if</span> (eventType != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                ChaosEventType chaosEvent </span>= (ChaosEventType)Enum.Parse(<span style="color: #0000ff;">typeof</span><span style="color: #000000;">(ChaosEventType), eventType.ToString());
+
+                SingletonInject(chaosEvent);
+            }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> ServiceInject(List&lt;<span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> serviceId)
+        {
+            ChaosEventManager.GetIntance().StopInject </span>=<span style="color: #000000;"> StopInject;
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (ChaosEventManager.GetIntance().IsEmpty())
+            {
+                StopInject();
+            }
+
+            </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> service <span style="color: #0000ff;">in</span><span style="color: #000000;"> serviceId)
+            {
+                </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> ChaosEventManager.GetIntance().GetChaosEvent(service);
+                </span><span style="color: #0000ff;">if</span> (chaosEvent != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                {
+                    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (chaosEvent.ChaosEventType)
+                    {
+                        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceException:
+                        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceTimeout:
+                            Inject(chaosEvent.ChaosEventType, chaosEvent.ChaosValue);
+                            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                        </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                            SingletonInject(chaosEvent.ChaosEventType, chaosEvent.ChaosValue);
+                            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                    }
+                }
+            }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> SingletonInject(ChaosEventType chaosEventType, Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt; context = <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+        {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">triggeredEvent.ContainsKey(chaosEventType))
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (eventObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">triggeredEvent.ContainsKey(chaosEventType))
+                    {
+                        </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> GetOrCreateChaosEvent(chaosEventType);
+                        </span><span style="color: #0000ff;">if</span> (chaosEvent == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+                        chaosEvent.Inject(context);
+                        triggeredEvent.TryAdd(chaosEventType, chaosEventType);
+                    }
+                }
+            }
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> StopInject()
+        {
+            </span><span style="color: #0000ff;">if</span> (triggeredEvent == <span style="color: #0000ff;">null</span> &amp;&amp; triggeredEvent.Count == <span style="color: #800080;">0</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+            </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> chaosEventType <span style="color: #0000ff;">in</span><span style="color: #000000;"> triggeredEvent)
+            {
+                </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> GetOrCreateChaosEvent(chaosEventType.Key);
+                </span><span style="color: #0000ff;">if</span> (chaosEvent == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+                chaosEvent.Stop();
+            }
+
+            triggeredEvent </span>= <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;ChaosEventType, ChaosEventType&gt;<span style="color: #000000;">();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Inject(ChaosEventType chaosEventType, Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt; context = <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+        {
+            </span><span style="color: #0000ff;">var</span> chaosEvent =<span style="color: #000000;"> GetOrCreateChaosEvent(chaosEventType);
+            </span><span style="color: #0000ff;">if</span> (chaosEvent == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+            chaosEvent.Inject(context);
+        }
+
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> IChaosEvent GetOrCreateChaosEvent(ChaosEventType chaosEventType)
+        {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">eventDic.ContainsKey(chaosEventType))
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">eventDic.ContainsKey(chaosEventType))
+                    {
+                        IChaosEvent chaosEvent </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+                        </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (chaosEventType)
+                        {
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU75:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU75();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU50:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU50();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.CPU25:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_HighCPU25();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Memory:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Memory();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Threads:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Threads();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceException:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_ServiceException();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.ServiceTimeout:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_ServiceTimeout();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> ChaosEventType.Ports:
+                                chaosEvent </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Chaos_Ports();
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                        }
+
+                        </span><span style="color: #0000ff;">if</span> (chaosEvent != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                        {
+                            eventDic.TryAdd(chaosEventType, chaosEvent);
+
+                            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> chaosEvent;
+                        }
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> eventDic[chaosEventType];
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><span style="font-size: 15px;"><strong>&nbsp; 2.&nbsp;ChaosEventManager</strong></span></p>
+<p>&nbsp; &nbsp; 混沌事件管理类，负责从Redis中实时获取每个服务配置的混沌事件，支持混沌事件的定时更新10s：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('94ef2e79-32bc-483e-8351-440c6d5e3eb3')"><img id="code_img_closed_94ef2e79-32bc-483e-8351-440c6d5e3eb3" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_94ef2e79-32bc-483e-8351-440c6d5e3eb3" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('94ef2e79-32bc-483e-8351-440c6d5e3eb3',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_94ef2e79-32bc-483e-8351-440c6d5e3eb3" class="cnblogs_code_hide">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ChaosEventManager
+    {
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> syncObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> ChaosEventManager instance;
+
+        </span><span style="color: #0000ff;">private</span> ConcurrentDictionary&lt;<span style="color: #0000ff;">string</span>, ChaosEvent&gt;<span style="color: #000000;"> eventDic;
+
+        CacheService service </span>= CacheService.GetInstance(<span style="color: #800000;">"</span><span style="color: #800000;">DefaultPool</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+        </span><span style="color: #0000ff;">public</span> Action StopInject { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> ChaosEventManager()
+        {
+            eventDic </span>= <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;<span style="color: #0000ff;">string</span>, ChaosEvent&gt;<span style="color: #000000;">();
+            GetAllChaosEvents();
+
+            StartUpdateTask();
+        }
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> StartUpdateTask()
+        {
+            </span><span style="color: #0000ff;">var</span> task = <span style="color: #0000ff;">new</span> Task(() =&gt;<span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span><span style="color: #000000;">)
+                {
+                    Thread.Sleep(</span><span style="color: #800080;">10000</span><span style="color: #000000;">);
+                    GetAllChaosEvents();
+                }
+            }, TaskCreationOptions.LongRunning);
+
+            task.ContinueWith((t) </span>=&gt;<span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (t.IsFaulted)
+                    StartUpdateTask();
+            });
+
+            task.Start();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> ChaosEventManager GetIntance()
+        {
+            </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    {
+                        instance </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> ChaosEventManager();
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> instance;
+        }
+
+        </span><span style="color: #0000ff;">public</span> ChaosEvent GetChaosEvent(<span style="color: #0000ff;">string</span><span style="color: #000000;"> serviceId)
+        {
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (eventDic.ContainsKey(serviceId))
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> eventDic[serviceId];
+
+            </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsEmpty()
+        {
+            </span><span style="color: #0000ff;">return</span> eventDic == <span style="color: #0000ff;">null</span> || eventDic.Count == <span style="color: #800080;">0</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> GetAllChaosEvents()
+        {
+            </span><span style="color: #0000ff;">var</span> newEventDic = <span style="color: #0000ff;">new</span> ConcurrentDictionary&lt;<span style="color: #0000ff;">string</span>, ChaosEvent&gt;<span style="color: #000000;">();
+            </span><span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> client =<span style="color: #000000;"> service.GetClient())
+            {
+
+                List</span>&lt;<span style="color: #0000ff;">string</span>&gt; keys = client.GetHashKeys(<span style="color: #800000;">"</span><span style="color: #800000;">ChaosEvents</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                </span><span style="color: #0000ff;">if</span> (keys != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    keys.ForEach(x </span>=&gt; newEventDic.TryAdd(x, client.GetValueFromHash&lt;ChaosEvent&gt;(<span style="color: #800000;">"</span><span style="color: #800000;">ChaosEvents</span><span style="color: #800000;">"</span><span style="color: #000000;">, x)));
+            }
+
+            </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> item <span style="color: #0000ff;">in</span><span style="color: #000000;"> newEventDic)
+            {
+                eventDic[item.Key] </span>=<span style="color: #000000;"> item.Value;
+            }
+
+            </span><span style="color: #0000ff;">if</span> (newEventDic.Count == <span style="color: #800080;">0</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">if</span> (StopInject != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    StopInject();
+        }
+    }</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><span style="font-size: 16px;"><strong>三、在HSF、API网关、中间件SDK层面依赖注入混沌事件注入器</strong></span></p>
+<p>&nbsp; 在HSF服务调用时增加混沌实验事件AOP注入</p>
+<p>&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190330200631419-1399788288.png" alt="" /></p>
+<p>&nbsp; API网关、中间件SDK类似的方法进行注入。</p>
+<p><strong>&nbsp;同时我们设计了一个混沌事件注入工具：支持混沌事件实时注入、取消、仿真模拟执行：</strong></p>
+<p>&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190330200951635-1131789747.png" alt="" /></p>
+<p>&nbsp; 分享：仿真模拟执行的效果，例如CPU25%使用率：</p>
+<p>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190330201041484-322935023.png" alt="" /></p>
+<p>&nbsp;以上工具和设计思路，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/3/30</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-03-30 20:12</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10628751" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10628751);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10628751, cb_entryCreatedDate = '2019-03-30 20:12', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

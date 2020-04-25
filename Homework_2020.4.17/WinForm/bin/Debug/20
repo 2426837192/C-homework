@@ -3,29 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="never" />
-    <meta property="og:description" content="写在前面 随着系统并发量越来越高，Tomcat所占用的内存就会越来越大，如果对Tomcat的内存管理不当，则可能会引发Tomcat内存溢出的问题，那么，如何防止Tomcat内存溢出呢？我们今天就来一起" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="Canvas(3) 绘制饼状图 有关canvas之前有写过两篇文章 1、 &amp;quot;Canvas(1) 概述&#x2B;简单示例&amp;quot; 2、 &amp;quot;Canvas(2) 绘制折线图&amp;quot; 在绘" />
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>【高并发】高并发环境下如何防止Tomcat内存溢出？看完我懂了！！ - 冰河团队 - 博客园</title>
+    <title> Canvas(3)---绘制饼状图 - 雨点的名字 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/bluesky/bundle-bluesky.min.css?v=nIYPSqBALS6DuGAjaXk5hWfDv_C8bPXulypjfPAZ-d4" />
-    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/binghe001/custom.css?v=xb7lYj2J1ysiNILqcCn5g76IIu4=" />
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/bluesky/bundle-bluesky-mobile.min.css?v=s2piIyFV3NYqZWTmizb6uafQjmZFRhUBr8YMAdV85mA" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/sea/bundle-sea.min.css?v=Jpv_XRZqv7HnW0FXxHohZmb1TG6nYuWdNSwqJML5lHA" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/qdhxhz/custom.css?v=Bolzv6XSKMsp3nHS960tjJVuNq0=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/sea/bundle-sea-mobile.min.css?v=GEzW0neGdNE-VMws0ftJENKA__n-moeEPmS2Y9XCJis" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/binghe001/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/binghe001/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/binghe001/wlwmanifest.xml" />
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/qdhxhz/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/qdhxhz/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/qdhxhz/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 578171;
-        var currentBlogApp = 'binghe001';
+        var currentBlogId = 326226;
+        var currentBlogApp = 'qdhxhz';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'BlueSky';
+        var skinName = 'sea';
     </script>
     
     
@@ -33,169 +33,450 @@
 </head>
 <body>
     <a name="top"></a>
-    
-    
-<!--done-->
-<div id="home">
+    <div id="page_begin_html">
+        <a href="https://github.com/dunwu" class="github-corner"></a><style>.github-corner:hover .octo-arm { }</style>
+
+
+
+<link rel="stylesheet" href="https://files.cnblogs.com/files/jingmoxukong/cnblog.min.css">
+<style>
+
+ h2 {
+    background: #2B6695;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 0 0 1px #5F5A4B, 1px 1px 6px 1px rgba(10, 10, 0, 0.5);
+    color: #FFFFFF;
+    font-family:"微软雅黑", "宋体", "黑体", Arial;
+    font-size: 18px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 25px;
+    margin: 18px 0 !important;
+    padding: 8px 0 5px 5px;
+    text-shadow: 2px 2px 3px #222222;
+}
+h3 {
+    background: #5B9600;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 0 0 1px #5F5A4B, 1px 1px 6px 1px rgba(10, 10, 0, 0.5);
+    color: #FFFFFF;
+    font-family:"微软雅黑", "宋体", "黑体", Arial;
+    font-size: 13px;
+    font-weight: bold;
+    height: 24px;
+    line-height: 20px;
+    margin: 12px 0 !important;
+    padding: 5px 0 5px 10px;
+    text-shadow: 2px 2px 3px #222222;
+}
+
+/*生成博客目录的CSS*/
+#uprightsideBar{
+    font-size:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    text-align:left;
+    position:fixed;/*将div的位置固定到距离top:50px，right:0px的位置，这样div就会处在最右边的位置，距离顶部50px*/
+    top:50px;
+    right:0px;
+    width: auto;
+    height: auto; 
+}
+#sideBarTab{
+    float:left;
+    width:30px; 
+    border:1px solid #e5e5e5;
+    border-right:none;
+    text-align:center;
+    background:#ffffff;
+}
+
+#sideBarContents{
+    float:left;
+    overflow:auto; 
+    overflow-x:hidden;!important;
+    width:200px;
+    min-height:108px;
+    max-height:460px;
+    border:1px solid #e5e5e5;
+    border-right:none; 
+    background:#ffffff;
+}
+#sideBarContents dl{
+    margin:0;
+    padding:0;
+}
+
+#sideBarContents dt{
+    margin-top:5px;
+    margin-left:5px;
+}
+
+#sideBarContents dd, dt {
+    cursor: pointer;
+}
+
+#sideBarContents dd:hover, dt:hover {
+    color:#A7995A;
+}
+#sideBarContents dd{
+    margin-left:20px;
+}
+</style>
+    </div>
+    <!--done-->
 <div id="header">
-	<div id="blogTitle">
-        <a id="lnkBlogLogo" href="https://www.cnblogs.com/binghe001/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
-		
+	
 <!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/binghe001/">冰河团队</a>
-</h1>
-<h2>
-
-</h2>
-
-
-
-
+<div class="header">
+	<div class="headerText">
+		<a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/qdhxhz/">雨点的名字</a>
+<br>
 		
-	</div><!--end: blogTitle 博客的标题和副标题 -->
-	<div id="navigator">
-		
-<ul id="navList">
-<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
-博客园</a>
-</li>
-<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/binghe001/">
+
+
+	</div>
+</div>
+
+
+</div>
+
+<div id="mytopmenu">
+	
+		<div id="mylinks">
+
+ &nbsp;
+
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/qdhxhz/">
 首页</a>
-</li>
-<li>
+ &nbsp;
+
 
 <a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
 新随笔</a>
-</li>
-<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E5%86%B0%E6%B2%B3%E5%9B%A2%E9%98%9F">
-联系</a></li>
-<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/binghe001/rss/">
-订阅</a>
-<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
-<li>
+ &nbsp;
+
+ &nbsp;
+
+
+&nbsp;
+
 <a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
 管理</a>
-</li>
-</ul>
 
 
-		<div class="blogStats">
-			
-			<span id="stats_post_count">随笔 - 
-17&nbsp; </span>
-<span id="stats_article_count">文章 - 
-0&nbsp; </span>
-<span id="stats-comment_count">评论 - 
-28</span>
+</div>
+		<DIV id="mystats">随笔-
+308&nbsp;
+评论-
+336&nbsp;
+文章-
+1&nbsp;
+<!--trackbacks-<partial name="./Shared/_PingTrackCount.cshtml" model="BlogServer.Web.Models.DetailBlogPage" />-->
 
-			
-		</div><!--end: blogStats -->
-	</div><!--end: navigator 博客导航栏 -->
-</div><!--end: header 头部 -->
-
-<div id="main">
-	<div id="mainContent">
-	<div class="forFlow">
-		<div id="post_detail">
-    <!--done-->
-    <div id="topics">
-        <div class="post">
-            <h1 class = "postTitle">
-                
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/binghe001/p/12729409.html">【高并发】高并发环境下如何防止Tomcat内存溢出？看完我懂了！！</a>
-
-            </h1>
-            <div class="clear"></div>
-            <div class="postBody">
-                
+</DIV>
+	
+</div>
+<div id="centercontent">
+	<div id="post_detail">
+<div class="post">
+	<h1 class = "postTitle">
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/qdhxhz/p/12405780.html"> Canvas(3)---绘制饼状图</a>
+</h1>
+	
 <div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <h2 id="写在前面">写在前面</h2>
-<blockquote>
-<p>随着系统并发量越来越高，Tomcat所占用的内存就会越来越大，如果对Tomcat的内存管理不当，则可能会引发Tomcat内存溢出的问题，那么，如何防止Tomcat内存溢出呢？我们今天就来一起探讨下这个问题。</p>
-</blockquote>
-<p>防止Tomcat内存溢出可以总结为两个方案：一个是设置Tomcat启动的初始内存，一个是防止Tomcat所用的JVM内存溢出。接下来，我们就分别对这两种方案作出简单的介绍。</p>
-<h2 id="设置启动初始内存">设置启动初始内存</h2>
-<p>其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xms -Xmx等选项可进行设置。</p>
-<p><strong>实例</strong></p>
-<p>以下给出1G内存环境下java jvm 的参数设置参考：</p>
-<pre><code class="language-bash">JAVA_OPTS=&quot;-server -Xms800m -Xmx800m  -XX:PermSize=64M -XX:MaxNewSize=256m -XX:MaxPermSize=128m -Djava.awt.headless=true &quot;
-JAVA_OPTS=&quot;-server -Xms768m -Xmx768m -XX:PermSize=128m -XX:MaxPermSize=256m -XX:NewSize=192m -XX:MaxNewSize=384m&quot;
-CATALINA_OPTS=&quot;-server -Xms768m -Xmx768m -XX:PermSize=128m -XX:MaxPermSize=256m -XX:NewSize=192m -XX:MaxNewSize=384m&quot;
+    <h1 id="canvas3---绘制饼状图"><center> Canvas(3)---绘制饼状图</center></h1>
+<p>有关canvas之前有写过两篇文章</p>
+<p>1、<a href="https://www.cnblogs.com/qdhxhz/p/12389291.html">Canvas(1)---概述+简单示例</a></p>
+<p>2、<a href="https://www.cnblogs.com/qdhxhz/p/12398464.html">Canvas(2)---绘制折线图</a></p>
+<p>在绘制饼状图之前，我们先要理解什么是圆弧,如何在画布中绘制文字等等。所以这里将绘制饼状图理解拆分成以下几个步骤：</p>
+<pre><code>1、理解圆弧
+2、绘制一段圆弧
+3、绘制一个扇形
+4、绘制一个六等圆
+5、绘制一个根据数据的饼图
+6、绘制在画布中心的一段文字
+7、绘制完整饼状图
 </code></pre>
-<p><strong>Linux</strong></p>
-<p>在/usr/local/apache-tomcat-7.0/bin 目录下的catalina.sh文件中，添加：JAVA_OPTS='-Xms512m -Xmx1024m'，要加“m”说明是MB，否则就是KB了，在启动tomcat时会报内存不足。</p>
-<ul>
-<li>-Xms：初始值</li>
-<li>-Xmx：最大值</li>
-<li>-Xmn：最小值</li>
-</ul>
-<p><strong>Windows</strong></p>
-<p>在catalina.bat最前面加入set JAVA_OPTS=-Xms128m -Xmx350m，如果用startup.bat启动tomcat,OK设置生效。够成功的分配200M内存。但是如果不是执行startup.bat启动tomcat而是利用windows的系统服务启动tomcat服务,上面的设置就不生效了，就是说set JAVA_OPTS=-Xms128m -Xmx350m 没起作用。上面分配200M内存就OOM了。。<br>
-windows服务执行的是bin\tomcat.exe。它读取注册表中的值，而不是catalina.bat的设置。</p>
-<p><strong>解决办法</strong></p>
-<p>修改注册表</p>
-<pre><code class="language-bash">HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Tomcat Service Manager\Tomcat5\Parameters\JavaOptions
+<p><code>什么是弧度</code> 弧度是一种长度的描述单位, 一个半径的长度就表示一弧度，所以一个圆有2*π个弧度。</p>
+<h2 id="一、绘制一段圆弧"><font color=#FFD700> 一、绘制一段圆弧</font></h2>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000712778-1933763862.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;style&gt;
+        canvas {
+            border: 1px solid #00CED1;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas width=&quot;600&quot; height=&quot;400&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+    /*参数*/
+    /*坐标 x y 确定圆心  */
+    /*确定圆半径  r */
+    /*确定起始绘制的位置和结束绘制的位置 Math.PI=π 也就是180度*/
+    /*取得绘制的方向 direction 默认是顺时针 false 逆时针 true */
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+    ctx.arc(w/2,h/2,150,Math.PI/2,Math.PI,false);
+    ctx.stroke();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
-<p>原值为</p>
-<pre><code class="language-bash">-Dcatalina.home=&quot;C:\ApacheGroup\Tomcat 7.0&quot;
--Djava.endorsed.dirs=&quot;C:\ApacheGroup\Tomcat 7.0\common\endorsed&quot;
--Xrs
+<p><code>思考</code> 为什么这里四分之一的弧度是这个方向的,那是因为canvas指定了规则</p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000724536-1667223295.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="330">
+<p>所以上面 <strong>Math.PI/2</strong> 到 <strong>Math.PI</strong>，且是 <strong>顺时针</strong> 的。由这两点最终绘制的就是上面的效果了。</p>
+<br>
+<h2 id="二、绘制一个扇形"><font color=#FFD700> 二、绘制一个扇形</font></h2>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000733445-1235099502.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;!-- 上面部分代码和上面一致，这里就不重复写了 --&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+    /*在中心位置画一个半径150px的圆弧右上角 扇形  边  填充 */
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+    /*把起点放到圆心位置*/
+    ctx.moveTo(w/2,h/2);
+    ctx.arc(w/2,h/2,150,0,-Math.PI/2,true);
+    //注意这里采用的是填充 ，而不是闭合 ctx.closePath()
+    ctx.fill();
+&lt;/script&gt;
 </code></pre>
-<p>加入 -Xms300m -Xmx350m<br>
-重起tomcat服务，设置生效。</p>
-<h2 id="防止所用的jvm内存溢出">防止所用的JVM内存溢出</h2>
-<h3 id="1javalangoutofmemoryerror-java-heap-space"><strong>1.java.lang.OutOfMemoryError: Java heap space</strong></h3>
-<p><strong>解释</strong></p>
-<p>Heap size 设置</p>
-<p>JVM堆的设置是指java程序运行过程中JVM可以调配使用的内存空间的设置.JVM在启动的时候会自动设置Heap size的值，其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xms -Xmx等选项可进行设置。Heap size 的大小是Young Generation 和Tenured Generaion 之和。</p>
-<p>提示：在JVM中如果98％的时间是用于GC且可用的Heap size 不足2％的时候将抛出此异常信息。</p>
-<p>提示：Heap Size 最大不要超过可用物理内存的80％，一般的要将-Xms和-Xmx选项设置为相同，而-Xmn为1/4的-Xmx值。</p>
-<p><strong>解决方法</strong></p>
-<p>手动设置Heap size</p>
-<p>修改TOMCAT_HOME/bin/catalina.bat，在“echo &quot;Using CATALINA_BASE: $CATALINA_BASE&quot;”上面加入以下代码。</p>
-<pre><code class="language-bash">set JAVA_OPTS=%JAVA_OPTS% -server -Xms800m -Xmx800m -XX:MaxNewSize=256m  
-set JAVA_OPTS=%JAVA_OPTS% -server -Xms800m -Xmx800m -XX:MaxNewSize=256m
+<br>
+<h2 id="三、绘制一个圆分成六等分颜色随机"><font color=#FFD700>三、绘制一个圆分成六等分颜色随机</font></h2>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000743061-247384804.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;!-- 上面部分代码和上面一致，这里就不重复写了 --&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+
+    /*分成几等分*/
+    var num = 6;
+    /*一份多少弧度*/
+    var angle = Math.PI * 2 / num;
+    /*原点坐标*/
+    var x0 = w / 2;
+    var y0 = h / 2;
+
+    /*获取随机颜色*/
+    var getRandomColor = function () {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    /*上一次绘制的结束弧度等于当前次的起始弧度*/
+    for (var i = 0; i &lt; num; i++) {
+        var startAngle = i * angle;
+        var endAngle = (i + 1) * angle;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.arc(x0, y0, 150, startAngle, endAngle);
+        /*随机颜色*/
+        ctx.fillStyle = getRandomColor();
+        ctx.fill();
+    }
+&lt;/script&gt;
 </code></pre>
-<p>或修改catalina.sh</p>
-<p>在“echo &quot;Using CATALINA_BASE: $CATALINA_BASE&quot;”上面加入以下行：</p>
-<pre><code class="language-java">JAVA_OPTS=&quot;$JAVA_OPTS -server -Xms800m -Xmx800m -XX:MaxNewSize=256m&quot;
+<br>
+<h2 id="四、绘制一个根据数据的饼图"><font color=#FFD700> 四、绘制一个根据数据的饼图</font></h2>
+<p>上面是平均分成了6等分，这里是根据具体的数据来按比例分成若干份。</p>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000753344-1126822504.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;!-- 上面部分代码和上面一致，这里就不重复写了 --&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+
+    //数据
+    var data = [5, 10, 15, 20];
+    /*1.需要把数据转出弧度 先计算总数*/
+    var total = 0;
+    data.forEach(function (item, i) {
+        total += item;
+    });
+    //2、计算每个数据所占的弧度
+    var angleList = [];
+    data.forEach(function (item, i) {
+        var angle = Math.PI * 2 * (item/total);
+        angleList.push(angle);
+    });
+   /* 3、获取随机颜色*/
+    var getRandomColor = function () {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    /*4.根据弧度绘制扇形*/
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+    var x0 = w/2;
+    var y0 = h/2;
+    var startAngle = 0;
+    angleList.forEach(function (item,i) {
+        /*上一次绘制的结束弧度等于当前次的起始弧度*/
+        var endAngle = startAngle + item;
+        ctx.beginPath();
+        ctx.moveTo(x0,y0);
+        ctx.arc(x0,y0,150,startAngle,endAngle);
+        ctx.fillStyle = getRandomColor();
+        ctx.fill();
+        /*记录当前的结束位置作为下一次的起始位置*/
+        startAngle = endAngle;
+    });
+&lt;/script&gt;
 </code></pre>
-<h3 id="2javalangoutofmemoryerror-permgen-space">2.java.lang.OutOfMemoryError: PermGen space</h3>
-<p><strong>原因</strong></p>
-<p>PermGen space的全称是Permanent Generation space,是指内存的永久保存区域，这块内存主要是被JVM存放Class和Meta信息的,Class在被Loader时就会被放到PermGen space中，它和存放类实例(Instance)的Heap区域不同,GC(Garbage Collection)不会在主程序运行期对PermGen space进行清理，所以如果你的应用中有很CLASS的话,就很可能出现PermGen space错误，这种错误常见在web服务器对JSP进行pre compile的时候。如果你的WEB APP下都用了大量的第三方jar, 其大小超过了jvm默认的大小(4M)那么就会产生此错误信息了。</p>
-<p><strong>解决方法</strong></p>
-<p>手动设置MaxPermSize大小</p>
-<p>修改TOMCAT_HOME/bin/catalina.bat（Linux下为catalina.sh），在代码<br>
-“echo &quot;Using CATALINA_BASE: $CATALINA_BASE&quot;”上面加入以下行：</p>
-<pre><code class="language-bash">set JAVA_OPTS=%JAVA_OPTS% -server -XX:PermSize=128M -XX:MaxPermSize=512m  
+<br>
+<h2 id="五、绘制在画布中心的一段文字"><font color=#FFD700> 五、绘制在画布中心的一段文字</font></h2>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000804814-476308420.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;style&gt;
+        canvas {
+            border: 1px solid #00CED1;
+            display: block;
+            margin: 100px auto;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas width=&quot;600&quot; height=&quot;400&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+    /*1.在画布的中心绘制一段文字*/
+    /*2.申明一段文字*/
+    var str = '武汉加油';
+    /*3.确定画布的中心*/
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+    /*4.画一个十字架在画布的中心*/
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.moveTo(w / 2, 0);
+    ctx.lineTo(w / 2, h);
+    ctx.strokeStyle = '#eee';
+    ctx.stroke();
+    /*5.绘制文本*/
+    ctx.beginPath();
+    ctx.strokeStyle = '#000';
+    var x0 = w/2;
+    var y0 = h/2;
+    /*注意：起点位置在文字的左下角*/
+    /*有文本的属性  尺寸 字体  左右对齐方式  垂直对齐的方式*/
+    ctx.font = '40px Microsoft YaHei';
+    /*左右对齐方式 (center left right start end) 基准起始坐标*/
+    ctx.textAlign = 'center';
+    /*垂直对齐的方式 基线 baseline(top,bottom,middle) 基准起始坐标*/
+    ctx.textBaseline = 'middle';
+    //ctx.direction = 'rtl';
+    //ctx.strokeText(str,x0,y0);
+    ctx.fillText(str,x0,y0);
+    /*6.画一个下划线和文字一样长*/
+    ctx.beginPath();
+    /*获取文本的宽度*/
+    console.log(ctx.measureText(str));
+    var width = ctx.measureText(str).width;
+    ctx.moveTo(x0-width/2,y0 + 20);
+    ctx.lineTo(x0+width/2,y0 + 20);
+    ctx.stroke();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
-<p>“echo &quot;Using CATALINA_BASE: $CATALINA_BASE&quot;”上面加入以下行：</p>
-<pre><code class="language-bash">set JAVA_OPTS=%JAVA_OPTS% -server -XX:PermSize=128M -XX:MaxPermSize=512m
+<br>
+<h2 id="六、绘制完整饼状图"><font color=#FFD700> 六、绘制完整饼状图</font></h2>
+<p>上面所做的都是为了整个饼状图做铺垫的。</p>
+<p><code>效果</code></p>
+<img src="https://img2020.cnblogs.com/blog/1090617/202003/1090617-20200304000816885-1968401575.jpg" style="border: 1px dashed rgba(255, 0, 0, 1)" width="500" height="333">
+<p><code>代码</code></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;style&gt;
+        canvas {
+            border: 1px solid #00CED1;
+            display: block;
+            margin: 100px auto;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas width=&quot;600&quot; height=&quot;400&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+    var myCanvas = document.querySelector('canvas');
+    var ctx = myCanvas.getContext('2d');
+
+    /*1.在画布的中心绘制一段文字*/
+    /*2.申明一段文字*/
+    var str = '武汉加油';
+    /*3.确定画布的中心*/
+    var w = ctx.canvas.width;
+    var h = ctx.canvas.height;
+    /*4.画一个十字架在画布的中心*/
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.moveTo(w / 2, 0);
+    ctx.lineTo(w / 2, h);
+    ctx.strokeStyle = '#eee';
+    ctx.stroke();
+    /*5.绘制文本*/
+    ctx.beginPath();
+    ctx.strokeStyle = '#000';
+    var x0 = w/2;
+    var y0 = h/2;
+    /*注意：起点位置在文字的左下角*/
+    /*有文本的属性  尺寸 字体  左右对齐方式  垂直对齐的方式*/
+    ctx.font = '40px Microsoft YaHei';
+    /*左右对齐方式 (center left right start end) 基准起始坐标*/
+    ctx.textAlign = 'center';
+    /*垂直对齐的方式 基线 baseline(top,bottom,middle) 基准起始坐标*/
+    ctx.textBaseline = 'middle';
+    //ctx.direction = 'rtl';
+    //ctx.strokeText(str,x0,y0);
+    ctx.fillText(str,x0,y0);
+    /*6.画一个下划线和文字一样长*/
+    ctx.beginPath();
+    /*获取文本的宽度*/
+    console.log(ctx.measureText(str));
+    var width = ctx.measureText(str).width;
+    ctx.moveTo(x0-width/2,y0 + 20);
+    ctx.lineTo(x0+width/2,y0 + 20);
+    ctx.stroke();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
-<p>catalina.sh文件的修改如下。</p>
-<p>Java代码</p>
-<pre><code class="language-bash">JAVA_OPTS=&quot;$JAVA_OPTS -server -XX:PermSize=128M -XX:MaxPermSize=512m&quot; 
+<br>
+<br>
+<pre><code>别人骂我胖，我会生气，因为我心里承认了我胖。别人说我矮，我就会觉得好笑，因为我心里知道我不可能矮。这就是我们为什么会对别人的攻击生气。
+攻我盾者，乃我内心之矛(11)
 </code></pre>
-<h3 id="3分析javalangoutofmemoryerror-permgen-space">3.分析java.lang.OutOfMemoryError: PermGen space</h3>
-<p>发现很多人把问题归因于： spring,hibernate,tomcat，因为他们动态产生类,导致JVM中的permanent heap溢出 。然后解决方法众说纷纭，有人说升级 tomcat版本到最新甚至干脆不用tomcat。还有人怀疑spring的问题，在spring论坛上讨论很激烈，因为spring在AOP时使用CBLIB会动态产生很多类。</p>
-<p>但问题是为什么这些王牌的开源会出现同一个问题呢，那么是不是更基础的原因呢？tomcat在Q&amp;A很隐晦的回答了这一点，我们知道这个问题，但这个问题是由一个更基础的问题产生。</p>
-<p>于是有人对更基础的JVM做了检查，发现了问题的关键。原来SUN 的JVM把内存分了不同的区，其中一个就是permenter区用来存放用得非常多的类和类描述。本来SUN设计的时候认为这个区域在JVM启动的时候就固定了，但他没有想到现在动态会用得这么广泛。而且这个区域有特殊的垃圾收回机制，现在的问题是动态加载类到这个区域后，gc根本没办法回收！</p>
-<p>对于以上两个问题，我的处理是：</p>
-<p>在catalina.bat的第一行增加：</p>
-<pre><code class="language-bash">set JAVA_OPTS=-Xms64m -Xmx256m -XX:PermSize=128M -XX:MaxNewSize=256m -XX:MaxPermSize=256m
-</code></pre>
-<p>在catalina.sh的第一行增加：</p>
-<pre><code class="language-bash">JAVA_OPTS= -Xms64m -Xmx256m -XX:PermSize=128M -XX:MaxNewSize=256m -XX:MaxPermSize=256m 
-</code></pre>
-<h2 id="写在最后">写在最后</h2>
-<blockquote>
-<p>如果觉得文章对你有点帮助，请微信搜索并关注「 <strong>冰河技术</strong> 」微信公众号，跟冰河学习高并发编程技术。</p>
-</blockquote>
-<p>最后，附上并发编程需要掌握的核心技能知识图，祝大家在学习并发编程时，少走弯路。</p>
-<p><img src="https://img-blog.csdnimg.cn/20200419004434474.jpg" alt="sandahexin_20200322"></p>
 
 </div>
 <div id="MySignature"></div>
@@ -205,24 +486,21 @@ set JAVA_OPTS=%JAVA_OPTS% -server -Xms800m -Xmx800m -XX:MaxNewSize=256m
     <div class="clear"></div>
     <div id="post_next_prev"></div>
 </div>
-            </div>
-            <div class="postDesc">posted @ 
-<span id="post-date">2020-04-19 00:47</span>&nbsp;
-<a href="https://www.cnblogs.com/binghe001/">冰河团队</a>&nbsp;
+	<div class="postDesc">posted on 
+<span id="post-date">2020-04-24 23:36</span>&nbsp;
+<a href="https://www.cnblogs.com/qdhxhz/">雨点的名字</a>&nbsp;
 阅读(<span id="post_view_count">...</span>)&nbsp;
 评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12729409" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12729409);return false;">收藏</a></div>
-        </div>
-	    
-	    
-    </div><!--end: topics 文章、评论容器-->
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12405780" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12405780);return false;">收藏</a></div>
 </div>
+
+
 <script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
 <script>markdown_highlight();</script>
 <script>
-    var allowComments = true, cb_blogId = 578171, cb_blogApp = 'binghe001', cb_blogUserGuid = '05b2a200-765e-4a35-ba19-08d6fd3e81b2';
-    var cb_entryId = 12729409, cb_entryCreatedDate = '2020-04-19 00:47', cb_postType = 1; 
+    var allowComments = true, cb_blogId = 326226, cb_blogApp = 'qdhxhz', cb_blogUserGuid = 'ba888294-2bd2-e611-845c-ac853d9f53ac';
+    var cb_entryId = 12405780, cb_entryCreatedDate = '2020-04-24 23:36', cb_postType = 1; 
     loadViewCount(cb_entryId);
 </script><a name="!comments"></a>
 <div id="blog-comments-placeholder"></div>
@@ -280,40 +558,215 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
         loadOptUnderPost();
         GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
     </script>
-</div>
-	</div><!--end: forFlow -->
-	</div><!--end: mainContent 主体内容容器-->
+</div></div>
 
-	<div id="sideBar">
-		<div id="sideBarMain">
-			
-<div id="sidebar_news" class="newsItem">
-            <script>loadBlogNews();</script>
-</div>
 
-			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+</div>
+<div id="leftcontent">
+	
+		<DIV id="leftcontentcontainer">
 			
-			<div id="leftcontentcontainer">
-				<div id="blog-sidecolumn"></div>
-                    <script>loadBlogSideColumn();</script>
-			</div>
-			
-		</div><!--end: sideBarMain -->
-	</div><!--end: sideBar 侧边栏容器 -->
-	<div class="clear"></div>
-	</div><!--end: main -->
-	<div class="clear"></div>
-	<div id="footer">
-		<!--done-->
-Copyright &copy; 2020 冰河团队
+
+
+			<div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                    <script>loadBlogDefaultCalendar();</script><br>
+			<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script></DIV>
+	
+</div>
+<!--done-->
+<div class="footer">
+	Powered by: <a href="http://www.cnblogs.com">博客园</a>
+	Copyright &copy; 2020 雨点的名字
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
+</div>
 
 
-	</div><!--end: footer -->
-</div><!--end: home 自定义的最大容器 -->
 
 
+
+
+    <div id="page_end_html">
+        <script type="text/javascript">
+/*
+    功能：生成博客目录的JS工具
+    测试：IE8，火狐，google测试通过
+*/
+var BlogDirectory = {
+    /*
+        获取元素位置，距浏览器左边界的距离（left）和距浏览器上边界的距离（top）
+    */
+    getElementPosition:function (ele) {        
+        var topPosition = 0;
+        var leftPosition = 0;
+        while (ele){              
+            topPosition += ele.offsetTop;
+            leftPosition += ele.offsetLeft;        
+            ele = ele.offsetParent;     
+        }  
+        return {top:topPosition, left:leftPosition}; 
+    },
+
+    /*
+    获取滚动条当前位置
+    */
+    getScrollBarPosition:function () {
+        var scrollBarPosition = document.body.scrollTop || document.documentElement.scrollTop;
+        return  scrollBarPosition;
+    },
     
+    /*
+    移动滚动条，finalPos 为目的位置，internal 为移动速度
+    */
+    moveScrollBar:function(finalpos, interval) {
+
+        //若不支持此方法，则退出
+        if(!window.scrollTo) {
+            return false;
+        }
+
+        //窗体滚动时，禁用鼠标滚轮
+        window.onmousewheel = function(){
+            return false;
+        };
+          
+        //清除计时
+        if (document.body.movement) { 
+            clearTimeout(document.body.movement); 
+        } 
+
+        var currentpos =BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+
+        var dist = 0; 
+        if (currentpos == finalpos) {//到达预定位置，则解禁鼠标滚轮，并退出
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true; 
+        } 
+        if (currentpos < finalpos) {//未到达，则计算下一步所要移动的距离
+            dist = Math.ceil((finalpos - currentpos)/10); 
+            currentpos += dist; 
+        } 
+        if (currentpos > finalpos) { 
+            dist = Math.ceil((currentpos - finalpos)/10); 
+            currentpos -= dist; 
+        }
+        
+        var scrTop = BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+        window.scrollTo(0, currentpos);//移动窗口
+        if(BlogDirectory.getScrollBarPosition() == scrTop)//若已到底部，则解禁鼠标滚轮，并退出
+        {
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true;
+        }
+        
+        //进行下一步移动
+        var repeat = "BlogDirectory.moveScrollBar(" + finalpos + "," + interval + ")"; 
+        document.body.movement = setTimeout(repeat, interval); 
+    },
+    
+    htmlDecode:function (text){
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+    },
+
+    /*
+    创建博客目录，
+    id表示包含博文正文的 div 容器的 id，
+    mt 和 st 分别表示主标题和次级标题的标签名称（如 H2、H3，大写或小写都可以！），
+    interval 表示移动的速度
+    */
+    createBlogDirectory:function (id, mt, st, interval){
+         //获取博文正文div容器
+        var elem = document.getElementById(id);
+        if(!elem) return false;
+        //获取div中所有元素结点
+        var nodes = elem.getElementsByTagName("*");
+        //创建博客目录的div容器
+        var divSideBar = document.createElement('DIV');
+        divSideBar.className = 'uprightsideBar';
+        divSideBar.setAttribute('id', 'uprightsideBar');
+        var divSideBarTab = document.createElement('DIV');
+        divSideBarTab.setAttribute('id', 'sideBarTab');
+        divSideBar.appendChild(divSideBarTab);
+        var h2 = document.createElement('H2');
+        divSideBarTab.appendChild(h2);
+        var txt = document.createTextNode('目录导航');
+        h2.appendChild(txt);
+        var divSideBarContents = document.createElement('DIV');
+        divSideBarContents.style.display = 'none';
+        divSideBarContents.setAttribute('id', 'sideBarContents');
+        divSideBar.appendChild(divSideBarContents);
+        //创建自定义列表
+        var dlist = document.createElement("dl");
+        divSideBarContents.appendChild(dlist);
+        var num = 0;//统计找到的mt和st
+        mt = mt.toUpperCase();//转化成大写
+        st = st.toUpperCase();//转化成大写
+        //遍历所有元素结点
+        for(var i=0; i<nodes.length; i++)
+        {
+            if(nodes[i].nodeName == mt|| nodes[i].nodeName == st)    
+            {
+                //获取标题文本
+                var nodetext = nodes[i].innerHTML.replace(/<\/?[^>]+>/g,"");//innerHTML里面的内容可能有HTML标签，所以用正则表达式去除HTML的标签
+                nodetext = nodetext.replace(/ /ig, "");//替换掉所有的 
+                nodetext = BlogDirectory.htmlDecode(nodetext);
+                //插入锚        
+                nodes[i].setAttribute("id", "blogTitle" + num);
+                var item;
+                switch(nodes[i].nodeName)
+                {
+                    case mt:    //若为主标题 
+                        item = document.createElement("dt");
+                        break;
+                    case st:    //若为子标题
+                        item = document.createElement("dd");
+                        break;
+                }
+                
+                //创建锚链接
+                var itemtext = document.createTextNode(nodetext);
+                item.appendChild(itemtext);
+                item.setAttribute("name", num);
+                item.onclick = function(){        //添加鼠标点击触发函数
+                    var pos = BlogDirectory.getElementPosition(document.getElementById("blogTitle" + this.getAttribute("name")));
+                    if(!BlogDirectory.moveScrollBar(pos.top, interval)) return false;
+                };            
+                
+                //将自定义表项加入自定义列表中
+                dlist.appendChild(item);
+                num++;
+            }
+        }
+        
+        if(num == 0) return false; 
+        /*鼠标进入时的事件处理*/
+        divSideBarTab.onmouseenter = function(){
+            divSideBarContents.style.display = 'block';
+        }
+        /*鼠标离开时的事件处理*/
+        divSideBar.onmouseleave = function() {
+            divSideBarContents.style.display = 'none';
+        }
+
+        document.body.appendChild(divSideBar);
+    }
+    
+};
+
+window.onload=function(){
+    /*页面加载完成之后生成博客目录*/
+    BlogDirectory.createBlogDirectory("cnblogs_post_body","h2","h4",20);
+}
+</script>
+    </div>
 </body>
 </html>

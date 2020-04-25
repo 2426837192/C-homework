@@ -3,29 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="never" />
-    <meta property="og:description" content="Cilium架构 译自：http://docs.cilium.io/en/stable/architecture/ 本文档描述了Cilium的架构。它通过记录BPF数据路径(datapath)的钩子来" />
+    <meta name="referrer" content="origin" />
+    
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Cilium架构 (Cilium 2) - charlieroro - 博客园</title>
+    <title>2005 年 10月 8 日 随笔档案 - 拓荒者 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/coffee/bundle-coffee.min.css?v=pdMIVgsH8kXt-vOWnlL0N20TlHt3UyP9HzGgocfsP4s" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001.min.css?v=vmUk-3Bh8LDsKXwjNHs2GDiFna-ZMTUgOJzjUaXTlPA" />
     
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/coffee/bundle-coffee-mobile.min.css?v=na9bpAY4yh7uEWCcrXj3vfJM3VBse8YtU6-5fUUQPz0" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001-mobile.min.css?v=cJiDsI1JAuHHd-OAUWJeyE5JMXXsG4mmuUi2rVmEK1c" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/charlieroro/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/charlieroro/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/charlieroro/wlwmanifest.xml" />
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/dstang2000/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/dstang2000/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/dstang2000/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 412196;
-        var currentBlogApp = 'charlieroro';
+        var currentBlogId = 9986;
+        var currentBlogApp = 'dstang2000';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'coffee';
+        var skinName = 'AnotherEon001';
     </script>
     
     
@@ -34,328 +34,146 @@
 <body>
     <a name="top"></a>
     
-    
-<!--done-->
-<div id="home">
+    <div id="wrapper">
 <div id="header">
-	<div id="blogTitle">
-	<a href="https://www.cnblogs.com/charlieroro/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>			
-		
-<!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/charlieroro/">charlieroro</a>
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/dstang2000/">拓荒者 dstang2000 <a href="http://www.dstang.com"><font size=-1 color=red>http://www.dstang.com</font></a>
 </h1>
-<h2>
+<div id="subtitle">
+KISS：Keeping things that work，Improve systems procedures styles，Start things of value，Stop things of no value 
+</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 
+4, 文章 - 
+1, 评论 - 
+17, 引用 - 
+0</div>
 
+</div>
+
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	
+        
+<p class="date">
+	<span>		  
+	<a>2005年10月8日</a>
+	</span>
+</p>
+
+		<div class="post">
+			<h2>
+
+<a class="postTitle2" href="https://www.cnblogs.com/dstang2000/archive/2005/10/08/250188.html">
+    使用 NDoc 对 asp.net (Web) 项目产生文档的方法
+</a>
 </h2>
-
-
-
-
-		
-	</div><!--end: blogTitle 博客的标题和副标题 -->
-</div><!--end: header 头部 -->
-
-<div id="main">
-	<div id="mainContent">
-	<div class="forFlow">
-		<div id="navigator">
+			<div class="postbody">
 			
-<ul id="navList">
-	<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+
+    <div class="c_b_p_desc">
+摘要：NDoc是一个非常好的文档生成工具，现在还出了一些不错的中文版，如破宝的http://www.percyboy.com/w/ndoc/。但是由于NDoc现在的版本1.3 不支持Web项目，也不支持中文文件名，下面提出一个临时性的解决办法1. 解决不认识http://的Web项目的问题方法： （1）将.csproj文件复制一份，其中将项目类型由&#8220;Web&#8221;改为&#8220;Lo...            <a href="https://www.cnblogs.com/dstang2000/archive/2005/10/08/250188.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+			</div>
+			<p class="postfoot">		
+			
+
+posted @ 2005-10-08 12:12 拓荒者 阅读 (1104) 评论 (3)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=250188" rel="nofollow">
+    编辑
+</a>
+
+			</p>
+		</div>
+
+
+
+
+
+
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
 博客园</a>
-</li>
-	<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/charlieroro/">
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/dstang2000/">
 首页</a>
-</li>
-	<li>
+
+    </li>
+    <li>
+        
 
 <a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
 新随笔</a>
-</li>
-	<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/charlieroro">
-联系</a></li>
-	<li>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%8B%93%E8%8D%92%E8%80%85">
+联系</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/dstang2000/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/dstang2000/rss/">
+    <img src="/skins/anothereon001/images/xml.gif" alt="订阅" />
+</a>
+    </li>
+    <li>
+        
 <a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
 管理</a>
-</li>
-	<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/charlieroro/rss/">
-订阅</a>
-	
-<a id="blog_nav_rss_image" href="https://www.cnblogs.com/charlieroro/rss/">
-    <img src="/skins/coffee/images/xml.gif" alt="订阅" />
-</a></li>
+
+    </li>
 </ul>
 
 
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
 
-			<div class="blogStats">
-				
-				<!--done-->
-随笔- 
-100&nbsp;
-文章- 
-6&nbsp;
-评论- 
-7&nbsp;
-
-
-
-				
-			</div><!--end: blogStats -->
-		</div><!--end: navigator 博客导航栏 -->
-		<div id="post_detail">
-<!--done-->
-<div id="topics">
-	<div class="post">
-		<h1 class = "postTitle">
-			
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/charlieroro/p/12728891.html">Cilium架构 (Cilium 2)</a>
-
-		</h1>
-		<div class="clear"></div>
-		<div class="postBody">
-			
-<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <h2 id="cilium架构">Cilium架构</h2>
-<p>译自：<a href="http://docs.cilium.io/en/stable/architecture/">http://docs.cilium.io/en/stable/architecture/</a></p>
-<p>本文档描述了Cilium的架构。它通过记录BPF数据路径(datapath)的钩子来实现Cilium数据路径，那么Cilium数据路径是如何与容器编排层继承，以及如何在各层(如BPF数据路径和Cilium代理)之间更新对象的？</p>
-<h3 id="数据路径">数据路径</h3>
-<p>Linux内核在网络栈中支持一个BPF钩子集，使用这些勾子可以允许BPF程序(<em>即使用回调函数运行</em>)。Cilium数据路径使用这些钩子加载BPF程序，当一起使用时，这些程序会创建更高级别的网络结构。</p>
-<p>下面是Cilium使用的钩子列表以及简要概述。更详细的介绍可以参见<a href="http://docs.cilium.io/en/stable/bpf/#bpf-guide">BPF and XDP Reference Guide</a></p>
-<ul>
-<li>
-<p>XDP：XDP BPF钩子最早可以在网络驱动中使用，在报文接收时触发BPF程序。由于BPF程序能够(在进行其他处理前)直接作用于报文数据，因此能够获取最好的报文处理性能。该钩子可用于过滤程序丢弃恶意的或非期望的流量，以及其他常见的DDOS防护机制。</p>
-</li>
-<li>
-<p>Ingress/Egress流控：与XDP相同，附加到tc(traffic control) ingress钩子的BPF程序会附加到网络接口上，但是在网络栈完成初始的报文处理之后运行。该钩子在协议栈的L3层之前运行，但可以访问与报文相关的大多数元数据，适用于本地节点的处理，如配置L3/L4 endpoint策略以及限制达到endpoints的流量。对于面向设备的网络，tc ingress钩子可以与上面的XDP钩子耦合。完成该操作后，可以合理地假设此时的大多数流量是合法的，并且目的地是主机。</p>
-<p>容器通常会使用一个虚拟设备，称为veth对，可以看作是连接容器和主机的虚拟线路。通过连接到这对veth的主机侧的TC ingress钩子，Cilium可以监控和对一个容器中存在的所有流量强制执行制订的策略<em>(在主机侧监控和限制本机的容器的流量</em>)。通过将一个BPF程序附加到与每个容器关联的veth对上，然后使用另外一个附加到tc ingress钩子上的BPF程序将所有网络流量路由到主机侧的虚拟设备上，这样Cilium也可以监控和对到达本节点或节点中存在的流量强制执行制订的策略(在容器侧监控和限制本机的流量)。</p>
-<p>根据场景的需要，容器也可能使用ipvlan设备进行连接。这种模式下，主机的物理设备作为ipvlan的master，容器中的虚拟ipvlan设备被设置为slave模式。使用ipvlan而不是veth对的好处是可以减少网络栈将报文推送到位于另一个网络命名空间中的ipvlan slave所需要的资源，因此可以获得更好的延迟结果。为了使用Cilium配置L3/L4 endpoint策略，需要将用于tc的BPF程序附加到容器网络命名空间中的ipvlan slave设备的tc egress钩子上。例如，与在ipvlan master的tc ingress钩子上运行的另一个BPF程序相结合，这样也可以限制节点上的传入流量。</p>
-</li>
-<li>
-<p>socket操作：socket操作钩子附加到一个特定的cgroup上，根据TCP时间运行。Cilium将BPF socket操作程序附加到根cgroup上，并使用该程序监控TCP状态变更，特别是对ESTABLISHED 状态变更。当一个socket转换为ESTABLISHED 状态，如果TCP socket的对端位于本地节点上(可能是本地代理)，则会附加socket 发送/接受程序。</p>
-</li>
-<li>
-<p>socket 发送/接收：当一个TCP socket执行发送操作时会运行socket 发送/接受钩子。此时，钩子或检查消息，最终会丢弃该消息，会将该消息发送到TCP层，会直接将该消息重定向到另外一个socket。如下所述，Cilium使用它来加速数据路径的重定向。</p>
-</li>
-</ul>
-<p>将上述钩子与虚拟接口(cilium_host, cilium_net)，可选的overlay接口(cilium_vxlan)，Linux内核加密支持以及用户空间代理(Envoy)相结合，Cilium可以创建如下网络对象。</p>
-<ul>
-<li>
-<p>预过滤(prefilter)：预过滤对象会运行一个XDP程序，并提供一组预过滤规则来过滤网络上的流量来达到更好的性能。特别使用一组Cilium agent提供的CIDR映射来查找报文，如在目的地不是一个有效的endpoint时丢弃报文，或允许网络栈处理该报文。可以很容易通过扩展来构建一个新的预过滤标准/能力。</p>
-</li>
-<li>
-<p>endpoint策略：endpoint策略对象实现了Cilium endpoint enforcement。它使用一个映射来查找与身份相关的报文，且该层(layer)可以很好地扩展到多个endpoint。取决于本层的策略，可能会丢弃报文，转发到本地的endpoint或服务对象，或转发到L7策略对象，用于后续L7规则。它是Cilium数据路径中负责报文和身份映射以及执行L3和L4策略的主要对象。</p>
-</li>
-<li>
-<p>服务(service)：服务对象会根据该对象接收到的每个报文的目的IP(可能包含目的端口)来进行映射查找。如果找到一个匹配的表项，则将该报文转发到一个配置到的L3/L4 endpoint上。服务块可以使用TC ingress钩子在任何接口上实现一个独立的负载均衡，或集成到endpoint策略对象中。</p>
-</li>
-<li>
-<p>L3加密：在ingress上，可以使用L3加密对象标识需要解密的报文，然后将报文传递到Linux xfrm(转换)层进行解密，在解密报文后，该对象会接受报文，然后将报文传递到网络栈，后续给其他对象进行处理。根据网络的模式(直接路由或overlay)，可能是BPF尾部调用或将数据包传递到下一个对象的Linux路由栈。解密需要的密钥编码在IPsec首部，这样我们不需要在ingress上使用映射查找来定位解密密钥。</p>
-<p>在egress上，会首先对目的地址执行映射查找来缺点该报文是否被加密，如果被加密，则找出目的节点上可用的密钥。在选出的节点上挑选最近使用的可用的密钥，并将报文标记为加密。然后改报文会传递到Linux xfrm层执行加密。当接收到现在加密的报文时，它被传递到下一层，或通过发送到Linux 栈进行路由，或(如果正在使用overlay)直接执行尾部调用。</p>
-</li>
-<li>
-<p>socket layer Enforcement：socket layer Enforcement会使用两个钩子，socket 操作钩子和socket 发送/接收钩子来监控并附加到所有与Cilium管理的endpoint相关的TCP socket，包括L7代理。socket操作钩子会识别要加速的候选套接字，这些候选套接字包括所有的本地节点连接(endpoint到endpoint)以及所有到Cilium代理的连接。这些标识的连接将会包含所有由socket 发送/接收钩子处理的消息，并且使用sockmap快速重定向进行加速。快速重定向保证Cilium中实现的所有策略对于关联的socket/endpoint映射均有效，并假设它们会直接向对端socket发送消息。sockmap send/recv钩子确保消息不会被上面提到的任何对象处理。</p>
-</li>
-<li>
-<p>L7策略：L7策略对象将代理的流量重定向到一个Cilium用户空间代理实例中。Cilium使用一个Envoy作为它的用户空间代理。Envoy要么转发流量，要么会根据配置的L7策略生成拒绝消息。</p>
-</li>
-</ul>
-<p>Cilium通过连接这些组件实现了灵活高效的数据路径。下面将展示连接单个节点上的endpoint可能存在的数据流(进入一个endpoint以及endpoint到网络设备)。在每种情况下，都会通过一个额外的图显示启用socket layer Enforcement时的可用的TCP加速路径。</p>
-<h3 id="endpoint到endpoint">Endpoint到Endpoint</h3>
-<p>首先展示的是本地endpoint到endpoint的数据流，在engress和ingress上使用了L7策略。紧跟着展示了启用socket layer Enforcement时相同endpoint到endpoint的数据流走向。通过对TCP流量启用socket layer Enforcement，发起连接的握手将遍历endpoint策略对象，直到TCP的状态变为ESTABLISHED。最后只有L7策略对象允许之后，连接状态才能变为ESTABLISHED。</p>
-<p><img src="http://docs.cilium.io/en/stable/_images/cilium_bpf_endpoint.svg" alt="../_images/cilium_bpf_endpoint.svg"></p>
-<h3 id="从endpoint出站egress-from-endpoint">从Endpoint出站(Egress from Endpoint)</h3>
-<p>下面展示了本地endpoint使用overlay网络进行出站的场景。overlay网络流量通过与overlay对应的Linux网络接口进行转发。默认的overlay接口称为cilium_vxlan。与上面类似，通过启用socket layer Enforcement并使用L7代理可以避免在TCP通信的endpoint和L7策略之间运行endpoint策略块。L3加密块可以在启用时加密报文。</p>
-<p><img src="http://docs.cilium.io/en/stable/_images/cilium_bpf_egress.svg" alt="../_images/cilium_bpf_egress.svg"></p>
-<h3 id="入站到endpointingress-to-endpoin">入站到Endpoint(Ingress to Endpoin)</h3>
-<p>最后展示了使用overlay网络时入站到endpoint的场景。与上面类似，通过启用socket layer Enforcement可以避免在代理和endpoint socket之间遍历策略集。如果接收到的报文被加密，则首先需要进行解密，并使用正常流程处理。</p>
-<p><img src="http://docs.cilium.io/en/stable/_images/cilium_bpf_ingress.svg" alt="../_images/cilium_bpf_ingress.svg"></p>
-<h3 id="基于veth的数据路径和基于ipvlan的数据路径的对比">基于veth的数据路径和基于ipvlan的数据路径的对比</h3>
-<p>|基于ipvlan的数据路径目前仅在技术预览中，用于实验目的。该限制会在后续的Cilium发布中移除。</p>
-<p>默认的Cilium CNI运行在基于veth的数据路径模式下，由于所有的BPF程序都由Cilium在主机网络命名空间之外进行管理，因此使用该模式可以获得更大的灵活性，这样容器就可以被授予其命名空间（如CAP_NET_ADMIN）的特权，而不会影响安全性(因为容器无法访问主机中的BPF enforcement点)。鉴于BPF程序是从主机的网络名称空间附加的，BPF也能够接管并有效地管理本地容器到主机之间的转发逻辑。但由于veth模式下，网络栈内部在处理从一个veth设备到位于另一个网络命名空间中的对端设备时需要重新遍历网络栈，因此会造成延迟。当在本地Cilium endpoint间进行通信时，这种出站到入站的转变需要执行两次，对于正在到达或从主机发送出去的数据包，则为一次。</p>
-<p>对于更具延迟优化的数据路径，Cilium CNI还支持ipvlan L3/L3S模式，但存在大量限制。为了支持老的且不存在ipvlan发夹模式的内核，Cilium会在tc egress层将BPF程序附加到位于容器的网络命名空间内的slave设备上，意味着这种数据路径模式只能用于使用非CAP_NET_ADMIN 和CAP_NET_RAW特权运行的容器。ipvlan使用内部转发逻辑直接进行slave-to-slave或slave-to-master的重定向，因此BPF程序本身不会执行到设备的转发。由于网络栈不需要像基于veth的数据路径一样在处理外部报文时重新遍历，因此能够更有效地切换命名空间。主机到容器网络命名空间的切换直接发生在L3层，在后续的ingress处理中无需排队和重新调度。在本地endpoint之间通信的情况下，会执行一次egress-to-ingress的且华北，而不必执行两次。</p>
-<p>目前的实现中，Cilium的ipvlan模式还有很多限制需要在接下来的工作中解决：目前还无法启用NAT64以及通过代理启用L7策略enforcement。当前未启用到本地endpoint的服务负载平衡以及容器到主机的本地通信。如果需要使用这些功能，仅以使用基于veth的数据路径模式。</p>
-<p>Cilium的CNI ipvlan模式运行在Cilium daemon中，例如<code>--datapath-mode=ipvlan --ipvlan-master-device=bond0</code>，后者通常指定了物理网络设备，同时也作为ipvlan的master设备。注意在ipvlan 数据路径模式在kubernetes中部署在L3S模式下。确保有一个稳定运行内核，包括以下ipvlan修复：<a href="https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git/commit/?id=d5256083f62e2720f75bb3c5a928a0afe47d6bc3">d5256083f62e</a>。</p>
-<p>更多BPF的特性参见 <a href="http://docs.cilium.io/en/stable/bpf/#bpf-guide">BPF and XDP Reference Guide</a>，可以在 <a href="http://docs.cilium.io/en/stable/envoy/#envoy">Envoy</a> 章节了解如何扩展L7策略。</p>
-<h3 id="bpf-映射的限制">BPF 映射的限制</h3>
-<p>所有创建的BPF映射都有上限限制。超出限制的插入将会失败，从而限制了数据路径的可伸缩性。下表展示了映射的默认值。每个限制都可以在源代码中进行修改，如果需要，可以根据请求添加配置选项。</p>
-<table>
-<thead>
-<tr>
-<th>Map Name</th>
-<th>Scope</th>
-<th>Default Limit</th>
-<th>Scale Implications</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Connection Tracking</td>
-<td>node or endpoint</td>
-<td>1M TCP/256K UDP</td>
-<td>Max 1M concurrent TCP connections, max 256K expected UDP answers</td>
-</tr>
-<tr>
-<td>Endpoints</td>
-<td>node</td>
-<td>64k</td>
-<td>Max 64k local endpoints + host IPs per node</td>
-</tr>
-<tr>
-<td>IP cache</td>
-<td>node</td>
-<td>512K</td>
-<td>Max 256K endpoints (IPv4+IPv6), max 512k endpoints (IPv4 or IPv6) across all clusters</td>
-</tr>
-<tr>
-<td>Load Balancer</td>
-<td>node</td>
-<td>64k</td>
-<td>Max 64k cumulative backends across all services across all clusters</td>
-</tr>
-<tr>
-<td>Policy</td>
-<td>endpoint</td>
-<td>16k</td>
-<td>Max 16k allowed identity + port + protocol pairs for specific endpoint</td>
-</tr>
-<tr>
-<td>Proxy Map</td>
-<td>node</td>
-<td>512k</td>
-<td>Max 512k concurrent redirected TCP connections to proxy</td>
-</tr>
-<tr>
-<td>Tunnel</td>
-<td>node</td>
-<td>64k</td>
-<td>Max 32k nodes (IPv4+IPv6) or 64k nodes (IPv4 or IPv6) across all clusters</td>
-</tr>
-</tbody>
-</table>
-<h3 id="kubernetes集成">kubernetes集成</h3>
-<p>下图显示了kube-proxy安装的iptables规则和Cilium安装的iptables规则的集成。</p>
-<p><img src="http://docs.cilium.io/en/stable/_images/kubernetes_iptables.svg" alt="../_images/kubernetes_iptables.svg"></p>
-
-</div>
-<div id="MySignature"></div>
-<div class="clear"></div>
-<div id="blog_post_info_block">
-    <div id="blog_post_info"></div>
-    <div class="clear"></div>
-    <div id="post_next_prev"></div>
-</div>
-		</div>
-		<div class="postDesc">posted @ 
-<span id="post-date">2020-04-19 00:20</span>&nbsp;
-<a href="https://www.cnblogs.com/charlieroro/">charlieroro</a>&nbsp;
-阅读(<span id="post_view_count">...</span>)&nbsp;
-评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12728891" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12728891);return false;">收藏</a></div>
-	</div>
-	
-	
-</div><!--end: topics 文章、评论容器-->
-<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
-<script>markdown_highlight();</script>
-<script>
-    var allowComments = true, cb_blogId = 412196, cb_blogApp = 'charlieroro', cb_blogUserGuid = '06daae99-82ab-46fb-482e-08d54dbac325';
-    var cb_entryId = 12728891, cb_entryCreatedDate = '2020-04-19 00:20', cb_postType = 1; 
-    loadViewCount(cb_entryId);
-</script><a name="!comments"></a>
-<div id="blog-comments-placeholder"></div>
-<script>
-    var commentManager = new blogCommentManager();
-    commentManager.renderComments(0);
-</script>
-
-<div id="comment_form" class="commentform">
-    <a name="commentform"></a>
-    <div id="divCommentShow"></div>
-    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
-    <div id="comment_form_container"></div>
-    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
-    <div id="ad_t2"></div>
-    <div id="opt_under_post"></div>
-    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
-    <script>
-        var googletag = googletag || {};
-        googletag.cmd = googletag.cmd || [];
-    </script>
-    <script>
-        googletag.cmd.push(function () {
-            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
-            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
-            googletag.pubads().enableSingleRequest();
-            googletag.enableServices();
-        });
-    </script>
-    <div id="cnblogs_c1" class="c_ad_block">
-        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
-    </div>
-    <div id="under_post_news"></div>
-    <div id="cnblogs_c2" class="c_ad_block">
-        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
-            <script>
-                if (new Date() >= new Date(2018, 9, 13)) {
-                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
-                }
-            </script>
-        </div>
-    </div>
-    <div id="under_post_kb"></div>
-    <div id="HistoryToday" class="c_ad_block"></div>
-    <script type="text/javascript">
-        fixPostBody();
-        deliverBigBanner();
-setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
-        deliverAdC1();
-        deliverAdC2();
-        loadNewsAndKb();
-        loadBlogSignature();
-LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
-        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
-        loadOptUnderPost();
-        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
-    </script>
-</div></div>
-
-
-	</div><!--end: forFlow -->
-	</div><!--end: mainContent 主体内容容器-->
-
-	<div id="sideBar">
-		<div id="sideBarMain">
-			
 <div id="sidebar_news" class="newsItem">
             <script>loadBlogNews();</script>
 </div>
 
-			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script></div>
-			
-			<DIV id="leftcontentcontainer">
-				<div id="blog-sidecolumn"></div>
+<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-			</DIV>
-			
-		</div><!--end: sideBarMain -->
-	</div><!--end: sideBar 侧边栏容器 -->
-	<div class="clear"></div>
-	</div><!--end: main -->
-	<div class="clear"></div>
-	<div id="footer">
-		<!--done-->
-Copyright &copy; 2020 charlieroro
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br />
+	
+	
+<a href="https://www.cnblogs.com/" id="Footer1_Hyperlink3" style="font-size: 12px; font-family: Verdana">博客园</a>
+	<br />
+	Copyright &copy; 2020 拓荒者
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
+</p>
 
 
-	</div><!--end: footer -->
-</div><!--end: home 自定义的最大容器 -->
+</div>
+</div>
 
 
     

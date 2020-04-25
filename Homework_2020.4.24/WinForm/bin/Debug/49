@@ -1,0 +1,359 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="最近在将原有代码迁移.NET Core, 代码的迁移基本很快，当然也遇到了不少坑，重构了不少，后续逐步总结分享给大家。今天总结分享一下ConfigurationManager遇到的一个问题。 先说一下" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>.NetCore技术研究-ConfigurationManager在单元测试下的坑 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11514840.html">.NetCore技术研究-ConfigurationManager在单元测试下的坑</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>最近在将原有代码迁移.NET Core, 代码的迁移基本很快，当然也遇到了不少坑，重构了不少，后续逐步总结分享给大家。今天总结分享一下ConfigurationManager遇到的一个问题。</p>
+<p>先说一下场景：</p>
+<p>&nbsp; &nbsp;迁移.NET Core后，已有的配置文件，我们希望做到兼容，比如说app.config和web.config,</p>
+<p>&nbsp; &nbsp;这样配置文件尽可能地和.NET Framework是一套，尽可能低保持一致。比如：<strong>appSettings</strong>、<strong>自定义configSection</strong>等等。</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:true;">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;configuration&gt;
+  &lt;configSections&gt;
+    &lt;<strong>section</strong> name="CustomConfigs" type="ClassLibraryNetStandard.CustomConfigHandler, ClassLibraryNetStandard"/&gt;
+  &lt;/configSections&gt;
+  &lt;<strong>CustomConfigs</strong>&gt;
+    &lt;CustomConfig name="service1" order="0" reflectconfig="ClassLibraryNetStandard.TestService, ClassLibraryNetStandard"/&gt;
+    &lt;CustomConfig name="service2" order="1" reflectconfig="ClassLibraryNetStandard.TestService2, ClassLibraryNetStandard"/&gt;
+  &lt;/CustomConfigs&gt;  
+  &lt;<strong>appSettings</strong>&gt;
+    &lt;add key="service" value="service1"/&gt;
+  &lt;/appSettings&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+<p>　对于上面配置读取我们做了以下几个事情</p>
+<p>&nbsp;<span style="color: #0000ff;"><strong> &nbsp;1. 添加Nuget：System.Configuration.ConfigurationManager</strong></span></p>
+<p><span style="color: #0000ff;"><strong>&nbsp; &nbsp;2. 保证原有自定义Section配置相关的代码、读取配置的代码，迁移到.NET Core后编译通过</strong></span></p>
+<p><span style="color: #0000ff;"><strong>&nbsp; &nbsp;3. 修改配置文件、单元测试</strong></span></p>
+<p><span style="font-size: 16px;"><strong>&nbsp;一、添加Nuget：System.Configuration.ConfigurationManager</strong></span></p>
+<p>&nbsp; &nbsp;搜索System.Configuration.ConfigurationManager：找到Nuget包，并添加引用：</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912194511923-2025421538.png" alt="" /></p>
+<p><span style="font-size: 16px;"><strong>二、保证原有自定义Section配置相关的代码、读取配置的代码，迁移到.NET Core后编译通过</strong></span></p>
+<p>&nbsp; 示例代码中，自定义配置类<strong>CustomConfig</strong>：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ClassLibraryNetStandard
+{
+    public class CustomConfig
+    {
+        public string Name { get; set; }
+
+        public string ReflectConfig { get; set; }
+
+        public int Order { get; set; }
+    }
+}
+</pre>
+</div>
+<p>&nbsp; 同时对应的Section配置节解析类：<strong>CustomConfigHandler</strong>，实现接口：<strong>System.Configuration.IConfigurationSectionHandler</strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml;
+
+namespace ClassLibraryNetStandard
+{
+   public class CustomConfigHandler : System.Configuration.IConfigurationSectionHandler
+    {
+        public object Create(object parent, object configContext, XmlNode section)
+        {
+            var configs = new List&lt;CustomConfig&gt;();
+
+            //获取配置文件中自定义节点值  
+            foreach (XmlNode childNode in section.ChildNodes)
+            {
+                string name = null;
+                var config = new CustomConfig();
+                if (childNode.Attributes["name"] != null)
+                {
+                    name = childNode.Attributes["name"].Value;
+                    config.Name = name;
+
+                    if (childNode.Attributes["order"] != null)
+                    {
+                        config.Order = Convert.ToInt32(childNode.Attributes["order"].Value);
+                    }
+                    if (childNode.Attributes["reflectconfig"] != null)
+                    {
+                        config.ReflectConfig = childNode.Attributes["reflectconfig"].Value;
+                    }                  
+
+                    configs.Add(config);
+                }
+            }
+
+            return configs;
+        }
+    }
+}
+</pre>
+</div>
+<p>&nbsp; &nbsp; 同时，我们编写了一个简单的配置管理类：<strong>CustomConfigManager</strong>，其中有配置读取方法，直接读取配置文件：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">        public static List&lt;CustomConfig&gt; GetCustomConfigs()
+        {
+            var sectionConfig = System.Configuration.ConfigurationManager.GetSection("CustomConfigs");
+            if (sectionConfig != null)
+            {
+                return  sectionConfig as List&lt;CustomConfig&gt;;
+            }
+
+            return null;
+        }
+</pre>
+</div>
+<p>　　</p>
+<p>　　这里我们使用了.NET Standard 2.0 library project，代码编译通过：</p>
+<p style="margin-left: 30px;"><img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912194744056-1031905606.png" alt="" /></p>
+<p>1&gt;------ 已启动全部重新生成: 项目: ClassLibraryNetStandard, 配置: Debug Any CPU ------<br />1&gt;C:\Program Files\dotnet\sdk\3.0.100-preview3-010431\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets(151,5): message NETSDK1057: 你正在使用 .NET Core 的预览版。请查看 https://aka.ms/dotnet-core-preview<br />1&gt;ClassLibraryNetStandard -&gt; <strong>C:\Users\***\source\repos\NETFrameworkTest\ClassLibraryNetStandard\bin\Debug\netstandard2.0\ClassLibraryNetStandard.dll</strong><br />========== 全部重新生成: 成功 1 个，失败 0 个，跳过 0 个 ==========</p>
+<p>&nbsp; <span style="font-size: 16px;"><strong>&nbsp;三、修改配置文件、单元测试</strong></span></p>
+<p>&nbsp; 添加MSTest单元测试工程：&nbsp; &nbsp;</p>
+<p style="margin-left: 30px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912201159306-1004605598.png" alt="" /></p>
+<p>&nbsp; &nbsp;增加App.config配置文件：</p>
+<p style="margin-left: 30px;">&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912200310263-1217895109.png" alt="" /></p>
+<p>&nbsp; &nbsp;在单元测试方法中测试配置的读取：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">       [TestMethod]
+        public void ConfigTest()
+        {
+            var configs = ClassLibraryNetStandard.CustomConfigManager.GetCustomConfigs();
+            Assert.IsNotNull(configs);
+        }
+</pre>
+</div>
+<p>　　原本以为，肯定可以获取到配置，<span style="color: #ff0000;">实际获取的configs是null。</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 换了个Console类的应用，同样的配置文件读取，一点没有问题：</p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912201804305-1293961702.png" alt="" /></p>
+<p>&nbsp; &nbsp; &nbsp; 对比看了一下这两个工程，发现除了实际编译生成的配置文件名称不同，其他都一样。</p>
+<p>&nbsp; &nbsp; &nbsp; 问题肯定出在了单元测试工程上。Google了一下：有以下发现：&nbsp; &nbsp; &nbsp; &nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:true;">MSTest is running as testhost.dll, which means that ConfigurationManager is reading settings from testhost.dll.config when executing under .NET core. <br />It will look for testhost.dll.config where the testhost.dll is located as the accepted answer states. <br />What is not mentioned is that it will also look for testhost.dll.config in the location where you have your test dlls.
+</pre>
+</div>
+<p>　　一句话：MSTest以testhost.dll运行，去取的配置文件是testhost.dll.config</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 这太尴尬了，直接无语，不过有两个解决方案：</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 1.&nbsp;直接在单元测试工程中将app.config文件改为：testhost.dll.config</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 2.&nbsp;修改单元测试工程文件，配置编译后事件，动态copy生成testhost.dll.config</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201909/23525-20190912202415532-191189605.png" alt="" /></p>
+<p>&nbsp; &nbsp; &nbsp; 试过之后，果真可以了，问题解决，分享给大家。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/9/12</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-09-12 20:25</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11514840" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11514840);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11514840, cb_entryCreatedDate = '2019-09-12 20:25', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

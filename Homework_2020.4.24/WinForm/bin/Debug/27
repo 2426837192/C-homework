@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="Windbg程序调试是.Net高级开发需要掌握的必备技能，分析内存泄露、分析高CPU、分析线程阻塞、分析内存对象、分析线程堆栈、Live Dedugging。这个领域可以说一个技能&#x2B;场景化应用的结合，" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列1-常用命令说明&amp;示例 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9866361.html">Windbg程序调试系列1-常用命令说明&amp;示例</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>Windbg程序调试是.Net高级开发需要掌握的必备技能，分析内存泄露、分析高CPU、分析线程阻塞、分析内存对象、分析线程堆栈、Live Dedugging。这个领域可以说一个技能+场景化应用的结合，如果单学Windbg命令，不理解实际Troubleshooting中的作用，是没有意义的。所以，准备搞个系列文章，3~5篇，分享给大家：</p>
+<p>工欲善其事必先利其器，我们先从常用的命令和示例说起。</p>
+<p>1. 先准备一个Dump文件，建议使用64位应用程序。例如：64位IIS应用的w3wp进程，64位exe进程都可以。如果抓Dump文件，很简单：<strong>任务管理器-进程-右键【创建转储文件】</strong></p>
+<p>2. 下载并安装Windbg，下载链接：<a href="https://developer.microsoft.com/zh-cn/windows/downloads/windows-10-sdk" target="_blank">https://developer.microsoft.com/zh-cn/windows/downloads/windows-10-sdk</a>，一路下一步，选择【Debugging Tools for Windows】</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028174507855-782595853.png" alt="" /></p>
+<p>&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028174824062-1712958526.png" alt="" /></p>
+<p>打开之后，Ctrl+D，打开第一步抓的Dump文件，开始今天的常用命令介绍。</p>
+<p>1. 加载SOS调试扩展dll</p>
+<div class="cnblogs_code">
+<pre>.loadby sos clr</pre>
+</div>
+<p>2.&nbsp;设置并重新加载调试符号文件的命令，将.Net 一些重要的pdb文件下载到指定的路径中，加载到Windbg调试环境中，这样，我们就可以看到程序在哪一行出错，运行到哪一行了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> .symfix+ C:\symbols
+<span style="color: #008080;">2</span> .reload</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028175543915-1227420377.png" alt="" /></p>
+<p>3. 打印当前调试符号文件搜索路径</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; .sympath</pre>
+</div>
+<p>&nbsp;4.&nbsp;查看线程池，分析并确认CPU使用率，可以使用哪个指令</p>
+<div class="cnblogs_code">
+<p>0:000&gt; <strong>!threadpool</strong><br />CPU utilization: 2%<br />Worker Thread: Total: 19 Running: 2 Idle: 17 MaxLimit: 32767 MinLimit: 4<br />Work Request in Queue: 0<br />--------------------------------------<br />Number of Timers: 2<br />--------------------------------------<br />Completion Port Thread:Total: 4 Free: 4 MaxFree: 8 CurrentLimit: 4 MaxLimit: 1000 MinLimit: 4</p>
+
+
+
+
+
+
+</div>
+<p>5. 查看线程的整体运行情况</p>
+<div class="cnblogs_code">
+<pre>!threads</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028182023219-698477395.png" alt="" /></p>
+<p>6. 查询指定线程的调用堆栈，例如34号线程</p>
+<div class="cnblogs_code">
+<pre> ~34s</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028182210552-2120518015.png" alt="" /></p>
+<div class="cnblogs_code">
+<pre>!clrstack</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028182250019-236384532.png" alt="" /></p>
+<p>7. 查看线程消耗CPU资源情况</p>
+<div class="cnblogs_code">
+<pre>!runaway</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028182342231-1537983547.png" alt="" /></p>
+<p>第一列是线程号，第二列是Total的CPU使用时间</p>
+<p>8.&nbsp;查看当前线程栈上所有对象的信息，Dump stack objects</p>
+<div class="cnblogs_code">
+<pre>!dso</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028183012699-1006694578.png" alt="" /></p>
+<p>9.&nbsp;查询内存中指定对象的信息 Dump object</p>
+<div class="cnblogs_code">
+<pre>!<span style="color: #0000ff;">do</span></pre>
+</div>
+<p>10.&nbsp;查询内存中指定数组对象的信息 Dump Array</p>
+<div class="cnblogs_code">
+<pre>!da</pre>
+</div>
+<p>11.&nbsp;查看当前线程的堆栈和每行堆栈上的变量信息</p>
+<div class="cnblogs_code">
+<pre>!clrstack -a</pre>
+</div>
+<p>12.&nbsp;Windbg 附加进程调试，启用CLR异常捕获、查看异常、查看异常所在线程堆栈、禁用CLR异常调试、退出调试</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">sxe clr
+g
+</span>!<span style="color: #000000;">pe
+</span>!<span style="color: #000000;">clrstack
+sxd clr
+qd</span></pre>
+</div>
+<p>13.&nbsp;查看托管堆上内存对象的分布、三个代的信息</p>
+<div class="cnblogs_code">
+<pre>!eeheap -gc</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181028184642730-1490445375.png" alt="" /></p>
+<p>14.&nbsp;查看托管堆上加载的Dll</p>
+<div class="cnblogs_code">
+<pre>!eeheap -loader</pre>
+</div>
+<p>15.&nbsp;什么是内存对象代提升,垃圾回收中未回收的对象也称为幸存者，并会被提升到下一代。通过代提升的情况，可以分析对象的<span style="text-decoration: underline;">存活时间</span></p>
+<p><span style="text-decoration: underline;">&nbsp;</span></p>
+<p>16.&nbsp;查询内存中各类对象的总个数和总内存占用</p>
+<div class="cnblogs_code">
+<pre>!dumpheap  -stat</pre>
+</div>
+<p>&nbsp;17.&nbsp;查询内存中大对象的个数和对象大小</p>
+<div class="cnblogs_code">
+<pre>!dumpheap -stat  -mt -min <span style="color: #800080;">85000</span></pre>
+</div>
+<p>18.&nbsp;查看内存的析构队列的指令</p>
+<div class="cnblogs_code">
+<pre>!finalizequeue</pre>
+</div>
+<p>19.&nbsp;请输入查看对象000000123557DFC0的gcroot的指令</p>
+<div class="cnblogs_code">
+<pre>!gcroot 000000123557DFC0</pre>
+</div>
+<p>20.&nbsp;查看线程阻塞的指令</p>
+<div class="cnblogs_code">
+<pre>!syncblk</pre>
+</div>
+<p>21.&nbsp;查看Dump中所有System.Net.Sockets.Socket对象统计信息的指令</p>
+<div class="cnblogs_code">
+<pre>!dumpheap -type System.Net.Sockets.Socket -stat</pre>
+</div>
+<p>&nbsp;</p>
+<p>还有很多，同时Windbg还支持Mex扩展插件，可以参考我博客中的链接：</p>
+<p><a href="https://www.cnblogs.com/tianqing/p/9369693.html" target="_blank">Windbg-Mex扩展使用总结</a></p>
+<p>&nbsp;</p>
+<p>接下来，我会以内存泄露的场景，给大家分享Windbg分享的思路和方法。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/10/28</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-10-28 20:08</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9866361" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9866361);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9866361, cb_entryCreatedDate = '2018-10-28 20:08', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

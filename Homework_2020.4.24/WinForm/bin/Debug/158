@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中，我们主要介绍了Azure IoT Hub的基本概念、架构、特性： Azure IoT 技术研究系列1-入门篇 本文中，我们继续深入研究，做一个起步示例程序：模拟设备注册到Azure IoT" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure IoT 技术研究系列2-设备注册到Azure IoT Hub - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6719607.html">Azure IoT 技术研究系列2-设备注册到Azure IoT Hub</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中，我们主要介绍了Azure IoT Hub的基本概念、架构、特性：</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl00_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/6711060.html">Azure IoT 技术研究系列1-入门篇</a></p>
+<p>本文中，我们继续深入研究，做一个起步示例程序：模拟设备注册到Azure IoT Hub, 设备到云通信，云到设备通信。</p>
+<p>整体篇幅较大，我们先来第一步：将模拟设备注册到Azure IoT Hub。</p>
+<p>首先，我们需要有一个联网的设备，例如树莓派、Win10 IoT设备等等，只要能联网，Azure IoT Hub有编程SDK即可，为了方便演示，本篇中我们做了一个模拟设备：</p>
+<p>TeldPile001，即001号充电桩。</p>
+<p>然后，在正式编码前，需要我们在Azure New Portal中，添加自己的IoT Hub.</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416185823243-792882280.png" alt="" /></p>
+<p>输入名称后，选择定价和缩放级别，这里我们做测试，使用<strong>免费的F1</strong>即可，同时新建资源组。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416185838462-685673503.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416192521634-946966328.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>创建完成后，IoTTest即可使用了。</p>
+<p>使用前，我们需要确定两个重要的连接配置：<strong>主机名和连接字符串</strong>，我们选择&ldquo;概述&rdquo;，右侧有个主机名，先复制下来备用。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416190212102-580715336.png" alt="" /></p>
+<p>然后选择共享访问策略：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416190309399-1333033757.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416190333774-1474136984.png" alt="" /></p>
+<p>将连接字符串-主秘钥，复制保存下来备用。</p>
+<p>开始编码吧，我们创建一个Console工程叫做&ldquo;RegisterDevice&rdquo;，用于设备注册到Azure IoT Hub。同时添加重要的Nuget引用：</p>
+<p>Microsoft.Azure.Devices</p>
+<p>本文测试用的：&lt;package id="Microsoft.Azure.Devices" version="1.2.4" targetFramework="net451" /&gt;</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416190749962-1951945234.png" alt="" /></p>
+<p>两个核心的Namespace：</p>
+<p> using Microsoft.Azure.Devices;<br />    using Microsoft.Azure.Devices.Common.Exceptions;</p>
+<p>核心类：Microsoft.Azure.Devices.RegistryManager：设备注册管理器</p>
+<p>我们设计一个方法，添加或者获取设备信息：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;"> 2</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 添加或获取设备信息
+</span><span style="color: #008080;"> 3</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">Task</span><span style="color: #808080;">&lt;/returns&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">async</span><span style="color: #000000;"> Task AddOrGetDeviceAsync()
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">string</span> deviceId = <span style="color: #800000;">"</span><strong><span style="color: #800000;">TeldPile001</span></strong><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">            Device device;
+</span><span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">try</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">11</span>                 device = <span style="color: #0000ff;">await</span> registryManager.<strong>AddDeviceAsync</strong>(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Device(deviceId));
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">13</span>             <span style="color: #0000ff;">catch</span><span style="color: #000000;"> (DeviceAlreadyExistsException)
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">15</span>                 device = <span style="color: #0000ff;">await</span><span style="color: #000000;"> registryManager.<strong>GetDeviceAsync</strong>(deviceId);
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">生成设备标识: {0}</span><span style="color: #800000;">"</span><span style="color: #000000;">, device.Authentication.SymmetricKey.PrimaryKey);
+</span><span style="color: #008080;">19</span>         }</pre>
+</div>
+<p>Main函数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">3</span>             <span style="color: #0000ff;">var</span> connectionString = <span style="color: #800000;">"</span><span style="color: #800000;">HostName=IoTTest.***-***;SharedAccessKeyName=iothubowner;SharedAccessKey=******</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">4</span>             <span style="color: #0000ff;">var</span> registryManager =<span style="color: #000000;"> RegistryManager.CreateFromConnectionString(connectionString);
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">            AddOrGetDeviceAsync().Wait();
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">            Console.ReadLine();
+</span><span style="color: #008080;">7</span>         }</pre>
+</div>
+<p>Run,</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416191228618-583323924.png" alt="" /></p>
+<p>可以看到，TeldPile001这个设备已经注册到我们自己的Azure IoT Hub中了。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170416191445352-1156446819.png" alt="" /></p>
+<p>以上便是，将设备注册到Azure IoT Hub的介绍，不复杂，微软的设计还是比较赞的，简单、快速、易用。</p>
+<p>下一篇我们继续研究设备到云、云到设备的通信。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2014/4/16</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-04-16 19:17</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6719607" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6719607);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6719607, cb_entryCreatedDate = '2017-04-16 19:17', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

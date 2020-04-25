@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="时间序列数据库，简称时序数据库，Time Series&amp;#160;Database，一个全新的领域，最大的特点就是每个条数据都带有Time列。 时序数据库到底能用到什么业务场景，答案是：监控系统。 B" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>互联网级监控系统必备-时序数据库之Influxdb技术 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/7152940.html">互联网级监控系统必备-时序数据库之Influxdb技术</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>时间序列数据库，简称时序数据库，Time Series&nbsp;Database，一个全新的领域，最大的特点就是每个条数据都带有Time列。</p>
+<p>时序数据库到底能用到什么业务场景，答案是：监控系统。</p>
+<p>Baidu一下，互联网监控系统，大家会发现小米、饿了吗等互联网巨头都在用时序数据库实现企业级的互联网监控系统。</p>
+<p>很多人会说，用Zabbix不就搞定了，其实不是这样的，简单的主机资源监控、网络监控、小规模的部署环境，Zabbix能搞定。</p>
+<p>如果在IDC 上千台服务器环境下，分布式应用架构、各种中间件，这种情况下我们要监控上千台服务的主机资源、网络、按不同纬度监控服务的性能、TPS，监控各类中间件，程序监控埋点。Zabbix就无法</p>
+<p>满足需要了。此时，我们要独立搭建自己的监控体系了。说到这，每一个监控图表的背后，都有什么？</p>
+<p>1. 时间轴</p>
+<p>2. 数据值（不同指标纬度）</p>
+<p>例如，一段时间内CPU使用率</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711215859353-1723378591.png" alt="" /></p>
+<p>这时，各种Google、Baidu之后，你肯定会搜索到Influxdb、OpenTSDB等时序数据库。</p>
+<p>Influxdb我们研究了很长的时间，准备用2篇文章，推荐给大家，本文中，我们分享一下Influxdb的关键特性、查询语法和使用场景。</p>
+<p><span style="font-size: 16px;"><strong>一、Influxdb关键特性</strong></span></p>
+<p>1. 支持类似SQL的查询语法</p>
+<p>2.提供了Http Api直接访问</p>
+<p>3.存储超过10亿级别的时间序列数据</p>
+<p>4.灵活的数据保留策略，可以定义到Database级别（只保留最热的数据）</p>
+<p>5.内置管理接口和CMD</p>
+<p>6.飞一般速度的聚合查询</p>
+<p>7.按不同时间段进行聚合查询</p>
+<p>8.内置持续查询功能，定时计算指定时间段的数据，插入到指定表中，可以理解为定时归集数据</p>
+<p>9. 水平扩展，支持集群模式</p>
+<p><span style="font-size: 16px;"><strong>二、Influxdb 版本和.Net支持</strong></span></p>
+<p>1. 根据我们的使用经验，V0.10版本是非常稳定的，V0.9.6我们用过，有内存泄漏问题</p>
+<p>2. GitHub上有非常多的.Net Libraby,方便我们写入和读取数据</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711221008103-1951031902.png" alt="" /></p>
+<p><span style="font-size: 16px;"><strong>三、数据写入Write Data（Points）</strong></span></p>
+<p>Http API:<br /><strong>curl -i -XPOST 'http://localhost:8086/write?db=mydb' --data-binary 'cpu_load,host=server01,region=us-west value=0.64 1434055562000000000&lsquo;</strong><br />db：mydb, 要写入的数据库<br />measurement：cpu_load，表<br />tag keys：host&nbsp; region&nbsp; tag value：server01 us-west<br />tag标签可以理解为维度，可选参数，用于标识不同的数据源，基于tag使查询更加简单和高效<br />&nbsp;Tags are indexed so queries on tag keys or tag values are more performant than queries on fields.<br />key field：value&nbsp; value field：0.64<br />Timestamp：1434055562000000000 可选参数、UTC</p>
+<p><strong>支持批量写入</strong><br /><strong>支持同一个Timestamp写入不同的数据</strong><br /><strong>Influxdb 支持存储结构灵活变化，可以在任意增加measure、tags、fields，但是每个tag、field的数据类型必须固定。</strong></p>
+<p><span style="font-size: 16px;"><strong>四、查询Query</strong></span></p>
+<p>Http API:<br /><strong>curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=mydb" --data-urlencode "q=SELECT value FROM cpu_load_short WHERE region='us-west&lsquo;</strong><br />返回JSON格式数据<br />支持同时多个Query SQL<br />查询最大返回10000个点的数据，如果超过阈值，可以设置chunk_size<br />Measurement、Tag、Field、数据等<strong>大小写敏感</strong>，SQL关键字不区分大小写</p>
+<p>支持算术计算:<br />SELECT (water_level * 2) + 4 from h2o_feet<br />支持对Tags进行过滤查询，条件必须使用单引号<br />SELECT water_level FROM h2o_feet WHERE location = 'santa_monica'<br />Tag value 为空、不为空过滤<br />SELECT * FROM h2o_feet WHERE location !~ /.*/<br />SELECT * FROM h2o_feet WHERE location =~ /.*/<br />时间范围过滤<br />SELECT * FROM h2o_feet WHERE time &gt; now() - 7d<br />Field value过滤<br />SELECT * FROM h2o_feet WHERE location = 'coyote_creek' AND&nbsp; water_level &gt; 8</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711221638743-1507115196.png" alt="" /></p>
+<p>聚合函数、选择函数、转换函数</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711221709556-1107604323.png" alt="" /></p>
+<p><span style="font-size: 16px;"><strong>五、持续查询（Continuous Queries）</strong></span></p>
+<p>持续查询是Influxdb自动、周期的运行的查询，结果自动存储 </p>
+<p>设计持续查询的目的是为了<strong>规则采样数据，比如按天、按月采样数据</strong></p>
+<p>CREATE CONTINUOUS QUERY &lt;cq_name&gt; ON &lt;database_name&gt; [RESAMPLE [EVERY &lt;interval&gt;] [FOR &lt;interval&gt;]] BEGIN SELECT &lt;function&gt;(&lt;stuff&gt;)[,&lt;function&gt;(&lt;stuff&gt;)] INTO &lt;different_measurement&gt; FROM &lt;current_measurement&gt; [WHERE &lt;stuff&gt;] GROUP BY time(&lt;interval&gt;)[,&lt;stuff&gt;] END</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711221821087-2131504282.png" alt="" /></p>
+<p><span style="font-size: 16px;"><strong>六、 监控应用场景</strong></span></p>
+<p>通过上面几个部分的介绍，Influxdb的基本语法就可以掌握了。有什么作用：</p>
+<p>1. 实时采集监控数据，按时间写入Influxdb</p>
+<p>2. 按不同纬度聚合查询监控数据，用于监控展现</p>
+<p>3. 持续查询，定时归集指定时间的数据，用于更大时间范围监控数据的展现</p>
+<p>总结一下，场景结合实践，通过实际监控系统的应用，和大家分享了Influxdb的使用和技能。我们自己的监控系统就是通过这个套路一点点搭建起来的。</p>
+<p>目前，我们的监控平台，2500个监控项，500台服务器实时监控，每日处理上T数据，几百个监控图表，Influxdb满足了我们日常超大规模监控的需要。</p>
+<p>同时，Influxdb在大数据展现领域，也有不俗的表现，Druid的集成也很棒的。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/7/11</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-07-11 22:28</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=7152940" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(7152940);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 7152940, cb_entryCreatedDate = '2017-07-11 22:28', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

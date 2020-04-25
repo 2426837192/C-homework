@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>随笔列表第2页 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                
+
+
+
+<div id="homepage_top_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">上一页</a>
+    
+    
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    2
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=3">3</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=4">4</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+    ···
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=3">下一页</a>
+</div>
+</div>
+
+
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/10/15.html">2019年10月15日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11680091.html">
+    如何做好开发自测
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近做研发质量分析，大家共同提到了一个改进措施：加强开发自测！ 但是如何加强开发自测、怎么做好开发自测？带着这个问题，进入我们今天的分享： 一、开发测试小记 开发同学功能开发完成后，简单自测通过后，填写提交单提交测试，然后： 制作的补丁，打到测试环境，发现丢了一些SQL、Dll、配置，然后提交单被测            <a href="https://www.cnblogs.com/tianqing/p/11680091.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-10-15 20:38 Eric zhou 阅读 (1008) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11680091" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/10/03.html">2019年10月3日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11619005.html">
+    .NetCore技术研究-.NET Core迁移前的准备工作
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：前段时间迁移.NET Core做了大量的试水和评估，今天整理一下分享给大家。大致有以下几个部分： 1. .NET Core的由来 2. 为什么要迁移.NET Core 3. .NET Core3.X主要特性 4. .NET Standard和.NET Core 5. .NET Core Roadma            <a href="https://www.cnblogs.com/tianqing/p/11619005.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-10-03 08:07 Eric zhou 阅读 (2113) 评论 (10)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11619005" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/09/30.html">2019年9月30日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11614303.html">
+    .NetCore技术研究-一套代码同时支持.NET Framework和.NET Core
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：在.NET Core的迁移过程中，我们将原有的.NET Framework代码迁移到.NET Core。如果线上只有一个小型的应用还好，迁移升级完成后，只需要维护.NET Core这个版本的代码。 但是，如果是一个大型分布式应用，几百台Server，上千个.NET 应用进程。这种场景下，在一定的时期            <a href="https://www.cnblogs.com/tianqing/p/11614303.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-09-30 22:50 Eric zhou 阅读 (1822) 评论 (6)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11614303" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/09/12.html">2019年9月12日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11514840.html">
+    .NetCore技术研究-ConfigurationManager在单元测试下的坑
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近在将原有代码迁移.NET Core, 代码的迁移基本很快，当然也遇到了不少坑，重构了不少，后续逐步总结分享给大家。今天总结分享一下ConfigurationManager遇到的一个问题。 先说一下场景： 迁移.NET Core后，已有的配置文件，我们希望做到兼容，比如说app.config和we            <a href="https://www.cnblogs.com/tianqing/p/11514840.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-09-12 20:25 Eric zhou 阅读 (514) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11514840" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/08/09.html">2019年8月9日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11328969.html">
+    统一流控服务开源：基于.Net Core的流控服务
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：先前有一篇博文，梳理了流控服务的场景、业界做法和常用算法 统一流控服务开源-1：场景&amp;业界做法&amp;算法篇 最近完成了流控服务的开发，并在生产系统进行了大半年的验证，稳定可靠。今天整理一下核心设计和实现思路，开源到Github上，分享给大家 https://github.com/zhouguoqing/            <a href="https://www.cnblogs.com/tianqing/p/11328969.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-08-09 23:51 Eric zhou 阅读 (1077) 评论 (8)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11328969" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/08/06.html">2019年8月6日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11307049.html">
+    Windbg程序调试系列-索引篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近整理了一下Windbg程序调试系列的文章，做个了索引贴，方便大家查询、搜索： Windbg程序调试系列1-常用命令说明&amp;示例 Windbg程序调试系列1-Mex扩展使用总结 Windbg程序调试系列2-内存泄露问题 Windbg程序调试系列3-线程阻塞问题 Windbg程序调试系列4-Live             <a href="https://www.cnblogs.com/tianqing/p/11307049.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-08-06 09:35 Eric zhou 阅读 (382) 评论 (3)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11307049" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/07/14.html">2019年7月14日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11183035.html">
+    ML.NET技术研究系列-2聚类算法KMeans
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上一篇博文我们介绍了ML.NET 的入门： ML.NET技术研究系列1-入门篇 本文我们继续，研究分享一下聚类算法k-means. 一、k-means算法简介 1. k-means算法的原理是什么样的？参考：https://baijiahao.baidu.com/s?id=1622412414004            <a href="https://www.cnblogs.com/tianqing/p/11183035.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-07-14 09:43 Eric zhou 阅读 (478) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11183035" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/07/08.html">2019年7月8日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11152799.html">
+    SQLServer常用运维SQL整理
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：今天线上SQLServer数据库的CPU被打爆了，紧急情况下，分析了数据库阻塞、连接分布、最耗CPU的TOP10 SQL、查询SQL并行度配置、查询SQL 重编译的原因等等 整理了一些常用的SQL 1.&#160;查询数据库阻塞 查询结果中，重点看Blocked这一列，先找出最多的SID，然后循环找出Root            <a href="https://www.cnblogs.com/tianqing/p/11152799.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-07-08 17:55 Eric zhou 阅读 (1450) 评论 (3)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11152799" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/06/23.html">2019年6月23日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11071864.html">
+    ML.NET技术研究系列-1入门篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：近期团队在研究机器学习，希望通过机器学习实现补丁发布评估，系统异常检测。业务场景归纳一下： 典型的机器学习-监督学习的场景。作为.Net的忠实用户，最近火热的ML.NET务必要尝试、应用一把。今天这篇文章作为一个入门，分享给大家。 先拉个提纲吧： 1. ML.Net Model Builder 介绍            <a href="https://www.cnblogs.com/tianqing/p/11071864.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-06-23 10:37 Eric zhou 阅读 (3895) 评论 (10)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11071864" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2019/05/04.html">2019年5月4日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10808717.html">
+    Kafka基本知识整理
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：首先Kafka是一个分布式消息队列中间件，Apache顶级项目，https://kafka.apache.org/ 高性能、持久化、多副本备份、横向扩展。 生产者Producer往队列里发送消息，消费者Consumer从队列里消费消息，然后进行业务逻辑。应用场景主要有：解耦、削峰（缓冲）、异步处理、            <a href="https://www.cnblogs.com/tianqing/p/10808717.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2019-05-04 15:53 Eric zhou 阅读 (981) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10808717" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+
+<div class="topicListFooter">
+    <div id="nav_next_page">
+        
+
+    </div>    
+</div>
+
+
+<div id="homepage_bottom_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">上一页</a>
+    
+    
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    2
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=3">3</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=4">4</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+    ···
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=3">下一页</a>
+</div>
+</div>
+
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

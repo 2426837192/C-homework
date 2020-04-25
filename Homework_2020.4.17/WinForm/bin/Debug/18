@@ -3,29 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="origin" />
-    <meta property="og:description" content="语言 CPP 前言 虽然 VSCodeC&#x2B;&#x2B; 编辑器非常受大家的欢迎，无论是大佬还是小白都说对其爱不释手... 我...用了一段时间后发现实在是麻烦，配置往往花费我大量时间。可以说真的是吃力不讨好(个" />
+    <meta name="referrer" content="never" />
+    <meta property="og:description" content="作者：Longway Date：2020-04-25 来源：单图像三维重建、2D到3D风格迁移和3D DeepDream 项目网址：http://hiroharu-kato.com/projects_" />
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>G++编译链接的那些事!G++的特殊使用方法[常用] - 海之恋SF - 博客园</title>
+    <title>单图像三维重建、2D到3D风格迁移和3D DeepDream - 3D视觉工坊 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/darkgreentrip/bundle-darkgreentrip.min.css?v=4KE41eS1YQSSwl64fGzzTUj6ijs-YQFat4AaN-g_jxc" />
-    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/seafever/custom.css?v=9NNS3FAs5eVOKA4Y1w0u6HmwEqg=" />
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/darkgreentrip/bundle-darkgreentrip-mobile.min.css?v=0pGk3D9Ik_jI4q1TALBT2ybOjIePHS_80_0J4DDOQiY" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/coffee/bundle-coffee.min.css?v=pdMIVgsH8kXt-vOWnlL0N20TlHt3UyP9HzGgocfsP4s" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/seafever/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/seafever/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/seafever/wlwmanifest.xml" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/coffee/bundle-coffee-mobile.min.css?v=na9bpAY4yh7uEWCcrXj3vfJM3VBse8YtU6-5fUUQPz0" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/YongQiVisionIMAX/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/YongQiVisionIMAX/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/YongQiVisionIMAX/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 576027;
-        var currentBlogApp = 'seafever';
+        var currentBlogId = 450768;
+        var currentBlogApp = 'YongQiVisionIMAX';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'darkgreentrip';
+        var skinName = 'coffee';
     </script>
     
     
@@ -33,30 +33,19 @@
 </head>
 <body>
     <a name="top"></a>
-    <div id="page_begin_html">
-        <a href="https://github.com/derek5-seafever" class="github-corner" aria-label="View source on Github" style="position: absolute;top: 0;right: 0;">
-<svg width="80" height="80" viewBox="0 0 250 250" style="fill:#828282; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
-<path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-<path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-<path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-</svg>
-</a>
-<style>
-.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
-</style>
-    </div>
+    
     
 <!--done-->
 <div id="home">
 <div id="header">
 	<div id="blogTitle">
-        <a id="lnkBlogLogo" href="https://www.cnblogs.com/seafever/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+	<a href="https://www.cnblogs.com/YongQiVisionIMAX/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>			
 		
 <!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/seafever/">海之恋SF</a>
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/YongQiVisionIMAX/">3D视觉工坊</a>
 </h1>
 <h2>
-热爱这个世界吧~
+
 </h2>
 
 
@@ -64,183 +53,251 @@
 
 		
 	</div><!--end: blogTitle 博客的标题和副标题 -->
-	<div id="navigator">
-		
-<ul id="navList">
-<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
-博客园</a>
-</li>
-<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/seafever/">
-首页</a>
-</li>
-<li>
-
-<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
-新随笔</a>
-</li>
-<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%B5%B7%E4%B9%8B%E6%81%8BSF">
-联系</a></li>
-<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/seafever/rss/">
-订阅</a>
-<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
-<li>
-<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
-管理</a>
-</li>
-</ul>
-
-
-		<div class="blogStats">
-			
-			<span id="stats_post_count">随笔 - 
-8&nbsp; </span>
-<span id="stats_article_count">文章 - 
-0&nbsp; </span>
-<span id="stats-comment_count">评论 - 
-6</span>
-
-			
-		</div><!--end: blogStats -->
-	</div><!--end: navigator 博客导航栏 -->
 </div><!--end: header 头部 -->
 
 <div id="main">
 	<div id="mainContent">
 	<div class="forFlow">
-		<div id="post_detail">
-    <!--done-->
-    <div id="topics">
-        <div class="post">
-            <h1 class = "postTitle">
-                
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/seafever/p/12660507.html">G++编译链接的那些事!G++的特殊使用方法[常用]</a>
-
-            </h1>
-            <div class="clear"></div>
-            <div class="postBody">
-                
-<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <h1 id="语言-cpp">语言 CPP</h1>
-<h2 id="前言">前言</h2>
-<p>  虽然 VSCodeC++ 编辑器非常受大家的欢迎，无论是大佬还是小白都说对其爱不释手...<br>
-  我...用了一段时间后发现实在是麻烦，配置往往花费我大量时间。可以说真的是吃力不讨好(个人观点，不代表其他人)!所以，用了一段时间后我又默默的用起了自己的 HBuilderX ！<br>
-  淦！ HBuilderX 不是主力前端吗？额~是的，CPP在这里不是很受宠，但没关系啊(主要是真的好用)！CPP的基本语法还是支持的，再加上自己完善了一下“自定义CPP代码块”后更是如虎添翼！HBuilderX NB！<br>
-  不过，有个最大的问题就是编译链接！因为 HBuilderX 本身并不是为CPP开发的，所以根本不会有这一功能，更苦的是连个插件都没得...一切都只能靠命令行！<br>
-  经过一段时间的摸索，最后打算写一篇总结。力求简洁、明了！<br>
-  不定期更新！<br>
-  <strong>提示</strong>：文件结构如下</p>
-<pre><code>+-- demo.cpp
-|
-+-- demo.ico
-|
-+-- demo.rc
-
-</code></pre>
-<h2 id="第一章---静态编译">第一章 - 静态编译</h2>
-<h3 id="手动编译"><strong>手动编译</strong>:</h3>
-<ol>
-<li>打开 CMD 命令窗口；</li>
-<li>执行命令 <code>g++ -c demo.cpp -o step_one.o</code> ；</li>
-<li>执行命令 <code>ar -cr libstep_two.a step_one.o</code> ；</li>
-<li>执行命令 <code>g++ demo.cpp -L. -Istep_two -static -o release.exe</code> ；</li>
-<li>得到 release.exe 应用程序。</li>
-</ol>
-<h3 id="注释："><strong>注释</strong>：</h3>
-<ol>
-<li>原理我不多说了，有兴趣的自行了解！力求简洁、明了！</li>
-<li>step_one 与 step_two 字符可替换；</li>
-<li>release.exe 为输出应用程序的名字;</li>
-</ol>
-<h3 id="批处理脚本"><strong>批处理脚本</strong>:</h3>
-<pre><code>::使用方法 - 直接将 demo.cpp 托入批处理运行即可，也可使用 CMD 命令传参数的方式执行。
-@echo off
-set start=%1
-:get_o
-if exist %1 (g++ -c %start% -o step_one.o) else (goto get_o)
-:get_a
-if exist .\o.o (ar -cr libstep_two.a step_one.o) else (goto get_a)
-:get_exe
-if exist .\liba.a (g++ %start% -L. -Istep_two -static -o release) else (goto get_exe)
-:del
-del DEL /F /A /Q step_one.o
-del DEL /F /A /Q libstep_two.a
-call release.exe
-:end
-</code></pre>
-<h2 id="第二章---自定义程序-ico">第二章 - 自定义程序 ICO</h2>
-<h3 id="手动操作："><strong>手动操作</strong>：</h3>
-<ol>
-<li>在 demo.rc 文件中添加 <code>id ICON &quot;path/to/my.ico&quot;</code>；</li>
-<li>执行命令 <code>windres demo.rc -O coff -o demo.res</code>；</li>
-<li>执行命令 <code>g++ demo.cpp demo.res -o release.exe</code>；</li>
-<li>得到带 ICO 的应用程序。</li>
-</ol>
-<h3 id="注释：-2"><strong>注释</strong>：</h3>
-<ol>
-<li>原理大致为： 资源文件(.res) + 源文件(.cpp) =编译=&gt; 带资源的应用程序(.exe)；</li>
-<li>第三步也可以使用静态编译：<code>g++ -c demo.cpp -o step_one.o</code> -&gt; <code>ar -cr libstep_two.a step_one.o</code> -&gt; <code>g++ demo.cpp demo.res -L. -Istep_two -static -o release.exe</code>。</li>
-</ol>
-<h3 id="批处理脚本："><strong>批处理脚本</strong>：</h3>
-<p>还没写</p>
-<h2 id="第三章---添加版本信息">第三章 - 添加版本信息</h2>
-<h3 id="手动操作：-2"><strong>手动操作</strong>：</h3>
-<ol>
-<li>在 demo.rc 文件中添加</li>
-</ol>
-<pre><code>1 VERSIONINFO
-FILEVERSION    1,0,0,0 // 文件版本
-PRODUCTVERSION  1,0,0,0
-BEGIN
-  BLOCK &quot;StringFileInfo&quot;
-  BEGIN
-    BLOCK &quot;080904E4&quot; // 语言(修改前四位)
-   BEGIN
-     VALUE &quot;CompanyName&quot;, &quot;公司名&quot;
-     VALUE &quot;FileDescription&quot;, &quot;文件描述&quot;
-     VALUE &quot;FileVersion&quot;, &quot;1.0&quot;
-     VALUE &quot;InternalName&quot;, &quot;内部名称&quot;
-     VALUE &quot;LegalCopyright&quot;, &quot;版权&quot;
-     VALUE &quot;OriginalFilename&quot;, &quot;原始文件名&quot;
-     VALUE &quot;ProductName&quot;, &quot;产品名称&quot;
-     VALUE &quot;ProductVersion&quot;, &quot;产品版本&quot;
-   END
-  END
-
-  BLOCK &quot;VarFileInfo&quot;
-  BEGIN
-    VALUE &quot;Translation&quot;, 0x809, 1252 // 翻译
-  END
-END
-</code></pre>
-<ol start="2">
-<li>执行命令 <code>windres demo.rc -O coff -o demo.res</code>；</li>
-<li>执行命令 <code>g++ demo.cpp demo.res -o release.exe</code>；</li>
-<li>得到带版本信息的应用程序。</li>
-</ol>
-<h3 id="注释：-3"><strong>注释</strong>：</h3>
-<ol>
-<li>.RC 文件使用的是微软定义的脚本语言；</li>
-<li>更改语言时需要同时更改 “语言” 和 “翻译” 两处内容。“语言” 行(&quot;080904E4&quot;)修改前四个数字；“翻译” 行(0x809)修改后三位数字。
-<ul>
-<li>Example： 简体中文的 langID 为 0x0804
-<ol>
-<li>修改“语言”行前四位为 “0804”；</li>
-<li>修改“翻译”行后三位为 “804”；</li>
-<li>修改“语言”信息为“简体中文”。</li>
-</ol>
+		<div id="navigator">
+			
+<ul id="navList">
+	<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
 </li>
+	<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/YongQiVisionIMAX/">
+首页</a>
+</li>
+	<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+	<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/3D%E8%A7%86%E8%A7%89%E5%B7%A5%E5%9D%8A">
+联系</a></li>
+	<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+	<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/YongQiVisionIMAX/rss/">
+订阅</a>
+	
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/YongQiVisionIMAX/rss/">
+    <img src="/skins/coffee/images/xml.gif" alt="订阅" />
+</a></li>
 </ul>
-</li>
-<li>.RC资源文件详情请参考<a href="https://docs.microsoft.com/zh-cn/windows/win32/menurc/about-resource-files?redirectedfrom=MSDN">MSDN</a>。</li>
-</ol>
-<h2 id="原创说明">原创说明</h2>
-<p>本文原作者：SeaFever<br>
-<strong>转载请留言！</strong><br>
-原文链接：<a href="https://www.cnblogs.com/seafever/p/12660507.html">https://www.cnblogs.com/seafever/p/12660507.html</a></p>
 
+
+
+			<div class="blogStats">
+				
+				<!--done-->
+随笔- 
+22&nbsp;
+文章- 
+0&nbsp;
+评论- 
+1&nbsp;
+
+
+
+				
+			</div><!--end: blogStats -->
+		</div><!--end: navigator 博客导航栏 -->
+		<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class = "postTitle">
+			
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/YongQiVisionIMAX/p/12771710.html">单图像三维重建、2D到3D风格迁移和3D DeepDream</a>
+
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <blockquote class="Editable-styled" data-block="true" data-editor="53kv1" data-offset-key="arsif-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="arsif-0-0"><span data-offset-key="arsif-0-0">作者：Longway</span></div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="arsif-0-0"><span style="background-color: initial;">Date：2020-04-25</span></div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="arsif-0-0"><span style="background-color: initial;">来源：</span><a class="Link ztext-link" style="background-color: initial;" href="https://mp.weixin.qq.com/s/EJis59KQc83ix7enS7t2sw" target="_blank" data-offset-key="ek2bc-1-0" data-editable="true"><span data-offset-key="ek2bc-1-0"><span data-text="true">单图像三维重建、2D到3D风格迁移和3D DeepDream</span></span></a></div>
+</blockquote>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="6ipmm-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="6ipmm-0-0"><span data-offset-key="6ipmm-0-0">项目网址：<a class="Link ztext-link" href="http://hiroharu-kato.com/projects_en/neural_renderer.html" target="_blank" data-offset-key="6ipmm-1-0" data-editable="true"><span data-offset-key="6ipmm-1-0"><span data-text="true">http://hiroharu-kato.com/projects_en/neural_renderer.html</span></span></a></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="9n9qv-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="9n9qv-0-0"><span data-offset-key="9n9qv-0-0">代码网址：https://github.com/hiroharu-kato/neural_renderer</span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="drdrl-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="drdrl-0-0"><span data-offset-key="drdrl-0-0">论文名称：Neural 3D Mesh Renderer(CVPR2018)</span></div>
+</div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="d6puv-0-0"><strong><span data-offset-key="d6puv-0-0">概述</span></strong></div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="798m4-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="798m4-0-0"><span data-offset-key="798m4-0-0">对于二维图像背后的三维世界建模，哪一种三维表示最合适?现在常见的表示方法有点云、体素和网格，其中多边形网格具有良好的紧致性和几何性质。但是使用神经网络直接由多边形网格生成图像比较困难，因为光栅化的过程阻止了反向传播。因此，作者提出了一个近似的梯度栅格化，使渲染集成到神经网络。使用这个渲染器，可以执行带有轮廓图像监督的单图像三维网格重建，并且该系统比现有的基于体素的方法更好。此外，作者还首次在2D监督下执行基于梯度的3D网格编辑操作，如2D到3D风格迁移和3D DeepDream。</span></div>
+</div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="4j22l-0-0"><strong><span data-offset-key="4j22l-0-0">简介</span></strong></div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="2avlg-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="2avlg-0-0"><span data-offset-key="2avlg-0-0">从二维图像理解三维世界是计算机视觉的基本问题之一。人类在大脑中使用视网膜上的图像来模拟3D世界，机器也可以通过在2D图像背后显式地建模3D世界来更智能地工作。从3D世界生成图像的过程叫做渲染，这在计算机视觉里面非常重要。哪种3D表示方法是最适合建模3D世界？通常有体素、点云和多边形网格。体素难以生成高质量的体素，因为他们是在三维空间有规律地进行采样，并且记忆效率比较低。点云存在纹理和照明难以应用的问题，因为点云没有表面。多边形网格由一系列顶点和表面组成，因此它们是可伸缩的，并且有面，进而作者采用了这种方式。</span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="d0mti-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="d0mti-0-0"><span data-offset-key="d0mti-0-0">使用网格这种表示方式有两个好处，第一个是表示三维模型时，需要的参数少，模型和数据集也相应比较小。第二个就是它适合几何变换。对象的旋转、平移和缩放由顶点上的简单操作表示。这篇文章提出了两个应用，如下图所示。第一个是单图像三维网格重建，第二个是基于梯度的3D网格编辑，包括风格迁移和DeepDream。</span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic1.zhimg.com/80/v2-f5396a34aafbfbf3a815381433762d1d_720w.png" alt="" data-size="normal" data-rawwidth="553" data-rawheight="417" data-watermark="watermark" data-original-src="https://pic2.zhimg.com/v2-f5396a34aafbfbf3a815381433762d1d.png" data-watermark-src="https://pic2.zhimg.com/v2-03be5511f24cfaac2c7559b9ac95e992.jpg"></div>
+</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="4o5a8-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="4o5a8-0-0"><span data-offset-key="4o5a8-0-0"><span data-text="true">这篇论文主要有三个方面的贡献：</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="7gg9a-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="7gg9a-0-0"><span data-offset-key="7gg9a-0-0"><span data-text="true">1.提出了一个近似的梯度网格渲染，使渲染集成到神经网络；</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="8b567-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="8b567-0-0"><span data-offset-key="8b567-0-0"><span data-text="true">2.实现了从单图像实现三维网格重建，并且没有3D监督；</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="b9urg-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="b9urg-0-0"><span data-offset-key="b9urg-0-0"><span data-text="true">3.实现了基于梯度的三维网格编辑操作，例如风格迁移和3D DeepDream。</span></span></div>
+</div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="1jh20-0-0"><strong><span data-offset-key="1jh20-0-0"><span data-text="true">相关工作</span></span></strong></div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="fqr8f-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="fqr8f-0-0"><span data-offset-key="fqr8f-0-0"><span data-text="true">1.神经网络中的三维表示：三维表示有很多方法，比如前面提到的体素、点云等，但是它们都有一定的不足，或者不适合三维重建。其中，多边形网格具有存储效率高、适用于几何变换且具有曲面等特点，因此它实际上是计算机图形学（CG）和计算机辅助设计（CAD）中的标准形式。然而，由于多边形网格的数据结构是一个复杂的图形，很难集成到神经网络中。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="2l7e6-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="2l7e6-0-0"><span data-offset-key="2l7e6-0-0"><span data-text="true">2.单图片三维重建：从图像中估计三维结构是计算机视觉中的一个传统问题，大多数方法使用真实的三维模型来学习2D到3D的映射函数，有些作品通过深度预测重建三维结构，有些则直接预测三维形状。实际上，无需3D监督即可实现三维预测，只需要待重建物体的轮廓即可。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="65v6t-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="65v6t-0-0"><span data-offset-key="65v6t-0-0"><span data-text="true">3.通过梯度下降编辑图像：利用可微特征提取器和损失函数，通过反向传播和梯度下降，可以生成损失最小的图像，DeepDream就是这样一个例子。初始图像被反复更新，使得其图像特征的大小变得更大，通过这个过程，像狗和汽车这样的物体逐渐出现在图像中，图像风格转换可能是最熟悉和最实际的例子了，给定内容图像和样式图像，将生成具有指定内容和样式的图像。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="7easo-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="7easo-0-0"><span data-offset-key="7easo-0-0"><span data-text="true">该渲染器提供图像相对于网格顶点和纹理的渐变。因此，利用二维图像的损失函数就可以实现网格的DeepDream和风格转换。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="fh8np-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="fh8np-0-0"><strong><span data-offset-key="fh8np-0-0"><span data-text="true">渲染的近似梯度</span></span></strong></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="c2fcc-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="c2fcc-0-0"><span data-offset-key="c2fcc-0-0"><span data-text="true">1.渲染通道及其派生：一个3D网格由一组顶点和面组成，每个顶点No是一个三维向量，表示这个顶点在3D物体空间中的坐标，每个面F是由三个顶点所围成的三角形。为了生成这个对象，物体空间中的顶点No被转化为屏幕空间中的顶点Ns，这个顶点Ns是一个二维向量。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="3q8ob-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="3q8ob-0-0"><span data-offset-key="3q8ob-0-0"><span data-text="true">通过采样从屏幕空间的顶点Ns和面F生成图像，这个过程叫做光栅化。下图说明了单个图像的光栅化：</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic1.zhimg.com/80/v2-3b44934fec8b15f6fece487b2ccd128f_720w.png" alt="" data-size="normal" data-rawwidth="460" data-rawheight="340" data-watermark="watermark" data-original-src="https://pic2.zhimg.com/v2-3b44934fec8b15f6fece487b2ccd128f.png" data-watermark-src="https://pic3.zhimg.com/v2-dc0790dc9a1af8ad496224958e22911c.jpg"></div>
+Vi是面的一个顶点，Ij是像素Pj的颜色值。Xi现在的位置是x0。当Xi向右移动，面的边与Pj的中心碰撞时，X1是Xi的位置。当Xi=X1时，Ij变成Iij</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="4q6fn-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="4q6fn-0-0"><span data-offset-key="4q6fn-0-0"><span data-text="true">2.单面光栅化：这一部分主要讲解了当像素点在里面或者外面时，如何定义偏导函数。涉及到的公式比较多，后面将以视频的方式呈现，如果想要提前了解的可以联系我。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="5o07a-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="5o07a-0-0"><span data-offset-key="5o07a-0-0"><span data-text="true">3.多面光栅化：如果有多个面，光栅化器只在每个像素处绘制最前面的面，这与标准方法相同。在向后传递的过程中，首先检查是否绘制了交叉点Iij、Iaij和Ibij，如果它们被不包括Vi的表面遮挡，则不流动梯度。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="c6a3j-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="c6a3j-0-0"><span data-offset-key="c6a3j-0-0"><span data-text="true">4.纹理：纹理可以映射到面上。在这个项目中，每个面都有自己的大小为St&times;St&times;St的纹理图像。使用质心坐标系确定纹理空间中对应于三角形{V1，V2，V3}上位置P的坐标。换句话说，如果P表示为P=W1V1+W2V2+W3V3，则让（w1，w2，w3）成为纹理空间中的相应坐标。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="9velt-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="9velt-0-0"><span data-offset-key="9velt-0-0"><span data-text="true">5.照明：照明系统可以直接应用于网格上，在这项工作中，使用了简单的环境光和无阴影的平行光。设la和ld分别为环境光和平行光的强度，nd为指示平行光方向的单位矢量，nj为面的法向矢量。然后，将表面像素Ilj的修改颜色定义为:</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic2.zhimg.com/80/v2-d36d9350cc7d2deb9102305cf2bf9d1d_720w.webp" alt="" data-size="normal" data-rawwidth="223" data-rawheight="32"></div>
+</div>
+</div>
+</div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="77t78-0-0"><strong><span data-offset-key="77t78-0-0"><span data-text="true">神经渲染器的应用</span></span></strong></div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="34v7g-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="34v7g-0-0"><span data-offset-key="34v7g-0-0"><span data-text="true">1.单图像三维重建：基于体素的方法能够直接生成一个3D模型，但是对于网格来说比较困难。因此，在这项工作中，作者不是从头生成网格，而是将预定义网格变形以生成新网格。具体地说，使用一个有642个顶点的各向同性球体，并使用局部偏置向量Bi和全局偏置向量C将每个顶点Vi变成Vi+Bi+C的形式。分别定义轮廓损失Lsl和平滑度损失Lsm如下所示：</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic1.zhimg.com/80/v2-a64edc47fe07e72413f0e2a501b38f87_720w.webp" alt="" data-size="normal" data-rawwidth="333" data-rawheight="106" data-watermark="watermark" data-original-src="https://pic4.zhimg.com/v2-a64edc47fe07e72413f0e2a501b38f87.webp" data-watermark-src="https://pic2.zhimg.com/v2-62c381ad6f52098a6a3e04edf4d9e51c.jpg"></div>
+</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="3edl4-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="3edl4-0-0"><span data-offset-key="3edl4-0-0"><span data-text="true">轮廓损失中的S表示的是二进制mask，平滑度损失中的&theta;表示相邻两个面的夹角度数，两个损失函数分别保证了渲染后的效果和模型的光滑。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="bon8u-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="bon8u-0-0"><span data-offset-key="bon8u-0-0"><span data-text="true">2.基于梯度的三维网格编辑：在这项工作中，基于其渲染图像R来优化由顶点Vi、面Fi和纹理Ti组成的3D网格m，而不是生成图像进行编辑。</span></span></div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="32mbf-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="32mbf-0-0"><span data-offset-key="32mbf-0-0"><span data-text="true">2D到3D的风格迁移：在本节中，作者提出了一种将图像Xs的样式传输到网格Mc上的方法。对于二维图像，风格迁移是通过同时最小化内容损失和风格损失来实现的。在这里，作者把内容指定为三维网格Mc。为了使生成的网格形状与Mc相似，假设两个网格的顶点到面的关系相同，我们重新定义了如下内容损失函数：</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic3.zhimg.com/80/v2-50dbcf4cef4d7cf96ae756902d49ca75_720w.webp" alt="" data-size="normal" data-rawwidth="334" data-rawheight="42"></div>
+</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="87pdp-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="87pdp-0-0"><span data-offset-key="87pdp-0-0"><span data-text="true">作者使用了与2D应用中相同的风格损失，如下所示：</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic4.zhimg.com/80/v2-0906beb4654b50000e1f9a735f93d2bb_720w.webp" alt="" data-size="normal" data-rawwidth="398" data-rawheight="30"></div>
+</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="3gpuj-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="3gpuj-0-0"><span data-offset-key="3gpuj-0-0"><span data-text="true">同时使用正则化器来降低噪声，设P表示图像R中所有相邻像素对的一组颜色：</span></span></div>
+</div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" style="display: block; margin-left: auto; margin-right: auto" src="https://pic4.zhimg.com/80/v2-306815837ddbe76cbdd85e8ec65e6e79_720w.webp" alt="" data-size="normal" data-rawwidth="330" data-rawheight="34"></div>
+</div>
+</div>
+</div>
+<div class="Editable-unstyled" data-block="true" data-editor="53kv1" data-offset-key="9bhjr-0-0">
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="9bhjr-0-0"><span data-offset-key="9bhjr-0-0"><span data-text="true">3D DeepDream：设f(x)为输出图像x特征图的函数。对于2D图像来说，通过从x=x0开始的梯度下降最小化-|f(x)|2F来实现图像x0的DeepDream。在类似的过程中，将-|f(R(m，&phi;))|2F相对于Vi和Ti最小化来实现DeepDream。</span></span></div>
+</div>
+<div class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr" data-offset-key="6245d-0-0"><strong><span data-offset-key="6245d-0-0"><span data-text="true">结果展示</span></span></strong></div>
+<div class="Image-resizerContainer" data-size="normal">
+<div>
+<div class="Image-captionContainer" style="text-align: center;" data-size="normal">
+<div style="text-align: center;"><img class="Image FocusPlugin--unfocused Image--isBlock" src="https://pic2.zhimg.com/80/v2-7df36a4ceca314c00cca6289261e4911_720w.png" alt="" data-size="normal" data-rawwidth="553" data-rawheight="238" data-watermark="watermark" data-original-src="https://pic2.zhimg.com/v2-7df36a4ceca314c00cca6289261e4911.png" data-watermark-src="https://pic1.zhimg.com/v2-fe78ae33bbe4b8aaec331179367dc2e9.jpg"></div>
+从单个图像重建三维网格。第一列：输入图像；第二至第四列：网格重建；第五至第七列：体素重建。</div>
+</div>
+</div>
+<div class="Image-resizerContainer" style="text-align: center;" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" src="https://pic3.zhimg.com/80/v2-99ea21e3b798ac6c69f0f8e5fe1dc197_720w.png" alt="" data-size="normal" data-rawwidth="553" data-rawheight="132" data-watermark="watermark" data-original-src="https://pic1.zhimg.com/v2-99ea21e3b798ac6c69f0f8e5fe1dc197.png" data-watermark-src="https://pic2.zhimg.com/v2-f3a389b808197825f33152c8bfe662fb.jpg"></div>
+通过体素IoU测量重建精度，越高越好。可以看到基于网格的方法在13个类别中有10个类别的性能优于基于体素的方法。</div>
+</div>
+</div>
+<div class="Image-resizerContainer" style="text-align: center;" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" src="https://pic1.zhimg.com/80/v2-0ca84e746fb15dbf9e4f7678e97ebdc2_720w.png" alt="" data-size="normal" data-rawwidth="553" data-rawheight="175" data-watermark="watermark" data-original-src="https://pic4.zhimg.com/v2-0ca84e746fb15dbf9e4f7678e97ebdc2.png" data-watermark-src="https://pic1.zhimg.com/v2-3cc05614541cc490ae86e7344b54ae82.jpg"></div>
+网格在风格转换和DeepDream中的初始状态</div>
+</div>
+</div>
+<div class="Image-resizerContainer" style="text-align: center;" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" src="https://pic3.zhimg.com/80/v2-6a4997494ab60e7310717543db8cf6a5_720w.png" alt="" data-size="normal" data-rawwidth="554" data-rawheight="312" data-watermark="watermark" data-original-src="https://pic4.zhimg.com/v2-6a4997494ab60e7310717543db8cf6a5.png" data-watermark-src="https://pic3.zhimg.com/v2-288192873bc1e3fa625baa9a092be02c.jpg"></div>
+2D到3D风格迁移。风格图片有汤姆森5号（黄色日落）、巴别塔、尖叫和毕加索肖像</div>
+</div>
+</div>
+<div class="Image-resizerContainer" style="text-align: center;" data-size="normal">
+<div>
+<div class="Image-captionContainer" data-size="normal">
+<div><img class="Image FocusPlugin--unfocused Image--isBlock" src="https://pic3.zhimg.com/80/v2-fb954c2ea52cb5029b0136b314e17d8d_720w.png" alt="" data-size="normal" data-rawwidth="554" data-rawheight="182" data-watermark="watermark" data-original-src="https://pic4.zhimg.com/v2-fb954c2ea52cb5029b0136b314e17d8d.png" data-watermark-src="https://pic3.zhimg.com/v2-b0ea9f345d069408fc0b9474eb7786b6.jpg"></div>
+3D网格的DeepDream</div>
+</div>
+</div>
+<div class="Editable-unstyled" style="text-align: center;" data-block="true" data-editor="53kv1" data-offset-key="ecs9a-0-0">&nbsp;</div>
 </div>
 <div id="MySignature"></div>
 <div class="clear"></div>
@@ -249,24 +306,23 @@ END
     <div class="clear"></div>
     <div id="post_next_prev"></div>
 </div>
-            </div>
-            <div class="postDesc">posted @ 
-<span id="post-date">2020-04-19 10:13</span>&nbsp;
-<a href="https://www.cnblogs.com/seafever/">海之恋SF</a>&nbsp;
+		</div>
+		<div class="postDesc">posted @ 
+<span id="post-date">2020-04-25 10:02</span>&nbsp;
+<a href="https://www.cnblogs.com/YongQiVisionIMAX/">3D视觉工坊</a>&nbsp;
 阅读(<span id="post_view_count">...</span>)&nbsp;
 评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12660507" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12660507);return false;">收藏</a></div>
-        </div>
-	    
-	    
-    </div><!--end: topics 文章、评论容器-->
-</div>
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12771710" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12771710);return false;">收藏</a></div>
+	</div>
+	
+	
+</div><!--end: topics 文章、评论容器-->
 <script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
 <script>markdown_highlight();</script>
 <script>
-    var allowComments = true, cb_blogId = 576027, cb_blogApp = 'seafever', cb_blogUserGuid = '0a3e6163-ddde-46e8-360f-08d7a7ab70c7';
-    var cb_entryId = 12660507, cb_entryCreatedDate = '2020-04-19 10:13', cb_postType = 1; 
+    var allowComments = true, cb_blogId = 450768, cb_blogApp = 'YongQiVisionIMAX', cb_blogUserGuid = '4d054beb-2642-49be-35da-08d5fc64b25c';
+    var cb_entryId = 12771710, cb_entryCreatedDate = '2020-04-25 10:02', cb_postType = 1; 
     loadViewCount(cb_entryId);
 </script><a name="!comments"></a>
 <div id="blog-comments-placeholder"></div>
@@ -324,7 +380,9 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
         loadOptUnderPost();
         GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
     </script>
-</div>
+</div></div>
+
+
 	</div><!--end: forFlow -->
 	</div><!--end: mainContent 主体内容容器-->
 
@@ -335,12 +393,12 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
             <script>loadBlogNews();</script>
 </div>
 
-			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script></div>
 			
-			<div id="leftcontentcontainer">
+			<DIV id="leftcontentcontainer">
 				<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-			</div>
+			</DIV>
 			
 		</div><!--end: sideBarMain -->
 	</div><!--end: sideBar 侧边栏容器 -->
@@ -349,7 +407,7 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
 	<div class="clear"></div>
 	<div id="footer">
 		<!--done-->
-Copyright &copy; 2020 海之恋SF
+Copyright &copy; 2020 3D视觉工坊
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
 
@@ -358,334 +416,6 @@ Copyright &copy; 2020 海之恋SF
 </div><!--end: home 自定义的最大容器 -->
 
 
-    <div id="page_end_html">
-        <a id="goToTop" href="#top">回到顶部</a>
-<script>
-var toTop = document.getElementById("goToTop");
-setInterval(function(){ 
-    if(document.documentElement.scrollTop >= window.innerHeight ) {
-        toTop.style.display = "block";
-    } else {
-        toTop.style.display = "none";
-    }
-},500);
-</script>
-<script>
-window.onload = function(){//右侧博文推荐
-    var divDigg = document.getElementById("div_digg");
-    var diggShowAll = false;
-    divDigg.onclick = function(){
-        if(!diggShowAll){
-            divDigg.style.height = "auto";
-            divDigg.childNodes[1].onclick=function(){event.stopPropagation();}
-            divDigg.childNodes[3].onclick=function(){event.stopPropagation();}
-        } else {
-            divDigg.style.height = "54px";
-            divDigg.childNodes[1].onclick=function(){}
-            divDigg.childNodes[3].onclick=function(){}
-        }
-        diggShowAll = !diggShowAll;
-    }
-     if(document.documentElement.scrollTop >= window.innerHeight ) {
-        divDigg.style.display = "block";
-    } 
-}
-</script>
-<script src="https://blog-static.cnblogs.com/files/seafever/sakuraPlus.js"></script>
-<script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
-<script>
-L2Dwidget.init({
-"model": {
-jsonPath: "https://unpkg.com/live2dapi@1.0.0/miku/miku.model.json",
-"scale": 1
-},
-"display": {
-"position": "right",
-"width": 93,
-"height": 238,
-"hOffset": -32,
-"vOffset": -85
-},
-"mobile": {
-"show": true,
-"scale": 0.5
-},
-"react": {
-"opacityDefault": 1.0,
-"opacityOnHover": 0.2
-}
-});
-</script>
-<script type="text/javascript" language="javascript">
-　　//Setting ico for MyCnblog
-　　var linkObject = document.createElement('link');
-　　linkObject.rel = "shortcut icon";
-　　linkObject.href = "https://unpkg.com/miku.cursor@5.0.4/top.png";
-       linkObject.type = "image/png";
-　　document.getElementsByTagName("head")[0].appendChild(linkObject);
-</script>
-<script>
-class Circle {
-  constructor({ origin, speed, color, angle, context }) {
-    this.origin = origin
-    this.position = { ...this.origin }
-    this.color = color
-    this.speed = speed
-    this.angle = angle
-    this.context = context
-    this.renderCount = 0
-  }
-
-  draw() {
-    this.context.fillStyle = this.color
-    this.context.beginPath()
-    this.context.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2)
-    this.context.fill()
-  }
-
-  move() {
-    this.position.x = (Math.sin(this.angle) * this.speed) + this.position.x
-    this.position.y = (Math.cos(this.angle) * this.speed) + this.position.y + (this.renderCount * 0.3)
-    this.renderCount++
-  }
-}
-
-class Boom {
-  constructor ({ origin, context, circleCount = 10, area }) {
-    this.origin = origin
-    this.context = context
-    this.circleCount = circleCount
-    this.area = area
-    this.stop = false
-    this.circles = []
-  }
-
-  randomArray(range) {
-    const length = range.length
-    const randomIndex = Math.floor(length * Math.random())
-    return range[randomIndex]
-  }
-
-  randomColor() {
-    const range = ['8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
-    return '#' + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range)
-  }
-
-  randomRange(start, end) {
-    return (end - start) * Math.random() + start
-  }
-
-  init() {
-    for(let i = 0; i < this.circleCount; i++) {
-      const circle = new Circle({
-        context: this.context,
-        origin: this.origin,
-        color: this.randomColor(),
-        angle: this.randomRange(Math.PI - 1, Math.PI + 1),
-        speed: this.randomRange(1, 6)
-      })
-      this.circles.push(circle)
-    }
-  }
-
-  move() {
-    this.circles.forEach((circle, index) => {
-      if (circle.position.x > this.area.width || circle.position.y > this.area.height) {
-        return this.circles.splice(index, 1)
-      }
-      circle.move()
-    })
-    if (this.circles.length == 0) {
-      this.stop = true
-    }
-  }
-
-  draw() {
-    this.circles.forEach(circle => circle.draw())
-  }
-}
-
-class CursorSpecialEffects {
-  constructor() {
-    this.computerCanvas = document.createElement('canvas')
-    this.renderCanvas = document.createElement('canvas')
-
-    this.computerContext = this.computerCanvas.getContext('2d')
-    this.renderContext = this.renderCanvas.getContext('2d')
-
-    this.globalWidth = window.innerWidth
-    this.globalHeight = window.innerHeight
-
-    this.booms = []
-    this.running = false
-  }
-
-  handleMouseDown(e) {
-    const boom = new Boom({
-      origin: { x: e.clientX, y: e.clientY },
-      context: this.computerContext,
-      area: {
-        width: this.globalWidth,
-        height: this.globalHeight
-      }
-    })
-    boom.init()
-    this.booms.push(boom)
-    this.running || this.run()
-  }
-
-  handlePageHide() {
-    this.booms = []
-    this.running = false
-  }
-
-  init() {
-    const style = this.renderCanvas.style
-    style.position = 'fixed'
-    style.top = style.left = 0
-    style.zIndex = '999999999999999999999999999999999999999999'
-    style.pointerEvents = 'none'
-
-    style.width = this.renderCanvas.width = this.computerCanvas.width = this.globalWidth
-    style.height = this.renderCanvas.height = this.computerCanvas.height = this.globalHeight
-
-    document.body.append(this.renderCanvas)
-
-    window.addEventListener('mousedown', this.handleMouseDown.bind(this))
-    window.addEventListener('pagehide', this.handlePageHide.bind(this))
-  }
-
-  run() {
-    this.running = true
-    if (this.booms.length == 0) {
-      return this.running = false
-    }
-
-    requestAnimationFrame(this.run.bind(this))
-
-    this.computerContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
-    this.renderContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
-
-    this.booms.forEach((boom, index) => {
-      if (boom.stop) {
-        return this.booms.splice(index, 1)
-      }
-      boom.move()
-      boom.draw()
-    })
-    this.renderContext.drawImage(this.computerCanvas, 0, 0, this.globalWidth, this.globalHeight)
-  }
-}
-
-const cursorSpecialEffects = new CursorSpecialEffects()
-cursorSpecialEffects.init()
-</script>
-<script>
-(function() {
-    var OriginTitile = document.title, titleTime;
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = 'o(*//·//▽//·//*)q';
-            clearTimeout(titleTime);
-        } else {
-            document.title = '(*≧︶≦))(￣▽￣* )ゞ';
-            titleTime = setTimeout(function() {
-                document.title = OriginTitile;
-            },3000);
-        }
-    });
-})();
-</script><!--
-<script>
-	// 反调试函数,参数：开关，执行代码
-	function endebug(off, code) {
-		if (!off) {
-			!function (e) {
-				function n(e) {
-					function n() {
-						return u
-					}
-					function o() {
-						window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized ? t("on") : (a = "off", console.log(d), console.clear(), t(a))
-					}
-					function t(e) {
-						u !== e && (u = e, "function" == typeof c.onchange && c.onchange(e))
-					}
-					function r() {
-						l || (l = !0, window.removeEventListener("resize", o), clearInterval(f))
-					}
-					"function" == typeof e && (e = {
-						onchange: e
-					});
-					var i = (e = e || {}).delay || 500,
-						c = {};
-					c.onchange = e.onchange;
-					var a, d = new Image;
-					d.__defineGetter__("id", function () {
-						a = "on"
-					});
-					var u = "unknown";
-					c.getStatus = n;
-					var f = setInterval(o, i);
-					window.addEventListener("resize", o);
-					var l;
-					return c.free = r, c
-				}
-				var o = o || {};
-				o.create = n, "function" == typeof define ? (define.amd || define.cmd) && define(function () {
-					return o
-				}) : "undefined" != typeof module && module.exports ? module.exports = o : window.jdetects = o
-			}(), jdetects.create(function (e) {
-				var a = 0;
-				var n = setInterval(function () {
-					if ("on" == e) {
-						setTimeout(function () {
-							if (a == 0) {
-								a = 1;
-								setTimeout(code);
-							}
-						}, 200)
-					}
-				}, 100)
-			})
-		}
-	}
-</script>
-<script type="text/javascript">
-	endebug(false, function () {
-		// 非法调试执行的代码(不要使用控制台输出的提醒)
-		document.write("检测到非法调试,请关闭后刷新重试!");
-		self.location='https://unpkg.com/debug_seafever@1.0.1/index.html';
-	});
-</script>
-<script type="text/javascript">
-    window.onload = function(){
-        //屏蔽键盘事件
-        document.onkeydown = function (){
-            var e = window.event || arguments[0];
-            //F12
-            if(e.keyCode == 123){
-                return false;
-            //Ctrl+Shift+I
-            }else if((e.ctrlKey) && (e.shiftKey) && (e.keyCode == 73)){
-                return false;
-            //Shift+F10
-            }else if((e.shiftKey) && (e.keyCode == 121)){
-                return false;
-            //Ctrl+U
-            }else if((e.ctrlKey) && (e.keyCode == 85)){
-                return false;
-            //Ctrl+S
-            }else if((e.ctrlKey)&&(e.keyCode == 83)){
-                return false;
-            }
-        };
-        //屏蔽鼠标右键
-        document.oncontextmenu = function (){
-            return false;
-        }
-    }
-</script>-->
-    </div>
+    
 </body>
 </html>

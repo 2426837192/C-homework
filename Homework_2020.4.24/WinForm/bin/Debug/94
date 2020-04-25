@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上一篇文章，我们做了内存数据库的技术选型： 内存数据库技术选型 本文中，我们继续深入研究Apache Ignite，同时分享一些我们.Net的编码实践。 首先，Apache Ignite是一个内存数据" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>内存数据库之Apache Ingite - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/7436525.html">内存数据库之Apache Ingite</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上一篇文章，我们做了内存数据库的技术选型：</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl00_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/7429900.html">内存数据库技术选型</a></p>
+<p>本文中，我们继续深入研究Apache Ignite，同时分享一些我们.Net的编码实践。</p>
+<p>首先，Apache Ignite是一个内存数据组织是高性能的、集成化的以及分布式的内存平台，他可以实时地在大数据集中执行事务和计算，和传统的基于磁盘或者闪存的技术相比，性能有数量级的提升。</p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220146980-1622857301.png" alt="" /></p>
+<p>其中：</p>
+<p><strong>Data Grid：</strong>Ignite内存数据网格是一个内存内的键值存储，他可以在分布式集群的内存内缓存数据。 <br />它通过强语义的数据位置和关系数据路由，来降低冗余数据的噪声，使其可以节点数的线性增长，直至几百个节点。 <br />Ignite数据网格速度足够快，经过官方不断的测试，目前，他是分布式集群中支持事务性或原子性数据的最快的实现之一。</p>
+<p><strong>SQL Grid：</strong>内存SQL网格为Apache Ignite提供了分布式内存数据库的功能，它水平可扩展，容错并且兼容SQL的ANSI-99标准。 SQL网格支持完整的DML命令，包括SELECT, UPDATE, INSERT, MERGE以及DELETE。 同时支持分布式SQL Join关联</p>
+<p><strong>RDBMS集成：</strong> Ignite支持与各种持久化存储的集成，它可以连接数据库，导入模式，配置索引类型，以及自动生成所有必要的XML OR映射配置和Java领域模型POJO，这些都可以轻易地下载和复制进自己的工程。 <br />Ignite可以与任何支持JDBC驱动的关系数据库集成，包括Oracle、PostgreSQL、MS SQL Server和MySQL</p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220309808-102768799.png" alt="" /></p>
+<p><strong>Apache Ignite 的功能特性有：</strong></p>
+<ul>
+<li>分布式键值存储：Ignite数据网格是一个内存内的键值存储，分布式的分区化的哈希，集群中每个节点都持有所有数据的一部分，这意味着集群内节点越多，就可以缓存的数据越多。&nbsp;Ignite通过可插拔的哈选算法来决定数据的位置，每个客户端都可以通过插入一个自定义的哈希函数来决定一个键属于那个节点，并不需要任何特殊的映射服务或者命名节点。</li>
+<li>内存优化：Ignite在内存中支持2种模式的数据缓存，堆内和堆外。当缓存数据占用很大的堆，超过了Java主堆空间时，堆外存储可以克服JVM垃圾回收(gc)导致的长时间暂停，但数据仍然在内存内。</li>
+<li>SQL查询：Ignite支持使用标准的SQL语法（ANSI 99）来查询缓存，可以使用任何的SQL函数，包括聚合和分组。</li>
+<li>分布式关联：Ignite支持分布式的SQL关联和跨缓存的关联。</li>
+<li>ACID事务：Ignite提供了一个完全符合ACID的分布式事务来保证一致性。 支持乐观和悲观的并发模型以及读提交、可复制读和序列化的隔离级别。 Ignite的事务使用了二阶段提交协议，适当地也进行了很多一阶段提交的优化。</li>
+<li>同写和同读：通写模式允许更新数据库中的数据，通读模式允许从数据库中读取数据。</li>
+<li>数据库异步更新：Ignite提供了一个选项，通过后写缓存来异步地执行数据库更新</li>
+<li>自动持久化：自动化地连接底层数据库并且生成XML的对象关系映射配置和Java领域模型POJO</li>
+<li>数据库支持：Ignite可以自动地与外部数据库集成，包括RDBMS、NoSQL和HDFS。</li>
+
+
+</ul>
+<p><strong>Apache Ignite具有非常先进的集群能力，部署非常灵活。</strong></p>
+<ul>
+<li>节点平等：Ignite没有master节点或者server节点，也没有worker节点或者client节点，按照Ignite的观点所有节点都是平等的。但是开发者可以将节点配置成master，worker或者client以及data节点。</li>
+<li>自动发现机制：Ignite节点之间会自动感知，集群可扩展性强，不需要重启集群，简单地启动新加入的节点然后他们就会自动地加入集群。这是通过一</li>
+<li>个发现机制实现的，他使节点可以彼此发现对方，Ignite默认使用TcpDiscoverySpi通过TCP/IP协议来作为节点发现的实现，也可以配置成基于多播的或者基于静态IP的，这些方式适用于不同的场景。</li>
+<li>部署模式：Ignite可以独立运行，也可以在集群内运行，也可以将几个jar包嵌入应用内部以嵌入式的模式运行，也可以运行在Docker容器以及Mesos和Yarn等环境中，可以在物理机中运行，也可以在虚拟机中运行，这个广泛的适应性是他的一个很大的优势。</li>
+<li>配置方式：Ignite的大部分配置选项，都同时支持通过基于Spring的XML配置方式以及通过Java代码的编程方式进行配置。</li>
+<li>客户端和服务端：Ignite中各个节点是平等的，但是可以根据需要将节点配置成客户端或者服务端，服务端节点参与缓存，计算，流式处理等等，而原生的客户端节点提供了远程连接服务端的能力。Ignite原生客户端可以使用完整的Ignite API，包括近缓存，事务，计算，流，服务等等。 </li>
+<li>所有的Ignite节点默认都是以服务端模式启动的，客户端模式需要显式地启用。</li>
+
+
+</ul>
+<p>上面大致介绍了Apache Ignite的架构和功能特性，现在我们以代码示例的方式，分享一下做的技术原型验证：</p>
+<p><strong>1. 启动Apache Ignite</strong></p>
+<p>代码中通过调用Ignition.Start()启动一个Ignite节点。</p>
+<p>直接执行apache.Ignite.exe也可以启动一个Ignite节点，其内部引用了Apache.Ignite.Core.dll，调用了Ignition.Start()方法</p>
+<ul>
+<li>Ignite可以Host在Console和Winform中</li>
+<li>Ignite依赖Oracle JDK 7及更高版本</li>
+<li>Ignite可以独立运行</li>
+<li>存在跨进程访问的情况</li>
+
+
+</ul>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220739808-374969442.png" alt="" /></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220750449-1617279863.png" alt="" /></p>
+<p><strong>2. 创建指定的缓存区域</strong></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220829668-451424560.png" alt="" /></p>
+<p><strong>3. 数据写入缓存</strong></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220909058-2117938498.png" alt="" /></p>
+<p><strong>4.数据查询</strong></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826220952558-1534476072.png" alt="" /></p>
+<p><strong>5. 数据关联查询</strong></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826221016668-901797782.png" alt="" /></p>
+<p><strong>6.查询指定的字段</strong></p>
+<p><strong><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826221126355-1074727661.png" alt="" /></strong></p>
+<p>&nbsp;</p>
+<p><strong>7.全文搜索</strong></p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826221209277-340386428.png" alt="" /></p>
+<p><strong>8. Apache Ignite集群部署</strong></p>
+<p><strong>节点平等</strong></p>
+<p>Ignite没有master节点或者server节点，也没有worker节点或者client节点，按照Ignite的观点所有节点都是平等的。但是开发者可以将节点配置成master，worker或者client以及data节点。</p>
+<p><strong>自动发现机制</strong></p>
+<p>Ignite节点之间会自动感知，集群可扩展性强，不需要重启集群，简单地启动新加入的节点然后他们就会自动地加入集群。这是通过一个发现机制实现的，他使节点可以彼此发现对方，Ignite默认使用TcpDiscoverySpi通过TCP/IP协议来作为节点发现的实现，也可以配置成基于多播的或者基于静态IP的，这些方式适用于不同的场景。</p>
+<p><strong>部署模式</strong></p>
+<p>Ignite可以独立运行，也可以在集群内运行，也可以将几个jar包嵌入应用内部以嵌入式的模式运行，也可以运行在Docker容器以及Mesos和Yarn等环境中，可以在物理机中运行，也可以在虚拟机中运行，这个广泛的适应性是他的一个很大的优势。<br />配置方式<br />Ignite的大部分配置选项，都同时支持通过基于Spring的XML配置方式以及通过Java代码的编程方式进行配置，这个也是个重要的优点。</p>
+<p><strong>9. 客户端和服务端</strong></p>
+<p>Ignite中各个节点是平等的，但是可以根据需要将节点配置成客户端或者服务端，服务端节点参与缓存，计算，流式处理等等，而原生的客户端节点提供了远程连接服务端的能力。Ignite原生客户端可以使用完整的Ignite API，包括近缓存，事务，计算，流，服务等等。</p>
+<p>&nbsp;<img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826221505183-1678915970.png" alt="" /></p>
+<p>代码以Client模式启动Ignite</p>
+<p><img src="https://images2017.cnblogs.com/blog/23525/201708/23525-20170826221532339-1699033072.png" alt="" /></p>
+<p><strong>Client/Server架构，带来了很大的问题！！</strong></p>
+<ul>
+<li><strong>每个使用Ignite的主机都要安装JDK，同时启动一个Ignite Client节点</strong></li>
+<li><strong>开发、运维、管理成本很高</strong></li>
+</ul>
+<p><strong>10. Apache Ignite REST API</strong></p>
+<p>Apache Ignite 提供了Restful API，支持对缓存的读、写、执行任务、获取各类指标等。<br />启用HTTP连接：将libs\optional\ignite-rest-http 拷贝到libs\ignite-rest-http即可。<br />http://localhost:8080/ignite?cmd=version<br />Get or create cache<br />http://localhost:8080/ignite?cmd=getorcreate&amp;cacheName=partionedCache<br />Add<br />http://localhost:8080/ignite?cmd=add&amp;key=newKey&amp;val=newValue&amp;cacheName=partionedCache<br />Get<br />http://localhost:8080/ignite?cmd=get&amp;key=newKey&amp;cacheName=partionedCache<br />SQL Query<br />http://localhost:8080/ignite?cmd=qryexe&amp;type=Person&amp;pageSize=10&amp;cacheName=Person&amp;arg1=1000&amp;arg2=2000qry=salary+%3E+%3F+and+salary+%3C%3D+%3F</p>
+<p>&nbsp;</p>
+<p>以上就是整个Apache Ignite的技术分享。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/8/26</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-08-26 22:18</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=7436525" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(7436525);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 7436525, cb_entryCreatedDate = '2017-08-26 22:18', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

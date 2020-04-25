@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上一篇我们介绍了获取Azure的监控指标和监控数据： http://www.cnblogs.com/teld/p/5113376.html 本篇我们继续：监控虚拟机的自定义性能计数器。 随着我们应用规" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>[博客迁移]探索Windows Azure 监控和自动伸缩系列3 - 启用Azure监控扩展收集自定义监控数据 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6526238.html">[博客迁移]探索Windows Azure 监控和自动伸缩系列3 - 启用Azure监控扩展收集自定义监控数据</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上一篇我们介绍了获取Azure的监控指标和监控数据：</p>
+<p><a href="http://www.cnblogs.com/teld/p/5113376.html" target="_blank">http://www.cnblogs.com/teld/p/5113376.html</a></p>
+<p>本篇我们继续：监控虚拟机的自定义性能计数器。</p>
+<p>随着我们应用规模的扩张，几十上百的虚拟机运行在Azure上面，实时监控应用的运行情况是我们智能化运维的需要。因此，我们在应用的核心组件上添加了性能计数器，实时将运行数据记录到性能计数器上。</p>
+<p>监控实时抓取虚拟机中性能计数器的数据。</p>
+<p>在Google中搜一下Azure Monitor extension，找到几个有用的Link：</p>
+<p>https://azure.microsoft.com/en-us/documentation/articles/vs-azure-tools-diagnostics-for-cloud-services-and-virtual-machines/</p>
+<p>https://azure.microsoft.com/en-us/documentation/articles/cloud-services-dotnet-diagnostics/</p>
+<p>第一个链接中图文并茂的说明了如何启用虚拟机监控的扩展以及监控性能技术器的数据：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309161114063-1458391281.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309161128672-782466303.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309161143031-34232361.png" alt="" /></p>
+<p>微软的Blog资源果然牛逼，说的非常详细。</p>
+<p>启动VS连接Azure，竟然找不到图中Azure的管理UI，细想一下也对，不是所有的VS使用者都需要操作Azure，这个Azure的管理UI应该是VS的一个Plugin。</p>
+<p>咨询了搞大数据的朱哥，发给我一个在线安装程序：选择安装Microsoft Azure SDK for .net(VS 2015)-2.8.1</p>
+<p>安装完成后，Azure的管理菜单出来了，然后选择要监控的虚拟机，添加<strong>Microsoft Monitoring Agent Diagnostics</strong>，Configure，监控自定义性能计数器，然后保存：</p>
+<p>重新刷新后，扩展启用报错了：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309161206078-325190648.png" alt="" /></p>
+<p>错误信息：Microsoft.Azure.Diagnostics.IaaSDiagnostics, version 1.4.2.1) with exception Command C:\Packages\Plugins\Microsoft.Azure.Diagnostics.IaaSDiagnostics\1.4.2.1\DiagnosticsPluginLauncher.exe of Microsoft.Azure.Diagnostics.IaaSDiagnostics has exited with code -3</p>
+<p>在虚拟机中的C:\Packages\Plugins\Microsoft.Azure.Diagnostics.IaaSDiagnostics\1.4.2.1\Logs中，找下了更多的错误信息：</p>
+<p>DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] Checking VM Type<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] File HandlerEnvironment.json found. Extension set to IAAS<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] RcfFileName: C:\WindowsAzure\Config\ac5e6303019644418a08571783b4a103.ac5e6303019644418a08571783b4a103.teldptapp.16.xml<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] RoleInstanceId: teldptapp; DeploymentId: ac5e6303019644418a08571783b4a103; RoleName: teldptapp<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] Config file found: C:\Packages\Plugins\Microsoft.Azure.Diagnostics.IaaSDiagnostics\1.4.2.1\RuntimeSettings\13.settings<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] Loading config file: C:\Packages\Plugins\Microsoft.Azure.Diagnostics.IaaSDiagnostics\1.4.2.1\RuntimeSettings\13.settings<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:41] Reading JSON configuration file<br />DiagnosticsPluginLauncher.exe Error: 0 : [2016/1/7 7:35:41] System.ArgumentNullException: 值不能为 null。<br />参数名: s<br />&nbsp;&nbsp; 在 System.Convert.FromBase64String(String s)<br />&nbsp;&nbsp; 在 Microsoft.Azure.Plugins.Diagnostics.dll.PublicSettings.get_XmlCfg()<br />&nbsp;&nbsp; 在 Microsoft.Azure.Plugins.Diagnostics.dll.PluginConfigurationSettingsProvider.LoadWadJSONConfig(String fullConfig)<br />&nbsp;&nbsp; 在 Microsoft.Azure.Plugins.Diagnostics.dll.PluginConfigurationSettingsProvider.LoadWad2Config()<br />&nbsp;&nbsp; 在 Microsoft.Azure.Plugins.Diagnostics.dll.PluginConfigurationSettingsProvider.Initialize()<br />DiagnosticsPluginLauncher.exe Error: 0 : [2016/1/7 7:35:41] Failed to read configuration.<br />DiagnosticsPluginLauncher.exe Information: 0 : [2016/1/7 7:35:49] DiagnosticPlugin exited with code -3</p>
+<p>这个错误，搜索、调试了半天，未找到解决方案，同时咨询了微软的工程师，也未回复。</p>
+<p>此时，重新读了第二个链接中的文章内容，通过Powershell启用监控扩展。尝试一下：</p>
+<p>启动Powshell ISE，连接Azure之前，导入.publishsettings文件，这样才可以用你的订阅连接Azure。</p>
+<p>安装第二个链接的内容，一步一步，执行PowerShell以下命令：</p>
+<div class="cnblogs_code">
+<pre>$storage_name = "monitorstorage"<span style="color: #000000;">
+$key </span>= "nd7QMydWNFNuROfe********ADsasdasdfafs8*****=="<span style="color: #000000;">
+$config_path</span>="C:\Users\Administrator\Documents\Visual Studio 2015\Projects\WadExampleVM\WadExampleVM\WadExample.xml"<span style="color: #000000;">
+$service_name</span>="AzureAVS01"<span style="color: #000000;">
+$vm_name</span>="AzureAVS02"<span style="color: #000000;">
+$storageContext </span>=<span style="color: #000000;"> New-AzureStorageContext -StorageAccountName $storage_name -StorageAccountKey $key 
+$VM1 </span>=<span style="color: #000000;"> Get-AzureVM -ServiceName $service_name -Name $vm_name
+$VM2 </span>= Set-AzureVMDiagnosticsExtension -DiagnosticsConfigurationPath $config_path -Version "1.*"<span style="color: #000000;"> -VM $VM1 -StorageContext $storageContext
+$VM3 </span>= Update-AzureVM -ServiceName $service_name -Name $vm_name -VM $VM2.VM</pre>
+</div>
+<p>竟然ok了，牛逼。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309161334453-1520537427.png" alt="" /></p>
+<p>性能计数器的数据写到了Storage-Table-WADPerformanceCountersTable</p>
+<p>VS中不能启用监控扩展，PowerShell可以，说不通，我们还是相信微软的产品质量的。</p>
+<p>继续研读第二个链接的内容：在Troubleshooting章节，仔细读了Exit -3 和 -106的说明；</p>
+<p>https://azure.microsoft.com/en-us/documentation/articles/cloud-services-dotnet-diagnostics/</p>
+<p>然后到虚拟机上找到了&nbsp;<em>%SystemDrive%\WindowsAzure\Config</em><span class="Apple-converted-space">&nbsp;配置文件：e8e74c36fae542b5bdcc88e20dd0a4c6.e8e74c36fae542b5bdcc88e20dd0a4c6.AzureAVS01.1.xml</span></p>
+<p>找到了xmlCfg节的内容，</p>
+<p>PFdhZENmZz48RGlhZ25vc3RpY01vbml0b3JDb25maWd1cmF0aW9uIG92ZXJhbGxRdW90YUluTUI9IjI1MDAwIj4NCiAgICAgIDxQZXJmb3JtYW5jZUNvdW50ZXJzIHNjaGVkdWxlZFRyYW5zZmVyUGVyaW9kPSJQVDFNIj4NCiAgICAgICAgPFBlcmZvcm1hbmNlQ291bnRlckNvbmZpZ3VyYXRpb24gY291bnRlclNwZWNpZmllcj0iXFByb2Nlc3NvcihfVG90YWwpXCUgUHJvY2Vzc29yIFRpbWUiIHNhbXBsZVJhdGU9IlBUMU0iIHVuaXQ9InBlcmNlbnQiIC8+DQogICAgICAgIDxQZXJmb3JtYW5jZUNvdW50ZXJDb25maWd1cmF0aW9uIGNvdW50ZXJTcGVjaWZpZXI9IlxNZW1vcnlcQ29tbWl0dGVkIEJ5dGVzIiBzYW1wbGVSYXRlPSJQVDFNIiB1bml0PSJieXRlcyIgLz4NCiAgICAgIDwvUGVyZm9ybWFuY2VDb3VudGVycz4NCiAgICAgIDxFdHdQcm92aWRlcnM+DQogICAgICAgIDxFdHdFdmVudFNvdXJjZVByb3ZpZGVyQ29uZmlndXJhdGlvbiBwcm92aWRlcj0iU2FtcGxlRXZlbnRTb3VyY2VXcml0ZXIiIHNjaGVkdWxlZFRyYW5zZmVyUGVyaW9kPSJQVDVNIj4NCiAgICAgICAgICA8RXZlbnQgaWQ9IjEiIGV2ZW50RGVzdGluYXRpb249IkVudW1zVGFibGUiIC8+DQogICAgICAgICAgPEV2ZW50IGlkPSIyIiBldmVudERlc3RpbmF0aW9uPSJNZXNzYWdlVGFibGUiIC8+DQogICAgICAgICAgPEV2ZW50IGlkPSIzIiBldmVudERlc3RpbmF0aW9uPSJTZXRPdGhlclRhYmxlIiAvPg0KICAgICAgICAgIDxFdmVudCBpZD0iNCIgZXZlbnREZXN0aW5hdGlvbj0iSGlnaEZyZXFUYWJsZSIgLz4NCiAgICAgICAgICA8RGVmYXVsdEV2ZW50cyBldmVudERlc3RpbmF0aW9uPSJEZWZhdWx0VGFibGUiIC8+DQogICAgICAgIDwvRXR3RXZlbnRTb3VyY2VQcm92aWRlckNvbmZpZ3VyYXRpb24+DQogICAgICA8L0V0d1Byb3ZpZGVycz4NCiAgICA8L0RpYWdub3N0aWNNb25pdG9yQ29uZmlndXJhdGlvbj48RGlhZ25vc3RpY01vbml0b3JDb25maWd1cmF0aW9uIHhtbG5zPSJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL1NlcnZpY2VIb3N0aW5nLzIwMTAvMTAvRGlhZ25vc3RpY3NDb25maWd1cmF0aW9uIj48UGVyZm9ybWFuY2VDb3VudGVycz48UGVyZm9ybWFuY2VDb3VudGVyQ29uZmlndXJhdGlvbiBjb3VudGVyU3BlY2lmaWVyPSJcUHJvY2Vzc29yKF9Ub3RhbClcJSBQcm9jZXNzb3IgVGltZSIgc2FtcGxlUmF0ZT0iUFQwUyIgLz48UGVyZm9ybWFuY2VDb3VudGVyQ29uZmlndXJhdGlvbiBjb3VudGVyU3BlY2lmaWVyPSJcTWVtb3J5XEF2YWlsYWJsZSBNQnl0ZXMiIHNhbXBsZVJhdGU9IlBUMFMiIC8+PFBlcmZvcm1hbmNlQ291bnRlckNvbmZpZ3VyYXRpb24gY291bnRlclNwZWNpZmllcj0iXE1lbW9yeVxDb21taXR0ZWQgQnl0ZXMiIHNhbXBsZVJhdGU9IlBUMFMiIC8+PC9QZXJmb3JtYW5jZUNvdW50ZXJzPjwvRGlhZ25vc3RpY01vbml0b3JDb25maWd1cmF0aW9uPjwvV2FkQ2ZnPg==</p>
+<p>base64转码后是</p>
+<p>&lt;WadCfg&gt;&lt;DiagnosticMonitorConfiguration overallQuotaInMB="25000"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;PerformanceCounters scheduledTransferPeriod="PT1M"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;PerformanceCounterConfiguration counterSpecifier="\Processor(_Total)\% Processor Time" sampleRate="PT1M" unit="percent" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;PerformanceCounterConfiguration counterSpecifier="\Memory\Committed Bytes" sampleRate="PT1M" unit="bytes" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/PerformanceCounters&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;EtwProviders&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;EtwEventSourceProviderConfiguration provider="SampleEventSourceWriter" scheduledTransferPeriod="PT5M"&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Event id="1" eventDestination="EnumsTable" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Event id="2" eventDestination="MessageTable" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Event id="3" eventDestination="SetOtherTable" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Event id="4" eventDestination="HighFreqTable" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DefaultEvents eventDestination="DefaultTable" /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/EtwEventSourceProviderConfiguration&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/EtwProviders&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/DiagnosticMonitorConfiguration&gt;&lt;DiagnosticMonitorConfiguration xmlns="http://schemas.microsoft.com/ServiceHosting/2010/10/DiagnosticsConfiguration"&gt;&lt;PerformanceCounters&gt;&lt;PerformanceCounterConfiguration counterSpecifier="\Processor(_Total)\% Processor Time" sampleRate="PT0S" /&gt;&lt;PerformanceCounterConfiguration counterSpecifier="\Memory\Available MBytes" sampleRate="PT0S" /&gt;&lt;PerformanceCounterConfiguration counterSpecifier="\Memory\Committed Bytes" sampleRate="PT0S" /&gt;&lt;/PerformanceCounters&gt;&lt;/DiagnosticMonitorConfiguration&gt;&lt;/WadCfg&gt;</p>
+<p>这个不是在Powershell指定的XML文件的内容吗!</p>
+<p>然后对比了通过VS启用扩展的虚拟机之监控扩展的配置文件：</p>
+<p>{"WadCfg":{"DiagnosticMonitorConfiguration":{"PerformanceCounters":{"PerformanceCounterConfiguration":[{"annotation":[],"counterSpecifier":"\\Memory\\Available MBytes","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\Web Service(_Total)\\ISAPI Extension Requests/sec","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\Web Service(_Total)\\Bytes Total/Sec","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\ASP.NET Applications(__Total__)\\Requests/Sec","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\ASP.NET Applications(__Total__)\\Errors Total/Sec","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\ASP.NET\\Requests Queued","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\ASP.NET\\Requests Rejected","sampleRate":"PT3M"},{"annotation":[],"counterSpecifier":"\\Processor(_Total)\\% Processor Time","sampleRate":"PT3M"}],"scheduledTransferPeriod":"PT1M"},"overallQuotaInMB":4096}}</p>
+<p>靠，这个竟然是JSON。</p>
+<p>大致想通了：</p>
+<p>Powershell中指定XML文件是ok的，VS中Azure管理插件启用监控扩展失败。</p>
+<p>不同的客户端发的请求不同，应该是Azure管理工具的问题，记得安装的版本是2.8.1，最新的。</p>
+<p>朱哥机器上看了以下是2.7，最新版本的Azure Tool是面向最新的Azure的，中国区的应该滞后一点。</p>
+<p>因此，将本机2.8版本全部卸载，安装2.7版本：</p>
+<p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=48178">https://www.microsoft.com/en-us/download/details.aspx?id=48178</a></p>
+<p>基于2.7这个版本的Azure管理工具启用虚拟机监控扩展，OK。</p>
+<p>本文希望能帮忙在中国搞Azure的小伙伴，也是对Azure的技术支持。</p>
+<p>下一篇我们继续AutoScale的话题。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2016/3</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-03-09 16:14</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6526238" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6526238);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6526238, cb_entryCreatedDate = '2017-03-09 16:14', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

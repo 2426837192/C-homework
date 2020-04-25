@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="前两篇文章介绍了Nginx反向代理和动态路由： Ngnix技术研究系列1-通过应用场景看Nginx的反向代理 Ngnix技术研究系列2-基于Redis实现动态路由 随着研究的深入，很重要的一点就是了解" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Nginx技术研究系列6-配置详解 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/7732640.html">Nginx技术研究系列6-配置详解</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>前两篇文章介绍了Nginx反向代理和动态路由：</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl02_DayList_TitleUrl_1" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/7616735.html">Ngnix技术研究系列1-通过应用场景看Nginx的反向代理</a></p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl02_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/7617358.html">Ngnix技术研究系列2-基于Redis实现动态路由</a></p>
+<p>随着研究的深入，很重要的一点就是了解Nginx各个配置和作用。整理一下分享给大家。</p>
+<p><strong>一、先说Nginx配置文件</strong></p>
+<p>Nginx的配置文件是一个普通的纯文本文件，使用了Nginx自定义的一套配置语法，更接近于脚本语言，混合了Shell、Perl和C的部分特性：</p>
+<ul>
+<li>使用#开始一个注释行</li>
+<li>配置指令以分号结束，可以接受多个参数，用空白字符分隔</li>
+<li>可以使用单引号或者双引号来定义字符串，允许用&ldquo;\&rdquo;转义字符</li>
+<li>配置指令和参数也可以使用引号来指定，特别是当它含有空格的时候</li>
+<li>配置块（block）的特殊的配置指令，它有一个{&hellip;}参数且无须分号结束，｛&hellip;｝里面可以包含多个配置指令，相当于C语言里的复合语句</li>
+<li>有的配置指令只能出现在指定的配置块中（即语境Context）</li>
+<li>配置块里可以再包含配置块，嵌套层次没有限制，但需符合配置块的语义</li>
+<li>可以使用include指令包含其他配置文件，支持&ldquo;*&rdquo;通配符，类似C语言</li>
+<li>使用$var可以引用预定义的一些变量，增加配置的灵活性</li>
+<li>不能识别或错误的配置指令会导致Nginx解析失败，无法启动</li>
+</ul>
+<p>Ngnix配置文件的默认位置在：</p>
+<div class="cnblogs_code">
+<pre>/usr/local/openresty/nginx/conf/nginx.conf</pre>
+</div>
+<p>可以复制新建一个配置文件。</p>
+<p><strong>&nbsp;二、进程配置</strong></p>
+<p>进程配置指令不属于任何配置块，只能在全局域（<strong>main</strong>）配置<br /><strong>worker_processes number | auto;</strong><br />设置Nginx能够启动的worker进程的数量，它直接影响Nginx的性能。通常当worker的数量与服务器的CPU核心数相等时，可以获取最佳的性能，这时每一个worker都会工作在一个独立的CPU核心上，完全消除CPU调度的成本。（需配合worker_cpu_affinity指令）<br />Worker_processes的默认值是1. 如果不清楚服务器CPU核心数量，那么可以设置为auto参数，Nginx会尝试探测数量并设置。cat /proc/cpuinfo | grep processor<br /><strong>master_process on | off;</strong><br />决定是否启用Nginx的进程池机制，默认值是on，如果设置为off，那么Nginx不会建立master进程，只会用一个worker进程处理请求，worker_processes指令也会失效，并发处理能力大大下降。<br /><strong>worker_cpu_affinity auto [cpumask];</strong><br />指定worker进程运行在某个CPU核心上，即CPU绑定，对于多核心的CPU来说可以减少CPU切换，提高Cache命中率，让Nginx更充分地利用CPU资源<br />Worker_processes 4;<br />Worker_cpu_affinity 0001 0010 0100 1000; <br />1.9.10之前，只能使用掩码的方式手工绑定，现在则可以用auto参数让Nginx自动绑定CPU。</p>
+<p><strong>worker_directory path;</strong><br />配置Nginx的工作目录，实际上仅用来存放coredump文件，在Nginx发生意外崩溃时可以用gdb调试查找原因。</p>
+<p><strong>三、运行日志配置</strong></p>
+<p>在Nginx中运行日志分为两种，记录TCP/HTTP访问请求的access_log和记录服务器错误信息的error_log<br /><strong>error_log file|stderr level ;</strong><br />指定Nginx的运行错误日志，默认是安装目录下的logs/error.log 支持设置其他路径，或者使用标准错误输出stderr。第二个参数level是日志允许输出级别，取值是debug|info|notice|warn|error|crit|alert|emerg, 只有高于这个级别的日志才会记录下来，默认值是error</p>
+<p><strong>四、Events配置</strong></p>
+<p>Nginx采用事件驱动，利用操作系统内核提供的epoll、kqueue等系统调用来高效地处理网络连接，events配置块就是用来配置Nginx的事件机制。Events配置指令不多，默认配置就饿可以工作的很好<br /><strong>worker_connections number;</strong><br />设置每个worker进程可以处理的最大连接数量，它决定了Nginx的并发能力。这个指令决定了单个进程的处理能力。Nginx的整体最大可处理的连接数再乘上worker_processes的数量。<br />worker_connections的默认值是1024，可根据实际情况适当增大。</p>
+<p>五、Http配置</p>
+<p>Nginx使用http块配置HTTP相关的所有功能，包括cache、fastcgi、gzip、server、location、proxy、upsteam等。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">http {
+    include       mime.types;
+    default_type  application</span>/octet-<span style="color: #000000;">stream;
+
+    #log_format  main  </span><span style="color: #800000;">'</span><span style="color: #800000;">$remote_addr - $remote_user [$time_local] "$request" </span><span style="color: #800000;">'</span><span style="color: #000000;">
+    #                  </span><span style="color: #800000;">'</span><span style="color: #800000;">$status $body_bytes_sent "$http_referer" </span><span style="color: #800000;">'</span><span style="color: #000000;">
+    #                  </span><span style="color: #800000;">'</span><span style="color: #800000;">"$http_user_agent" "$http_x_forwarded_for"</span><span style="color: #800000;">'</span><span style="color: #000000;">;
+
+    #access_log  logs</span>/<span style="color: #000000;">access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  </span><span style="color: #800080;">0</span><span style="color: #000000;">;
+    keepalive_timeout  </span><span style="color: #800080;">65</span><span style="color: #000000;">;
+
+    #</span><span style="color: #0000ff;">gzip</span><span style="color: #000000;">  on;
+
+    server {
+        listen       </span><span style="color: #800080;">80</span><span style="color: #000000;">;
+        server_name  localhost;
+
+        #charset koi8</span>-<span style="color: #000000;">r;
+
+        #access_log  logs</span>/<span style="color: #000000;">host.access.log  main;
+
+        location </span>/<span style="color: #000000;"> {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        #error_page  </span><span style="color: #800080;">404</span>              /<span style="color: #800080;">404</span><span style="color: #000000;">.html;
+
+        # redirect server error pages to the static page </span>/<span style="color: #000000;">50x.html
+        #
+        error_page   </span><span style="color: #800080;">500</span> <span style="color: #800080;">502</span> <span style="color: #800080;">503</span> <span style="color: #800080;">504</span>  /<span style="color: #000000;">50x.html;
+        location </span>= /<span style="color: #000000;">50x.html {
+            root   html;
+        }
+
+        # proxy the PHP scripts to Apache listening on </span><span style="color: #800080;">127.0</span>.<span style="color: #800080;">0.1</span>:<span style="color: #800080;">80</span><span style="color: #000000;">
+        #
+        #location </span>~<span style="color: #000000;"> \.php$ {
+        #    proxy_pass   http:</span><span style="color: #008000;">//</span><span style="color: #008000;">127.0.0.1;</span>
+<span style="color: #000000;">        #}
+
+        # pass the PHP scripts to FastCGI server listening on </span><span style="color: #800080;">127.0</span>.<span style="color: #800080;">0.1</span>:<span style="color: #800080;">9000</span><span style="color: #000000;">
+        #
+        #location </span>~<span style="color: #000000;"> \.php$ {
+        #    root           html;
+        #    fastcgi_pass   </span><span style="color: #800080;">127.0</span>.<span style="color: #800080;">0.1</span>:<span style="color: #800080;">9000</span><span style="color: #000000;">;
+        #    fastcgi_index  index.php;
+        #    fastcgi_param  SCRIPT_FILENAME  </span>/<span style="color: #000000;">scripts$fastcgi_script_name;
+        #    include        fastcgi_params;
+        #}
+
+        # deny access to .htaccess files, </span><span style="color: #0000ff;">if</span> Apache<span style="color: #800000;">'</span><span style="color: #800000;">s document root</span>
+        # concurs with nginx<span style="color: #800000;">'</span><span style="color: #800000;">s one</span>
+<span style="color: #000000;">        #
+        #location </span>~ /<span style="color: #000000;">\.ht {
+        #    deny  all;
+        #}
+    }
+
+
+    # another virtual host using mix of IP</span>-, name-, and port-<span style="color: #000000;">based configuration
+    #
+    #server {
+    #    listen       </span><span style="color: #800080;">8000</span><span style="color: #000000;">;
+    #    listen       somename:</span><span style="color: #800080;">8080</span><span style="color: #000000;">;
+    #    server_name  somename  alias  another.alias;
+
+    #    location </span>/<span style="color: #000000;"> {
+    #        root   html;
+    #        index  index.html index.htm;
+    #    }
+    #}
+
+
+    # HTTPS server
+    #
+    #server {
+    #    listen       </span><span style="color: #800080;">443</span><span style="color: #000000;"> ssl;
+    #    server_name  localhost;
+
+    #    ssl_certificate      cert.pem;
+    #    ssl_certificate_key  cert.key;
+
+    #    ssl_session_cache    shared:SSL:1m;
+    #    ssl_session_timeout  5m;
+
+    #    ssl_ciphers  HIGH:</span>!aNULL:!<span style="color: #000000;">MD5;
+    #    ssl_prefer_server_ciphers  on;
+
+    #    location </span>/<span style="color: #000000;"> {
+    #        root   html;
+    #        index  index.html index.htm;
+    #    }
+    #}</span></pre>
+</div>
+<p><strong>resolver address &hellip; [valid=time] [ipv6=on|off]</strong></p>
+<p>配置域名解析服务器，否则Nginx将无法正确解析域名的地址，无法访问后端的Web服务</p>
+<p><strong>keepalive_timeout timeout;</strong></p>
+<p>设置keepalive的超时时间，默认75s，主要用于客户端复用Http长连接，提高服务器的性能，如果希望服务器发送数据后能主动断开连接，可以设置为0</p>
+<p><strong>access_log path[format [buffer=size][flush=time][if=condition]];</strong></p>
+<p>access_log指令用于配置http的访问日志，日志的格式由log_format决定，为了优化磁盘读写，可以设置buffer和flush选项，指定写磁盘的缓冲区大小和刷新时间。 access_log /var/logs/nginx/access.log buffer=8k flush=1s;</p>
+<p>&nbsp;<strong>六、Proxy配置</strong></p>
+<p><strong>proxy_connect_timeout time;</strong><br />与Nginx服务器建立连接的超时时间，一般不超过75s，示例：proxy_connect_timeout 60s;</p>
+<p><strong>proxy_cookie_domain off;</strong><br /><strong>proxy_cookie_domain domain replacement;</strong><br />HttpHeader中，重写Set-Cookie中domain的配置，例如: proxy_cookie_domain localhost example.org;<br /><br /><strong>proxy_read_timeout time;</strong><br />该指令设置与代理服务器的读超时时间。它决定了nginx会等待多长时间来获得请求的响应。这个时间不是获得整个response的时间，而是两次reading操作的时间。<br />这个超时时间很重要，取决与调用方的超时配置，<strong>Nginx要小于等于调用方的超时配置</strong><br />有个有价值的参考连接：<a href="http://yunjianfei.iteye.com/blog/2265918" target="_blank">http://yunjianfei.iteye.com/blog/2265918</a><br />当Nginx遇到报表查询、导出功能？<br /><a href="http://blog.chinaunix.net/uid-182114-id-4700107.html" target="_blank">http://blog.chinaunix.net/uid-182114-id-4700107.html</a></p>
+<p><strong>proxy_send_timeout time</strong><br />该指令设置了发送请求给upstream服务器的超时时间。超时设置不是为了整个发送期间，而是在两次write操作期间。如果超时后，upstream没有收到新的数据，nginx会关闭连接。默认60s。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/10/25</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-10-25 22:17</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=7732640" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(7732640);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 7732640, cb_entryCreatedDate = '2017-10-25 22:17', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

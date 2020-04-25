@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博客中，我们用实际的业务场景和代码示例了Azure Messaging-ServiceBus Messaging对复杂对象消息的支持和消息的持久化： Azure Messaging-Service" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure Messaging-ServiceBus Messaging消息队列技术系列5-重复消息：at-least-once   at-most-once - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6561635.html">Azure Messaging-ServiceBus Messaging消息队列技术系列5-重复消息：at-least-once   at-most-once</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博客中，我们用实际的业务场景和代码示例了Azure Messaging-ServiceBus Messaging对复杂对象消息的支持和消息的持久化：</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl00_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/6533272.html">Azure Messaging-ServiceBus Messaging消息队列技术系列4-复杂对象消息是否需要支持序列化和消息持久化</a></p>
+<p>本文中我们主要研究并介绍Azure Messaging对重复消息的支持。</p>
+<p>MessageReceiver 对象创建时可以指定消息接收模式：&nbsp;<strong>ReceiveAndDelete</strong> 和 <strong>PeekLock</strong> （默认），其中：</p>
+<p>1. 使用 ReceiveAndDelete 模式时，接收是单步操作，即当 Service Bus 收到请求时，它将消息标记为&ldquo;正在使用&rdquo;，然后将其返回给应用程序。ReceiveAndDelete 模式是最简</p>
+<p>单的模型，并且最适合在出现故障时应用程序能够容许不处理消息的场景。理解此模式时，可考虑这种情况：使用者发出了接收请求，但在处理消息之前发生崩溃。由于 Service B</p>
+<p>us已将消息标记为&ldquo;正在使用&rdquo;，因此当应用程序重新启动并重新开始使用消息时，它就会错过在崩溃前已使用的消息。</p>
+<p>2. 在 PeekLock 模式下，接收变成两阶段操作，因此可以支持不能容许错过消息的应用程序。当 Service Bus 收到请求时，它会找到下一条要使用的消息，将其锁定以防止其他使</p>
+<p>用者接收它，然后将其返回给应用程序。应用程序完成消息处理（或将消息可靠地存储以便将来处理）后，会对收到的消息调用 Complete 以完成接收过程的第二阶段。当Service</p>
+<p>Bus 看到 Complete 时，会将该消息标记为&ldquo;正在使用&rdquo;。另外两个结果也是可能的。第一个结果，如果由于某种原因应用程序无法处理该消息，它可以对收到的消息Abandon（而</p>
+<p>不是 Complete）。这将导致 Service Bus 解锁该消息，并使该消息可以重新被同一使用者或其他竞争的使用者接收。第二个结果，即存在与锁定关联的超时，如果应用程序在锁</p>
+<p>定超时到期前无法处理改消息（例如，应用程序崩溃）则 Service Bus 将解锁该消息并使其可以重新被接收。如果应用程序在处理该消息后崩溃，但此时尚未发出 Complete 请</p>
+<p>求，则在应用程序重新启动时，该消息将重新传递给应用程序。这通常称为&ldquo;至少一次&rdquo;处理。这意味着每条消息都将至少处理一次，但在某些情况下可能会重新传递同一消息。如果</p>
+<p>方案不能容许重复处理，则需要在应用程序中添加检测重复项的逻辑。这可以基于消息的 MessageId 属性来实现。此属性的值在传递尝试过程中保持不变。这称为&ldquo;恰好一次&rdquo;处、</p>
+<p>理。</p>
+<p>接下来，我们通过Code show一下消息的重复发送和重复接收。</p>
+<p><strong>消息重复发送</strong>：同一个消息BrokeredMessage发送两次</p>
+<div class="cnblogs_code">
+<pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 发送消息
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> MessageMultiSendTest()
+        {
+            </span><span style="color: #0000ff;">var</span> sbUtils = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServiceBusUtils();
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">创建队列</span>
+            sbUtils.CreateQueue(queueName, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">多次发送消息到OrderQueue</span>
+            <span style="color: #0000ff;">var</span> queueSendClient =<span style="color: #000000;"> sbUtils.GetQueueClient(queueName);
+
+            </span><span style="color: #0000ff;">var</span> order = CreateSalesOrder(<span style="color: #800080;">1</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">var</span> message =<span style="color: #000000;"> sbUtils.Create(order);
+            <strong>queueSendClient.Send(message);
+            queueSendClient.Send(message);</strong>
+
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Send Completed!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+        }</span></pre>
+</div>
+<p>实际执行过程中是出错的：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170316212630901-1314287681.png" alt="" /></p>
+<p>由此可以得出：</p>
+<p>&nbsp;</p>
+<p>Azure Messaging 不支持同一个消息发送多次，必须通过new多个BrokeredMessage实例实现。</p>
+<p>同时，消息的唯一性由消息的MessageID来标识！</p>
+<p><strong>PeekAndLock模式下消息的重复接收：</strong></p>
+<p>接收模式PeekAndLock，同一个队列，第一个Consumer接收消息，但是不Complete；然后第二个Consumer继续接收消息，此时第一个Consumer未Complete的消息有一个</p>
+<p>TTL，在TTL时间区间之内，第二个Consumer可以继续接收当前队列未锁定的消息，当TTL时间到达后，释放第一个Consumer锁定的消息，第二个Consumer读取到了第一个</p>
+<p>Consumer未Complete的消息。</p>
+<p>The duration of a peek lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes;</p>
+<p>the default value is 1 minute.</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 接收消息
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> MessageReceive()
+        {
+            </span><span style="color: #0000ff;">int</span> index = <span style="color: #800080;">0</span><span style="color: #000000;">;            
+            </span><span style="color: #0000ff;">var</span> sbUtils = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServiceBusUtils();
+            </span><span style="color: #0000ff;">var</span> queueReveiveClient1 =<span style="color: #000000;"> sbUtils.GetReceiveQueueClient(queueName, ReceiveMode.<strong>PeekLock</strong>);
+            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">10</span>; i++<span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">var</span> msg =<span style="color: #000000;"> queueReveiveClient1.<strong>Peek</strong>();
+                Console.WriteLine(</span><span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Received {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, i, msg.MessageId));
+            }
+
+            </span><span style="color: #0000ff;">var</span> queueReveiveClient2 =<span style="color: #000000;"> sbUtils.GetReceiveQueueClient(queueName, ReceiveMode.<strong>PeekLock</strong>);
+            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">10</span>; i++<span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">var</span> msg =<span style="color: #000000;"> queueReveiveClient2.<strong>Receive</strong>();
+                Console.WriteLine(</span><span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Second received {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, i, msg.MessageId));
+                msg.Complete();
+            }
+
+            </span><span style="color: #808080;">///</span><span style="color: #008000;">/删除队列</span>
+            <span style="color: #008000;">//</span><span style="color: #008000;">sbUtils.DeleteQueue(queueName);</span>
+<span style="color: #000000;">
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Receive Completed!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+        }</span></pre>
+</div>
+<p>第一个队列Consumer使用Peek模式接收到消息，只是取出消息，不从消息队列中移出。</p>
+<p>第二个队列Consumer使用Receive模式同样可以接收消息。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170316215837151-1987209933.png" alt="" /></p>
+<p>如果两个队列Consumer都使用Receive模式接收消息，只有第一个Consumer可以接收到，第二个Consumer则接收不到，一直在等待消息的入队！</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 接收消息
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> MessageReceive()
+        {
+            </span><span style="color: #0000ff;">int</span> index = <span style="color: #800080;">0</span><span style="color: #000000;">;            
+            </span><span style="color: #0000ff;">var</span> sbUtils = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServiceBusUtils();
+            </span><span style="color: #0000ff;">var</span> queueReveiveClient1 =<span style="color: #000000;"> sbUtils.GetReceiveQueueClient(queueName, ReceiveMode.PeekLock);
+            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">10</span>; i++<span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">var</span> msg =<span style="color: #000000;"> queueReveiveClient1.Receive();
+                Console.WriteLine(</span><span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Received {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, i, msg.MessageId));
+            }
+
+            </span><span style="color: #0000ff;">var</span> queueReveiveClient2 =<span style="color: #000000;"> sbUtils.GetReceiveQueueClient(queueName, ReceiveMode.PeekLock);
+            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">10</span>; i++<span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">var</span> msg =<span style="color: #000000;"> queueReveiveClient2.Receive();
+                Console.WriteLine(</span><span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Second received {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, i, msg.MessageId));
+                msg.Complete();
+            }
+
+            </span><span style="color: #808080;">///</span><span style="color: #008000;">/删除队列</span>
+            <span style="color: #008000;">//</span><span style="color: #008000;">sbUtils.DeleteQueue(queueName);</span>
+<span style="color: #000000;">
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Receive Completed!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+        }</span></pre>
+</div>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170316220143104-1918181273.png" alt="" /></p>
+<p>因为消息已经被第一个Consumer消费。</p>
+<p>通过本篇我们了解了Azure Messaging-ServiceBus Messaging对重复消息的处理机制。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/3/16</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-03-16 22:03</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6561635" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6561635);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6561635, cb_entryCreatedDate = '2017-03-16 22:03', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

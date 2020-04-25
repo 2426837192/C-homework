@@ -4,28 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin" />
-    <meta property="og:description" content="最近呢也是有很久没有更新博客了，主要是因为平时比较忙，毕竟等疫情彻底解封qj我也要小升初考试了，所以打算赶在今天更新点干货。 在各大oi赛事上，递归和递推算是个基础而重要的算法，递归在熟练运用后可以实" />
+    
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>0基础算法基础学算法 第六弹 递归 - 球君 - 博客园</title>
+    <title>2010 年 11月 2 日 随笔档案 - 拓荒者 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/lessismoreright/bundle-lessismoreright.min.css?v=r7HROo-7bHpj9wQ7aMjjOlbCdKigSxO_AFRYzTkcpKo" />
-    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/qj-Network-Box/custom.css?v=TCA&#x2B;upQ48RktzXaBTd5lQC3r3p8=" />
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/lessismoreright/bundle-lessismoreright-mobile.min.css?v=FJjyQba01xzuYKRyPpSwE1bMq69pRjxrz5wp2oZZGLY" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001.min.css?v=vmUk-3Bh8LDsKXwjNHs2GDiFna-ZMTUgOJzjUaXTlPA" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/qj-Network-Box/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/qj-Network-Box/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/qj-Network-Box/wlwmanifest.xml" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001-mobile.min.css?v=cJiDsI1JAuHHd-OAUWJeyE5JMXXsG4mmuUi2rVmEK1c" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/dstang2000/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/dstang2000/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/dstang2000/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 584369;
-        var currentBlogApp = 'qj-Network-Box';
+        var currentBlogId = 9986;
+        var currentBlogApp = 'dstang2000';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'LessIsMoreRight';
+        var skinName = 'AnotherEon001';
     </script>
     
     
@@ -33,435 +33,149 @@
 </head>
 <body>
     <a name="top"></a>
-    <div id="page_begin_html">
-        <a href="https://github.com/240302975"> 
-<img style="position: absolute; top: 0; right: 0; border: 0;"
-    src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
-    alt="Fork me on GitHub"
-    data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
+    
+    <div id="wrapper">
+<div id="header">
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/dstang2000/">拓荒者 dstang2000 <a href="http://www.dstang.com"><font size=-1 color=red>http://www.dstang.com</font></a>
+</h1>
+<div id="subtitle">
+KISS：Keeping things that work，Improve systems procedures styles，Start things of value，Stop things of no value 
+</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 
+4, 文章 - 
+1, 评论 - 
+17, 引用 - 
+0</div>
+
+</div>
+
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	
+        
+<p class="date">
+	<span>		  
+	<a>2010年11月2日</a>
+	</span>
+</p>
+
+		<div class="post">
+			<h2>
+
+<a class="postTitle2" href="https://www.cnblogs.com/dstang2000/archive/2010/11/02/1867406.html">
+    实测:xml与json速度约差4倍
 </a>
+</h2>
+			<div class="postbody">
+			
+
+    <div class="c_b_p_desc">
+摘要：xml与json在javascript中解析并使用，速度大约相差4倍。（在IE中测试的结果）。其中主要不在于eval,与xml parse的时间差别，主要在于属性访问上的差别：xml中使用这样的方式 markers[i].getAttribute("info") 与json中使用这样的方式 var info = markers[i].info;相比， xml要慢不少。以下为测试的详情：代码Code...            <a href="https://www.cnblogs.com/dstang2000/archive/2010/11/02/1867406.html" class="c_b_p_desc_readmore">阅读全文</a>
     </div>
-    <div id="home">
-    <div id="header">
-        <div id="blogTitle">
-            
-<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/qj-Network-Box/">球君</a>
-</div>
-<div class="subtitle">
+
+			</div>
+			<p class="postfoot">		
+			
+
+posted @ 2010-11-02 17:43 拓荒者 阅读 (610) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1867406" rel="nofollow">
+    编辑
+</a>
+
+			</p>
+		</div>
+
+
+
+
+
 
 </div>
+</div>
+<div id="leftmenu">
 
-        </div>
-        <div id="navigator">
-            
-<ul id="navList">
-    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
 博客园</a>
-</li>
-    <li id="nav_myhome">
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/qj-Network-Box/">
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/dstang2000/">
 首页</a>
-</li>
-    <li id="nav_newpost">
+
+    </li>
+    <li>
+        
 
 <a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
 新随笔</a>
-</li>
-    <li id="nav_contact">
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E7%90%83%E5%90%9B">
-联系</a></li>
-    <li id="nav_rss">
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/qj-Network-Box/rss/">
-订阅</a></li>
-    <li id="nav_admin">
+
+    </li>
+    <li>
+        
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%8B%93%E8%8D%92%E8%80%85">
+联系</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/dstang2000/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/dstang2000/rss/">
+    <img src="/skins/anothereon001/images/xml.gif" alt="订阅" />
+</a>
+    </li>
+    <li>
+        
 <a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
 管理</a>
-</li>
+
+    </li>
 </ul>
 
-            <div class="blogStats">
-                
-<span id="stats_post_count">随笔 - 
-7&nbsp;</span>
-<span id="stats_article_count">文章 - 
-0&nbsp;</span>
-<!-- <span id="stats-comment_count"></span> -->
-<span id="stats_comment_count">评论 - 
-8</span>
-            </div>
-        </div>
-    </div>
-    <div id="main">
-        <div id="mainContent">
-            <div class="forFlow">
-                <div id="post_detail">
-    <div id="topics">
-        <div class="post">
-            <h1 class="postTitle">
-                
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/qj-Network-Box/p/12729230.html">0基础算法基础学算法 第六弹 递归</a>
 
-            </h1>
-            <div class="clear"></div>
-            <div class="postBody">
-                
-<div id="cnblogs_post_body" class="blogpost-body ">
-    <p>　　最近呢也是有很久没有更新博客了，主要是因为平时比较忙，毕竟等疫情彻底解封qj我也要小升初考试了，所以打算赶在今天更新点干货。</p>
-<p>　　在各大oi赛事上，递归和递推算是个基础而重要的算法，递归在熟练运用后可以实现dfs，dfs是深度优先搜索，以后会讲到关于dfs的；而递推是一种用若干步可重复运算来描述复杂问题的方法，比如斐波那契数列，上楼梯等都是可以通过递推来进行实现的，而下一讲即将会具体讲述递推，今天的主题是递归&nbsp;</p>
-<p>现在切入正题</p>
-<p>一.递归</p>
-<p>　　递归函数其实在比赛中特别常见，很多人在比赛的时候遇到不会的题就直接打暴力，但是如果你会递归的话，你可以用一通pmn或者dfs直接爆搜（据有关人士称，去年提高组如果pmn可以的200+。。。）那到底什么是递归呢？递归函数，即是自己调用自己，理解递归最好是通过一个例子来理解，比如，超经典的基础题，1+2+3+4+...+n-2+n-1+n=？遇到这个题，一般做法是利用for循环一个一个的累加，提供一个c++代码</p>
-<div class="cnblogs_code">
-<pre>#include&lt;bits/stdc++.h&gt;<span style="color: #008000;">//</span><span style="color: #008000;">万能头文件，建议比赛时使用</span>
-<span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> std;
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> s,i,n;
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> main()
-{
-    S</span>=<span style="color: #800080;">0</span><span style="color: #000000;">;<br />　　cin&gt;&gt;n;
-    </span><span style="color: #0000ff;">for</span>(i=<span style="color: #800080;">1</span>;i&lt;=<span style="color: #800080;">n</span>;i++<span style="color: #000000;">)
-        s</span>=s+<span style="color: #000000;">i;
-    cout</span>&lt;&lt;<span style="color: #000000;">s;
-    </span><span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
-}</span></pre>
-</div>
-<p>这是最简单也最直观的代码，如果使用递归实现虽然会看起来麻烦一点，但对递归的理解有好处。算法的流程图大概是是这样的<img src="https://img2020.cnblogs.com/blog/1965215/202004/1965215-20200418224527291-1783011879.png" alt="" width="378" height="314" />过程有点类似于倒着的for法，结合代码我们一起看看，运行结果是一样的</p>
-<div class="cnblogs_code">
-<pre>#include &lt;iostream&gt;
-<span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> std;
-</span><span style="color: #0000ff;">int</span> dg(<span style="color: #0000ff;">int</span> n) <span style="color: #008000;">//</span><span style="color: #008000;">递归函数，n定义的是局部变量不冲突 </span>
-<span style="color: #000000;">{
-    </span><span style="color: #0000ff;">if</span>(n==<span style="color: #800080;">1</span>) <span style="color: #0000ff;">return</span> <span style="color: #800080;">1</span><span style="color: #000000;">;
-    </span><span style="color: #0000ff;">return</span> (dg(n-<span style="color: #800080;">1</span>)+n);<span style="color: #008000;">//</span><span style="color: #008000;">进行递归 </span>
-<span style="color: #000000;">}
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> main() {
-    </span><span style="color: #0000ff;">int</span><span style="color: #000000;"> n;
-    cin</span>&gt;&gt;<span style="color: #000000;">n;
-    cout</span>&lt;&lt;<span style="color: #000000;">dg(n); 
-    </span><span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
-}</span></pre>
-</div>
-<p><img src="https://img2020.cnblogs.com/blog/1965215/202004/1965215-20200418225425672-241892358.png" alt="" width="410" height="215" /></p>
-<p>大概就是这样子的，递归的一个基本的主体框架有两个部分，一个是反复递归的过程，还有就是中止条件，不然你的程序停不下来可很悲催的一件事，相信我，程序死活不输出你也找不到问题所在，只能浏览程序了，到了后期，这些细节要越发的注意，因为现在我写代码都动不动65+行，比如高精度就要占你数十行；</p>
-<div class="cnblogs_code">
-<pre>#include &lt;iostream&gt;
-<span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> std;
-</span><span style="color: #0000ff;">int</span> dg(<span style="color: #0000ff;">int</span> n) <span style="color: #008000;">//</span><span style="color: #008000;">递归函数，n定义的是局部变量不冲突 </span>
-<span style="color: #000000;">{
-    </span><span style="color: #0000ff;">if</span>(终止条件) <span style="color: #0000ff;">return</span><span style="color: #000000;"> 中止的返回值;
-    dg(n</span>-<span style="color: #800080;">1</span>);<span style="color: #008000;">//</span><span style="color: #008000;">进行递归 (举例)
-    </span><span style="color: #008000;">//</span><span style="color: #008000;">递归的形式需要根据需要而调整，比如有时候你也许会是是dg(n+1)+n; </span>
-<span style="color: #000000;">}
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> main() {
-    dg(n); </span><span style="color: #008000;">//</span><span style="color: #008000;">调用递归函数 </span>
-    <span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
-}</span></pre>
-</div>
-<p>递归的基本模板👆；</p>
-<p>重点是自己调用自己这一块比较难理解，可以自己试图去尝试写一些递归程序</p>
-<p>这里再和大家分享一道经典的题：</p>
-<p>　　设有n个数已经按从大到小的顺序排列，现在输入x，判断它是否在这n个数中，如果存在则输出yes，否则输出 no；&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
-<p>　　拿到题目先分析（这里节省点位置，流程图留给你们自己去画吧🙂），这是一道比较简单的数据查找的问题，一般使用顺序查找，使用for循环，这个for循环也可以&ldquo;递归化&rdquo;；分别展示一下for做法和递归做法（其实还有一个做法会在未来讲二分查找的时候讲）</p>
-<div class="cnblogs_code">
-<pre>#include &lt;bits/stdc++.h&gt;<span style="color: #008000;">//</span><span style="color: #008000;">万能头可以省好多事 </span>
-<span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> std;
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> main(){
-    </span><span style="color: #0000ff;">int</span> a[<span style="color: #800080;">10</span>];<span style="color: #008000;">//</span><span style="color: #008000;">用于录入10个数 </span>
-    <span style="color: #0000ff;">int</span><span style="color: #000000;"> n; 
-    </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">int</span> i=<span style="color: #800080;">0</span>;i&lt;<span style="color: #800080;">10</span>;i++) cin&gt;&gt;<span style="color: #000000;">a[i];
-    sort(a,a</span>+<span style="color: #800080;">10</span>); <span style="color: #008000;">//</span><span style="color: #008000;">快速排序函数库，加了万能头就不用加它的头文件了</span>
-    cin&gt;&gt;<span style="color: #000000;">n;
-    </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">int</span> i;i&lt;<span style="color: #800080;">10</span>;i++<span style="color: #000000;">) 
-    {
-        </span><span style="color: #0000ff;">if</span>(a[i]=<span style="color: #000000;">n)
-        {
-            cout</span>&lt;&lt;<span style="color: #800000;">"</span><span style="color: #800000;">yes</span><span style="color: #800000;">"</span><span style="color: #000000;">;
-            </span><span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;    
-        }
-    }
-    cout</span>&lt;&lt;<span style="color: #800000;">"</span><span style="color: #800000;">no</span><span style="color: #800000;">"</span><span style="color: #000000;">;
-    </span><span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
-} </span></pre>
-</div>
-<div class="cnblogs_code">
-<pre>#include &lt;bits/stdc++.h&gt;<span style="color: #008000;">//</span><span style="color: #008000;">万能头可以省好多事 </span>
-<span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> std;
-</span><span style="color: #0000ff;">int</span> a[<span style="color: #800080;">10</span>];<span style="color: #008000;">//</span><span style="color: #008000;">用于录入10个数</span>
-<span style="color: #0000ff;">bool</span> b=<span style="color: #0000ff;">false</span><span style="color: #000000;">;
-</span><span style="color: #0000ff;">void</span> fun(<span style="color: #0000ff;">int</span> n,<span style="color: #0000ff;">int</span><span style="color: #000000;"> k)
-{
-    </span><span style="color: #0000ff;">if</span>(n==<span style="color: #000000;">a[k])
-    {
-        b</span>=<span style="color: #0000ff;">true</span><span style="color: #000000;">;
-        </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
-    }</span><span style="color: #008000;">//</span><span style="color: #008000;">找到了，标记一下，直接跳出，不需要再找了 </span>
-    <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span>(k&lt;<span style="color: #800080;">0</span>) <span style="color: #0000ff;">return</span>; <span style="color: #008000;">//</span><span style="color: #008000;">全部找完都没找到，也不用找了 </span>
-    fun(n,k-<span style="color: #800080;">1</span>);<span style="color: #008000;">//</span><span style="color: #008000;">调用部分 </span>
-<span style="color: #000000;"> } 
-</span><span style="color: #0000ff;">int</span><span style="color: #000000;"> main(){
-    </span><span style="color: #0000ff;">int</span><span style="color: #000000;"> n; 
-    </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">int</span> i=<span style="color: #800080;">0</span>;i&lt;<span style="color: #800080;">10</span>;i++) cin&gt;&gt;<span style="color: #000000;">a[i];
-    sort(a,a</span>+<span style="color: #800080;">10</span>); <span style="color: #008000;">//</span><span style="color: #008000;">快速排序函数库，加了万能头就不用加它的头文件了</span>
-    cin&gt;&gt;<span style="color: #000000;">n;
-    </span><span style="color: #0000ff;">int</span> k=<span style="color: #800080;">9</span>;<span style="color: #008000;">//</span><span style="color: #008000;">下标从0开始 </span>
-<span style="color: #000000;">    fun(n,k);
-    </span><span style="color: #0000ff;">if</span>(b) cout&lt;&lt;<span style="color: #800000;">"</span><span style="color: #800000;">yes</span><span style="color: #800000;">"</span><span style="color: #000000;">;
-    </span><span style="color: #0000ff;">else</span> cout&lt;&lt;<span style="color: #800000;">"</span><span style="color: #800000;">no</span><span style="color: #800000;">"</span><span style="color: #000000;">;
-    </span><span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
-} </span></pre>
-</div>
-<p>注释 上：for遍历法 递归遍历法 敬请期待二分查找（还不快关注。。。）</p>
-<p>上面的做法都是可行的，运行结果一切正常<img src="https://img2020.cnblogs.com/blog/1965215/202004/1965215-20200418234736650-1736752084.png" alt="" width="442" height="231" />。</p>
-<p>&nbsp;博客留题！：</p>
-<p>　　洛谷递归题单 https://www.luogu.com.cn/training/109#problems</p>
-<p>　　酌量练习，把握分度，不然会沉迷于洛谷这个花花绿绿的游戏网站&nbsp;（划去）</p>
-<p>　　今天的内容就是这些了，下次会讲递推，还会分享一些资料，假如你有兴趣，先点赞👍，关注➕走一波，关注后欢迎白嫖😀；</p>
-</div>
-<div id="MySignature"></div>
-<div class="clear"></div>
-<div id="blog_post_info_block">
-    <div id="blog_post_info"></div>
-    <div class="clear"></div>
-    <div id="post_next_prev"></div>
-</div>
-            </div>
-            <div class="postDesc">posted @ 
-<span id="post-date">2020-04-18 23:55</span>&nbsp;
-<a href="https://www.cnblogs.com/qj-Network-Box/">球君</a>&nbsp;
-阅读(<span id="post_view_count">...</span>)&nbsp;
-评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12729230" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12729230);return false;">收藏</a></div>
-        </div>
-<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
-<script>markdown_highlight();</script>
-<script>
-    var allowComments = true, cb_blogId = 584369, cb_blogApp = 'qj-Network-Box', cb_blogUserGuid = '2a3c2c52-8b99-4de0-e344-08d7c32fea35';
-    var cb_entryId = 12729230, cb_entryCreatedDate = '2020-04-18 23:55', cb_postType = 1; 
-    loadViewCount(cb_entryId);
-</script><a name="!comments"></a>
-<div id="blog-comments-placeholder"></div>
-<script>
-    var commentManager = new blogCommentManager();
-    commentManager.renderComments(0);
-</script>
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
 
-<div id="comment_form" class="commentform">
-    <a name="commentform"></a>
-    <div id="divCommentShow"></div>
-    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
-    <div id="comment_form_container"></div>
-    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
-    <div id="ad_t2"></div>
-    <div id="opt_under_post"></div>
-    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
-    <script>
-        var googletag = googletag || {};
-        googletag.cmd = googletag.cmd || [];
-    </script>
-    <script>
-        googletag.cmd.push(function () {
-            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
-            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
-            googletag.pubads().enableSingleRequest();
-            googletag.enableServices();
-        });
-    </script>
-    <div id="cnblogs_c1" class="c_ad_block">
-        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
-    </div>
-    <div id="under_post_news"></div>
-    <div id="cnblogs_c2" class="c_ad_block">
-        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
-            <script>
-                if (new Date() >= new Date(2018, 9, 13)) {
-                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
-                }
-            </script>
-        </div>
-    </div>
-    <div id="under_post_kb"></div>
-    <div id="HistoryToday" class="c_ad_block"></div>
-    <script type="text/javascript">
-        fixPostBody();
-        deliverBigBanner();
-setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
-        deliverAdC1();
-        deliverAdC2();
-        loadNewsAndKb();
-        loadBlogSignature();
-LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
-        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
-        loadOptUnderPost();
-        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
-    </script>
-</div>    </div>
-</div>
-            </div>
-        </div>
-
-        <div id="sideBar">
-            <div id="sideBarMain">
-                
 <div id="sidebar_news" class="newsItem">
             <script>loadBlogNews();</script>
 </div>
 
-                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
-                <script>loadBlogDefaultCalendar();</script>
-                <div id="leftcontentcontainer">
-                    <!-- begin:SingleColumn -->
-                    <div id="blog-sidecolumn"></div>
+<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-                    <!-- end:  SingleColumn -->
-                </div>
-            </div>
-        </div>
-        <div class="clear"></div>
-    </div>
-    <div class="clear"></div>
-    <div id="footer">
-        <!--done-->
-Copyright &copy; 2020 球君
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br />
+	
+	
+<a href="https://www.cnblogs.com/" id="Footer1_Hyperlink3" style="font-size: 12px; font-family: Verdana">博客园</a>
+	<br />
+	Copyright &copy; 2020 拓荒者
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
-    </div>
+</p>
+
+
+</div>
 </div>
 
-    <div id="page_end_html">
-        <div class="Snow">
-    <canvas id="Snow"></canvas>
-</div>
 
-<script src="https://blog-static.cnblogs.com/files/Return-blog/xue.js"></script>
-
-<script language="javascript" type="text/javascript">
-// 生成目录索引列表
-// ref: http://www.cnblogs.com/wangqiguo/p/4355032.html
-// modified by: zzq
-function GenerateContentList()
-{
-    var mainContent = $('#cnblogs_post_body');
-    var h2_list = $('#cnblogs_post_body h2');//如果你的章节标题不是h2,只需要将这里的h2换掉即可
-
-    if(mainContent.length < 1)
-        return;
- 
-    if(h2_list.length>0)
-    {
-        var content = '<a name="_labelTop"></a>';
-        content += '<div id="navCategory" style="color:#152e97;">';
-        content += '<p style="font-size:18px;"><b>目录</b></p>';
-        content += '<ul>';
-        for(var i=0; i<h2_list.length; i++)
-        {
-            var go_to_top = '<div style="text-align: right;"><a href="#_labelTop" style="color:#f68a33">回到顶部</a><a name="_label' + i + '"></a></div>';
-            $(h2_list[i]).before(go_to_top);
-            
-            var h3_list = $(h2_list[i]).nextAll("h3");
-            var li3_content = '';
-            for(var j=0; j<h3_list.length; j++)
-            {
-                var tmp = $(h3_list[j]).prevAll('h2').first();
-                if(!tmp.is(h2_list[i]))
-                    break;
-                var li3_anchor = '<a name="_label' + i + '_' + j + '"></a>';
-                $(h3_list[j]).before(li3_anchor);
-                li3_content += '<li><a href="#_label' + i + '_' + j + '">' + $(h3_list[j]).text() + '</a></li>';
-            }
-            
-            var li2_content = '';
-            if(li3_content.length > 0)
-                li2_content = '<li><a href="#_label' + i + '">' + $(h2_list[i]).text() + '</a><ul>' + li3_content + '</ul></li>';
-            else
-                li2_content = '<li><a href="#_label' + i + '">' + $(h2_list[i]).text() + '</a></li>';
-            content += li2_content;
-        }
-        content += '</ul>';
-        content += '</div><p>&nbsp;</p>';
-        content += '<hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>';
-        if($('#cnblogs_post_body').length != 0 )
-        {
-            $($('#cnblogs_post_body')[0]).prepend(content);
-        }
-    }   
-}
-GenerateContentList();
-
-/* 鼠标特效 */
-var a_idx = 0;
-jQuery(document).ready(function($) {
-    $("body").click(function(e) {
-        var a = new Array("据说","如果你","会","点赞👍","关注➕","你就能", "AK LOL");
-        var $i = $("<span></span>").text(a[a_idx]);
-        a_idx = (a_idx + 1) % a.length;
-        var x = e.pageX,
-        y = e.pageY;
-        $i.css({
-            "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
-            "top": y - 20,
-            "left": x,
-            "position": "absolute",
-            "font-weight": "bold",
-            "color": "rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"
-        });
-        $("body").append($i);
-        $i.animate({
-            "top": y - 180,
-            "opacity": 0
-        },
-        1500,
-        function() {
-            $i.remove();
-        });
-    });
-});
-
-// 修改页脚2
-$(function(){
-    $('#blogTitle h1').addClass('bounceInLeft animated');
-    $('#blogTitle h2').addClass('bounceInRight animated');
-    // 删除反对按钮
-    $('.buryit').remove();
-    initCommentData();
-});
-function initCommentData() {
-    $('.feedbackItem').each(function() {
-        var text = $(this).find('.feedbackListSubtitle .layer').text();
-        // 将楼层信息放到data里面
-        // $(this).find('.blog_comment_body').attr('data-louceng', text.replace(/^#/g, ''));
-        if($(this).find('.feedbackListSubtitle .louzhu').length>0) $(this).addClass('myself');
-        var avatar = $(this).find('> .feedbackCon > span').html() || 'http://pic.cnitblog.com/face/sample_face.gif';
-        $(this).find('> .feedbackCon > .blog_comment_body').append('<img class="user-avatar" src="'+avatar+'"/>')
-    });
-}
-
-$(document).ajaxComplete(function(event, xhr, settings) {
-  // 监听获取评论ajax事件
-  if(settings.url.indexOf('/mvc/blog/GetComments.aspx') >= 0) {
-    initCommentData();
-  }
-});
-</script>
-
-
-<script src="https://files.cnblogs.com/files/hafiz/jquery-migrate-1.2.1.js"></script>
-
-
-<div id="scrollTop" style="display:none;">
-      <div class="level-2"></div>
-      <div class="level-3"></div>
-</div>
-<script src="https://files.cnblogs.com/files/hafiz/scroll2top.js"></script>
-<script type="text/javascript">
-    UI.global_search();
-    var uvOptions = {};
-    // !important
-    (function() {
-        initScrollTop();
-    })();
-
-</script>
-View Code
-    </div>
+    
 </body>
 </html>

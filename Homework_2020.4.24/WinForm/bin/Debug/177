@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="前情提要： Oracle OpenWorld 2013中Larry Ellison爆料的Oracle新特性:Oracle In Memory Database Option 1. 这个新特性将随着12" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Oracle 12c In Memory Option初探 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/3895898.html">Oracle 12c In Memory Option初探</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>前情提要：</p>
+<p>Oracle OpenWorld 2013中<em>Larry Ellison</em>爆料的Oracle新特性:<strong><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">Oracle In Memory Database Option</span></strong></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">1. 这个新特性将随着<strong>12.1.0.2</strong>发布；</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">2. </span>In memory database option不会取代TimesTen（以下简称TT），因为这是两种层面的产品，TT还是会架在DB层之前，和应用紧密相连，为应用提供缓存，in memory database option在DB层，可以做到高可用如RAC，DG等一些TT无法实现的架构。另外同样道理，in memory database option也不会替代Exalytics；</p>
+<p>3.In memory database option引入了列存储</p>
+<p>4.Oracle In-Memory Columnar Compression，提供2倍到10倍的压缩率；</p>
+<p>5.显著增快SQL的全表扫描处理速度， 全表扫描将增快10~100倍，基于CPU的最大数据处理速度，对于简单扫描可以每秒扫描10亿行数据； &nbsp;对于简单的连接过滤谓词最终选出少量数据行的达到每秒1亿条每秒；</p>
+<p>6.显著增快事务处理，DML操作-单行DML和批量DML都将运行地更快； 单行的处理收益主要来源于降低10倍的索引维护；</p>
+<p>7.100%的应用程序透明。类似于OLTP压缩，主要的优势在于对于应用而言完全透明。所有的其他ORACLE特性均将可以与in-memory option一起工作，包括partitioning, indexes, text indexes，而没有明确的数据类型或者存储类型限制。</p>
+<p>最近，Oracle12.1.0.2发布了，下载地址：</p>
+<p><a href="http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html?ssSourceSiteId=ocomen">http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html?ssSourceSiteId=ocomen</a></p>
+<p>目前只有Linux和Solaris版本。</p>
+<p>安装Linux虚拟机和Oracle12.0.1.2，参考以下链接（在此非常感谢<a id="lnkBlogTitle" href="http://www.cnblogs.com/kerrycode/">潇湘隐者</a>）：</p>
+<p><a href="http://www.cnblogs.com/kerrycode/archive/2013/09/13/3319958.html">http://www.cnblogs.com/kerrycode/archive/2013/09/13/3319958.html</a></p>
+<p>环境Ready后，研究下Oracle 官方的技术说明：</p>
+<p><a href="http://www.oracle.com/technetwork/database/in-memory/overview/twp-oracle-database-in-memory-2245633.html">http://www.oracle.com/technetwork/database/in-memory/overview/twp-oracle-database-in-memory-2245633.html</a></p>
+<p>大致整理了下：</p>
+<p>1.Row Format vs. Column Format</p>
+<p>Oracle Database In-Memory (Database In-Memory) provides the best of both worlds by allowing data<br />to be simultaneously populated in both an in-memory row format (the buffer cache) and a new inmemory<br />column format.</p>
+<p>Note that the dual-format architecture does not double memory requirements. The in-memory<br />column format should be sized to accommodate the objects that must be stored in memory, but the<br />buffer cache has been optimized for decades to run effectively with a much smaller size than the size<br />of the database. In practice it is expected that the dual-format architecture will impose less than a 20%<br />overhead in terms of total memory requirements. This is a small price to pay for optimal performance<br />at all times for all workloads.</p>
+<p>同时支持Row Format vs. Column Format，内存使用没有翻倍。</p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062157268975115.png" alt="" /></p>
+<p>2.The In-Memory Column Store</p>
+<p>Database In-Memory uses an In-Memory column store (IM column store), which is a new component<br />of the Oracle Database System Global Area (SGA), called the In-Memory Area. Data in the IM column<br />store does not reside in the traditional row format used by the Oracle Database; instead it uses a new<br />column format. The IM column store does not replace the buffer cache, but acts as a supplement, so<br />that data can now be stored in memory in both a row and a column format.<br />The In-Memory area is a static pool within the SGA, whose size is controlled by the initialization<br />parameter INMEMORY_SIZE (default 0). The current size of the In-Memory area is visible in V$SGA. As<br />a static pool, any changes to the INMEMORY_SIZE parameter will not take effect until the database<br />instance is restarted. It is also not impacted or controlled by Automatic Memory Management (AMM).<br />The In-Memory area must have a minimum size of 100MB.<br />The In-Memory area is sub-divided into two pools: a 1MB pool used to store the actual column<br />formatted data populated into memory, and a 64K pool used to store metadata about the objects that<br />are populated into the IM column store. The amount of available memory in each pool is visible in the<br />V$INMEMORY_AREA view. The relative size of the two pools is determined by internal heuristics, the<br />majority of the In-Memory area memory is allocated to the 1MB pool.</p>
+<p>SGA区增加了一个新组件：In-Memory Area，静态池，大小通过参数InMemory_Size（默认0）控制，修改后必须重启数据库生效。</p>
+<p>最小值100M，其内部包含两个池：</p>
+<p>&nbsp;&nbsp; 1MB pool ：存储内存中实际的列格式数据</p>
+<p>&nbsp;&nbsp;&nbsp;64K pool：内存列存储涉及对象的元数据MetaData</p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062203140372902.png" alt="" /></p>
+<p>3. Populating The In-Memory Column Store&nbsp; 添加到内存列存储</p>
+<p>Database In-Memory adds a new INMEMORY attribute for tables and materialized views. Only objects with the<br />INMEMORY attribute are populated into the IM column store. The INMEMORY attribute can be<br />specified on a tablespace, table, (sub)partition, or materialized view. </p>
+<p>增加INMEMORY选项，支持表空间、表、分区、物化视图</p>
+<p>1.表空间级别设置INMEMORY，表空间下所有新的表、物化视图将被加载到内存列存储中。</p>
+<p>If it is enabled at the tablespace<br />Oracle Database In-Memory option 5 level, then all new tables and materialized views in the tablespace will be enabled for the IM column<br />store by default.<br />ALTER TABLESPACE ts_data <strong>INMEMORY;</strong></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">2. 表级别设置INMEMORY，支持排除指定的列、支持表的分区</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">ALTER TABLE sales INMEMORY；</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">ALTER TABLE sales INMEMORY NO INMEMORY(prod_id);</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">for a partitioned table, all of the table's partitions inherit the in-memory attribute but it&rsquo;s<br />possible to populate just<strong> a subset of the partitions or sub-partitions</strong>.</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">ALTER TABLE sales MODIFY PARTITION SALES_Q1_1998 NO INMEMORY;</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">3.支持内存加载优先级配置</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US">ALTER TABLE customers INMEMORY PRIORITY CRITICAL;</span></p>
+<p><span style="color: black; font-family: 'Calibri','sans-serif'; font-size: 10.5pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA; mso-fareast-font-family: 宋体;" lang="EN-US"><img src="https://images0.cnblogs.com/i/23525/201408/062210403979734.png" alt="" /></span></p>
+<p>4.同时还有一些限制，不是所有的表都可以加载到内存列存储中</p>
+<p>&nbsp;&nbsp;&nbsp; Sys用户、Systemn、SysAux表空间下的对象不能使用INMEMORY选项，</p>
+<p>&nbsp;&nbsp;&nbsp; 索引组织表、聚集表不能使用INMEMORY选项</p>
+<p>&nbsp;&nbsp;&nbsp; 不支持的数据类型：LONGS (deprecated since Oracle Database 8i)；&nbsp;&nbsp; Out of line LOBS</p>
+<p>&nbsp;&nbsp;&nbsp; 同时对象如果小于64K，考虑到内存空间消耗，将不会加载到内存列存储中。</p>
+<p>5. In-Memory Compression 内存压缩</p>
+<p>&nbsp;</p>
+<p>然后本文第二大部分：基于上述特性，进行了实际业务数据测试。</p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062219329439429.png" alt="" /></p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062219429128908.png" alt="" /></p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062219585688091.png" alt="" /></p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062220103657629.png" alt="" /></p>
+<p><img src="https://images0.cnblogs.com/i/23525/201408/062220201479050.png" alt="" /></p>
+<p>从上述测试的情况看，虽然是虚拟机环境，但是测试了多次。</p>
+<p>从测试结果看，大批量Insert和Update的性能有所下降，大批量Delete性能有所提升，查询性能提升还是非常明显，如果内存足够，估计会再有提高。</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2014-08-06 22:22</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=3895898" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(3895898);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 3895898, cb_entryCreatedDate = '2014-08-06 22:22', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

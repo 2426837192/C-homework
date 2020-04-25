@@ -1,0 +1,524 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>随笔列表第7页 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                
+
+
+
+<div id="homepage_top_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=6">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=3">3</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=4">4</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+    7
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=9">9</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=10">10</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=8">下一页</a>
+</div>
+</div>
+
+
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/05/24.html">2017年5月24日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6897213.html">
+    Azure IoT Hub和Event Hub相关的技术系列-索引篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：Azure IoT Hub和Event Hub相关的技术系列，最近已经整理了不少了，统一做一个索引链接，置顶。 Azure IoT 技术研究系列1-入门篇 Azure IoT 技术研究系列2-设备注册到Azure IoT Hub Azure IoT 技术研究系列3-设备到云、云到设备通信 Azure            <a href="https://www.cnblogs.com/tianqing/p/6897213.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-24 09:05 Eric zhou 阅读 (816) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6897213" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/05/17.html">2017年5月17日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6865149.html">
+    Azure Event Hub 技术研究系列3-Event Hub接收事件
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上篇博文中，我们通过编程的方式介绍了如何将事件消息发送到Azure Event Hub： Azure Event Hub 技术研究系列2-发送事件到Event Hub 本篇文章中，我们继续：从Event Hub中接收事件。 1. 新建控制台工程 EventHubReceiver 2. 添加Nuget            <a href="https://www.cnblogs.com/tianqing/p/6865149.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-17 03:19 Eric zhou 阅读 (1096) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6865149" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+            <div class="postSeparator"></div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6865046.html">
+    Azure Event Hub 技术研究系列2-发送事件到Event Hub
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上篇博文中，我们介绍了Azure Event Hub的一些基本概念和架构： Azure Event Hub 技术研究系列1-Event Hub入门篇 本篇文章中，我们继续深入研究，了解Azure Event Hub的创建、编程SDK，实现将事件发送到云端的Azure Event Hub。 一、Azu            <a href="https://www.cnblogs.com/tianqing/p/6865046.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-17 02:30 Eric zhou 阅读 (1838) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6865046" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/05/12.html">2017年5月12日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6843141.html">
+    分布式数据访问服务之2—数据实时分析篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上篇博文中，我们横向对比了业界主流的分布式数据访问服务，可以说是各有所长： 分布式数据访问服务之1—华山论剑篇 在数据库分库分表实现横向伸缩后，数据的综合查询、分析，业界都有哪些解决方案？这是一个值得研究和讨论的主题。 所以，本篇文章中继续研究分库分表后的数据库综合查询和实时分析技术。 去年我们参加            <a href="https://www.cnblogs.com/tianqing/p/6843141.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-12 08:47 Eric zhou 阅读 (2407) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6843141" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/05/11.html">2017年5月11日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6839149.html">
+    Azure Event Hub 技术研究系列1-Event Hub入门篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：前两个系列研究了Azure IoT Hub和Azure Messaging。最近准备继续研究Azure Event Hub，即Azure的事件中心。首先， Azure Event Hub的官方介绍： 1.&#160;Azure 事件中心是超大规模的遥测引入服务，可收集、传输和存储数以百万的事件 2.&#160;从网站、            <a href="https://www.cnblogs.com/tianqing/p/6839149.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-11 08:57 Eric zhou 阅读 (4814) 评论 (2)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6839149" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/05/01.html">2017年5月1日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6792550.html">
+    Azure IoT 技术研究系列5-Azure IoT Hub与Event Hub比较
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上篇博文中，我们介绍了Azure IoT Hub的使用配额和缩放级别： Azure IoT 技术研究系列4-Azure IoT Hub的配额及缩放级别 本文中，我们比较一下Azure IoT Hub和Event Hub，同时启动Azure Event Hub(事件中心)的研究。 Azure IoT             <a href="https://www.cnblogs.com/tianqing/p/6792550.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-05-01 19:37 Eric zhou 阅读 (1451) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6792550" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/04/25.html">2017年4月25日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6760037.html">
+    对象Equals相等性比较的通用实现
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近编码的过程中，使用了对象本地内存缓存，缓存用了Dictionary&lt;string,object&gt;, ConcurrentDictionary&lt;string,oject&gt;,还可以是MemoryCache(底层基于Hashtable)。使用缓存，肯定要处理数据变化缓存同步的问题。如何比较数据的变化，            <a href="https://www.cnblogs.com/tianqing/p/6760037.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-04-25 06:24 Eric zhou 阅读 (467) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6760037" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/04/23.html">2017年4月23日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6751524.html">
+    三步快速解决dll冲突问题
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近在推广应用我们的分布式服务网关（Web Api）：业务组大部分对外的业务逻辑以HSF服务或者自定义扩展插件的方式，注册并发布到分布式服务网关中，统一对外提供WebApi服务。临时介绍下我们的分布式服务网关： 1. 一键注册、发布WebApi服务， 2. 统一管理发布WebApi服务，实现WebA            <a href="https://www.cnblogs.com/tianqing/p/6751524.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-04-23 08:55 Eric zhou 阅读 (851) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6751524" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/04/20.html">2017年4月20日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6736320.html">
+    分布式数据访问服务之1—华山论剑篇
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：业界主流的互联网架构中，分布式服务框架、分布式数据访问服务、消息队列服务、服务网关(API)、分布式事务等都是核心的组件和框架。 当我们的系统规模越来越大，从几台服务器扩展到几十台、几百台、上千台，传统的烟囱式的、大集中式系统架构，逐步演进为服务化SOA、分布式的系统架构： 在数据层面，应用层面，访            <a href="https://www.cnblogs.com/tianqing/p/6736320.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-04-20 22:07 Eric zhou 阅读 (4186) 评论 (14)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6736320" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2017/04/19.html">2017年4月19日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6736022.html">
+    Azure IoT 技术研究系列4-Azure IoT Hub的配额及缩放级别
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：上两篇博文中，我们介绍了将设备注册到Azure IoT Hub，设备到云、云到设备之间的通信： Azure IoT 技术研究系列2-设备注册到Azure IoT Hub Azure IoT 技术研究系列3-设备到云、云到设备通信 本文中，我们主要研究介绍一下Azure IoT Hub的使用配额、四个            <a href="https://www.cnblogs.com/tianqing/p/6736022.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2017-04-19 21:36 Eric zhou 阅读 (1045) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6736022" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+
+<div class="topicListFooter">
+    <div id="nav_next_page">
+        
+
+    </div>    
+</div>
+
+
+<div id="homepage_bottom_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=6">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=3">3</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=4">4</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=5">5</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+    7
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=9">9</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=10">10</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=8">下一页</a>
+</div>
+</div>
+
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

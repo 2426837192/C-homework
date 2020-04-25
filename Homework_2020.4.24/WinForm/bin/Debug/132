@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="说到多线程异步编程，总会说起Thread、ThreadPool、Task、TPL这一系列的技术。总结整理了一版编程示例和实践，分享给大家。 先从Thread和ThreadPool说起： 1. 创建并启" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>多线程异步编程示例和实践-Thread和ThreadPool - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6961002.html">多线程异步编程示例和实践-Thread和ThreadPool</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>说到多线程异步编程，总会说起Thread、ThreadPool、Task、TPL这一系列的技术。总结整理了一版编程示例和实践，分享给大家。</p>
+<p>先从Thread和ThreadPool说起：</p>
+<p><strong>1. 创建并启动线程</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083405606-1767704657.png" alt="" /></p>
+<p><strong>2. 暂停线程</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083438809-993514076.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083447059-606871033.png" alt="" /></p>
+<p>当前线程在执行Thread.Sleep方法时，会等待指定的时间（1000ms）<br />此时，当前线程处于阻塞状态：WaitSleepJoin</p>
+<p><strong>3. 线程合并</strong></p>
+<p><strong>Thread.Join操作会阻塞当前线程，等待子线程完成后再进行运行。</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083532122-301333982.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083541434-557684015.png" alt="" /></p>
+<p>当程序运行时，启动了一个耗时较长的线程打印数字，每次打印输出前需要等待1000ms，我们在主程序中调用ThreadJoin方法，内部调用了thread.Join，该方法允许程序等待thread执行完成。</p>
+<p>当thread线程执行完成后，主线程会继续执行，输出Thread Completed！</p>
+<p><strong>4. 线程终止</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083624340-1664841721.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083634559-1664205732.png" alt="" /></p>
+<p>当主程序和单独的数字打印线程运行时，主程序等待6000ms后对thread线程调用了Abort方法。这给线程触发ThreadAbortException异常，导致线程被终止！</p>
+<p>这个操作非常危险，因为该操作可以在任何时间发生并可能彻底摧毁应用程序。（Windows服务，因为线程（<strong>前台线程</strong>）异常退出）</p>
+<p><strong>5.线程传递参数</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083730106-596530978.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083742043-1971099925.png" alt="" /></p>
+<p><strong>6. 线程安全和Lock</strong></p>
+<p>线程安全就是多线程访问时，采用了<strong>加锁机制</strong>，当一个线程访问该类的某个数据时，进行保护，其他线程不能进行访问直到该线程读取完，其他线程才可使用。线程安全情况下，不会出现数据不一致或者数据污染的问题。 线程不安全就是不提供数据访问保护，有可能出现多个线程先后更改数据造成所得到的数据是脏数据！ 若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。 </p>
+<p><strong>lock 关键字通过获取指定对象的互斥锁，将语句块标记为临界区，执行语句然后释放该锁。</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608083827856-1581676497.png" alt="" /></p>
+<p>lock 确保当一个线程位于代码的临界区时，另一个线程不进入临界区。如果其他线程试图进入锁定的代码，则它将一直等待（即被阻止），直到该对象被释放。使用Lock，会导致整个应用程序串行化，降低程序的并发能力，影响性能。 </p>
+<p>到底什么场景下要使用lock保证线程安全：<strong>该串行就串行，该并行就并行。</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084016825-913068011.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084030043-973467811.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084041606-1514108945.png" alt="" /></p>
+<p><strong>7. 线程的异常捕获和处理</strong></p>
+<p>在线程中执行异常处理。线程（甚至是后台线程）中的未处理异常<br />通常会终止进程，因此，在线程内部使用try/catch代码块来捕获异常，<br />不可能在线程之外通过try/catch捕获异常</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084200637-882886649.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084217325-1312797103.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084226684-1448479775.png" alt="" /></p>
+<p><strong>8. 线程池ThreadPool</strong></p>
+<p>核心类：System.Threading.ThreadPool， <strong>线程池受.Net CLR管理的，每一个CLR都有一个线程池实例。</strong><br />每个进程都有一个线程池。线程池的默认大小为：<strong>每个可用的处理器有 25 个线程</strong>。使用 SetMaxThreads 方法可以更改线程池中的线程数。每个线程使用默认的堆栈大小并按照默认的优先级运行。 <br />ThreadPool类型拥有一个QueueUserWorkItem的静态方法。该静态方法接收一个委托，代表用户自定义的一个异步操作。在改方法被调用后，委托会进入到内部队列中。如果线程池中没有任何线程，将创建一个新的工作者线程（worker thread）并将队列中的第一个委托放入到该工作者线程中。<br />如果向线程池中放入新的操作，当之前的所有操作完成后，很可能只需重用一个线程来执行这些新的操作。如果QueueUserWorkItem执行的频率过快，线程池将创建更多的线程来执行这些新放入的异步委托。<br />线程池中的线程数是有限的，如果没有空闲的线程来执行这些异步委托操作，这种情况下，新的异步委托操作将在线程池的内部队列中等待，直到线程池中年的工作者线程空闲（有能力）来执行。<br />当停止向线程池中放入新的异步委托操作时，线程池会删除一定事件后过期的不在使用的线程，同时释放不再使用的系统资源。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084408278-1302040129.png" alt="" /></p>
+<p>&nbsp;<img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084457231-149227066.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201706/23525-20170608084503668-738315123.png" alt="" /></p>
+<p>9. 不适合使用线程池的场景</p>
+<p>在以下几种情况下，适合于创建并管理自己的线程而不是使用线程池线程： <br />&bull;需要前台线程。<br />&bull;需要使线程具有特定的优先级。<br />&bull;任务会导致线程长时间被阻塞。由于线程池具有最大线程数限制，因此大量阻塞的线程池线程可能会阻止任务启动。<br />&bull;需要将线程放入单线程单元。所有 ThreadPool 线程均处于多线程单元中。<br />&bull;需要具有与线程关联的稳定标识，或使某一个线程专用于某一个任务。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/6/8</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-06-08 08:45</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6961002" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6961002);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6961002, cb_entryCreatedDate = '2017-06-08 08:45', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

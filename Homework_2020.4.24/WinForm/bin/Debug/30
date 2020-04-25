@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上一篇博文给大家分享了使用Windbg分析内存泄露问题： Windbg程序调试系列2-内存泄露问题 本篇我们继续跟大家分享，如何分析解决线程阻塞问题。 从根本上讲，线程阻塞属于程序Hang的一种，其表" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列3-线程阻塞问题 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9887309.html">Windbg程序调试系列3-线程阻塞问题</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上一篇博文给大家分享了使用Windbg分析内存泄露问题：</p>
+<p><a href="https://www.cnblogs.com/tianqing/p/9875667.html" target="_blank">Windbg程序调试系列2-内存泄露问题</a></p>
+<p>本篇我们继续跟大家分享，如何分析解决线程阻塞问题。</p>
+<p>从根本上讲，线程阻塞属于程序Hang的一种，其表现主要有：</p>
+<p>1. 随着请求的增加，线程数一直增加，可能会把线程池打爆</p>
+<p>2. 低CPU使用率（被阻塞后的CPU使用率降低）</p>
+<p>3. 请求没有返回，客户端一直在等待，直至Timeout。</p>
+<p>&nbsp;那么，从线程状态上看，什么是阻塞？&nbsp;一个线程经历的5个状态，创建，就绪，运行，阻塞，终止。各个状态的转换条件如下图：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101092057159-1454977292.png" alt="" /></p>
+<p>上图中有个阻塞状态，就是说当线程中调用某个函数，需要IO请求，或者暂时得不到竞争资源的，操作系统会把该线程阻塞起来，避免浪费CPU资源，等到得到了资源，再变成就绪状态，等待CPU调度运行。</p>
+<p>线程发生阻塞的现象就是，进程的线程数会越来越多！</p>
+<p><strong>线程阻塞问题的分析思路：</strong></p>
+<p>持续请求过程中，抓两个或者三个Dump，看线程增加的速度，每次抓Dump间隔30s或者1分钟<br />对比的看每个Dump中：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101092449704-183063000.png" alt="" /></p>
+<ol>
+<li><span style="color: #0000ff;"><strong>线程池的大小 !threadpool </strong></span></li>
+<li><span style="color: #0000ff;"><strong>线程的分类和状态 !threads</strong></span></li>
+<li><span style="color: #0000ff;"><strong>查看线程阻塞  !syncblk</strong></span></li>
+<li><span style="color: #0000ff;"><strong>查看阻塞线程的根源线程、线程请求的资源对象 、被阻塞的线程数</strong></span></li>
+<li><span style="color: #0000ff;"><strong>查看阻塞根源线程的堆栈~Xs  !clrstack</strong></span></li>
+<li><span style="color: #0000ff;"><strong>分析线程阻塞的原因，改进代码</strong></span></li>
+
+</ol>
+<p><span style="font-size: 15px;"><strong>1. 查看线程池的大小：!threadpool，有时间间隔两个Dump对比着看，看线程池的线程数的增长情况：</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101092607695-1802938527.png" alt="" /></p>
+<p><span style="font-size: 15px;"><strong>2. 查看线程的分类和线程的状态 !threads，从下图可以看出，后台线程一直在增加</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101092712125-1379026492.png" alt="" /></p>
+<p><span style="font-size: 15px;"><strong>3.&nbsp;查看线程阻塞&nbsp; !syncblk，也是看这两个dump，对比着看</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101092815346-1484026160.png" alt="" /></p>
+<p>我们发现：</p>
+<p>第一个Dump中95号线程 阻塞了（1021-1）/2=<span style="color: #ff0000;"><strong>510</strong></span>个线程<br />第二个Dump中79号线程 阻塞了（1099-1）/2=<span style="color: #ff0000;"><strong>549</strong></span>个线程</p>
+<p>95号线程独占的对象资源 00000026ba7c4dc0 （System.Object）</p>
+<p>79号线程独占的对象资源也是00000026ba7c4dc0（System.Object）</p>
+<p><span style="color: #ff0000;"><strong>两个线程同时锁住了同一个资源！00000026ba7c4dc0（System.Object）</strong></span></p>
+<p>此时，线程阻塞问题已经确定，接下来，我们要重点分析阻塞的根源线程（持有什么资源不释放，导致其他线程在等待），95号线程、79号线程</p>
+<p><span style="font-size: 15px;"><strong>4. 查看阻塞线程的根源线程、线程请求的资源对象 、被阻塞的线程数</strong></span></p>
+<p><span style="font-size: 15px;"><strong>例如 95号线程：</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #000000;">查看阻塞根源线程的堆栈
+</span><span style="color: #008080;">2</span> ~<span style="color: #000000;">95s  
+</span><span style="color: #008080;">3</span> !clrstack</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101093323058-484731876.png" alt="" /></p>
+<p>通过线程堆栈，我们在栈顶发现，95号线程，在等待Socket Server返回，具体再等哪个Socket Server？</p>
+<p>通过以下命令找出当前线程堆栈上的Socket对象</p>
+<div class="cnblogs_code">
+<pre>!dso</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101093530038-1112012007.png" alt="" /></p>
+<p>这样我们就定位出95号线程在做什么，在等待什么：</p>
+<p><span style="color: #339966; font-size: 14px;"><strong>95号线程在等待SocketServer 10.*.*.*:80返回数据，独占资源：00000026ba7c4dc0（System.Object）</strong></span></p>
+<p><span style="color: #339966; font-size: 14px;"><strong>同时我们通过线程堆栈看到了我们自己的<span style="color: #ff0000;">一个TCP通讯类TCPInvoker, 在创建一个新的TCP连接，TCPInvoker类的代码需要重点关注，继续看！</span></strong></span></p>
+<p>我们继续看79号线程：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> ~<span style="color: #000000;">79s  
+</span><span style="color: #008080;">2</span>  !clrstack</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101094426278-808622875.png" alt="" /></p>
+<p>通过79号线程的堆栈和阻塞情况可以发现：</p>
+<p><span style="color: #339966;">79号线程Monitor.Enter（object），在请求资源的独占锁：<strong>00000026ba7c4dc0（System.Object）</strong></span></p>
+<p><span style="color: #ff0000;"><strong>TCPInvoker卡在了GetInvoker方法上。我们需要看看TCPInvoker的代码了</strong></span></p>
+<p><span style="font-size: 15px;"><strong>5. 分析线程阻塞的原因，改进代码</strong></span></p>
+<p>从如下的代码中，我们能看到:</p>
+<p><strong>95号线程是执行到了GetInvoker方法的Create，Create中在等待Socket Server返回，此时如果Socket Server没有响应，超时时间默认是5s，会一直持有资源00000026ba7c4dc0（System.Object）不释放</strong></p>
+<p><strong>79号线程也执行到了GetInvoker方法，但是在Lock时，等待95号线程释放资源：00000026ba7c4dc0（System.Object）</strong></p>
+<p><strong>随着请求越来越多，超时+重试连接Socket Server，导致线程阻塞住了。</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101095213777-1851124436.png" alt="" /></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181101095617404-1358541694.png" alt="" /></p>
+<p>解决方案：1. 分析Socket Server为什么连不上 2. 优化改进TCPInvoker内部的业务逻辑，减少超时和重试时间，减少阻塞的产生几率。</p>
+<p>好了，上面就是这次分享的Windbg调试线程阻塞问题的细节和过程，总结一下：</p>
+<p>线程阻塞问题的分析思路：</p>
+<ol>
+<li><strong>线程池的大小 !threadpool</strong></li>
+<li><strong>线程的分类和状态 !threads</strong></li>
+<li><strong>查看线程阻塞 !syncblk</strong></li>
+<li><strong>查看阻塞线程的根源线程、线程请求的资源对象 、被阻塞的线程数</strong></li>
+<li><strong>查看阻塞根源线程的堆栈~Xs !clrstack</strong></li>
+<li><strong>分析线程阻塞的原因，改进代码</strong></li>
+</ol>
+<p>周国庆</p>
+<p>2018/11/1</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-11-01 09:59</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9887309" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9887309);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9887309, cb_entryCreatedDate = '2018-11-01 09:59', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

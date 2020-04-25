@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上一篇博文介绍了如何连接Windows Azure:&amp;#160;http://www.cnblogs.com/teld/p/5113063.html 本篇我们继续上次的示例代码，获取虚拟机的监控定义和" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>[博客迁移]探索Windows Azure 监控和自动伸缩系列2 - 获取虚拟机的监控定义和监控数据 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6526206.html">[博客迁移]探索Windows Azure 监控和自动伸缩系列2 - 获取虚拟机的监控定义和监控数据</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上一篇博文介绍了如何连接Windows Azure:&nbsp;<a href="http://www.cnblogs.com/teld/p/5113063.html" target="_blank">http://www.cnblogs.com/teld/p/5113063.html</a></p>
+<p>本篇我们继续上次的示例代码，获取虚拟机的监控定义和监控数据。</p>
+<p>有人会问，Azure Portal上已经有了监控数据，通过代码获取有意思吗？我们计划基于性能计数器的监控数据来实现应用的自动伸缩，因此可以获取到监控指标定义和监控数据应该是第一步。</p>
+<p>在Azure的管理Portal中我们可以看到虚拟机的监控数据，目前，提供的主要有以下监控指标：</p>
+<p>CPU Percentage；Disk Read; Disk Write; Network in；NetWork Out。</p>
+<p>Azure中监控的Nuget主要是这个：<strong>Microsoft Azure Management Libraries</strong></p>
+<p>核心的几个namespace有：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309160718688-187361093.png" alt="" /></p>
+<p>我们本篇用的是Metric这个命名空间，核心类MetricClient：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> AzureTest
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Metrics;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Metrics.Models;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Utilities;
+
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 监控客户端
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> MonitorClient
+    {
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> SubscriptionCloudCredentials credentials;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> MonitorClient(SubscriptionCloudCredentials credentials)
+        {
+            </span><span style="color: #0000ff;">this</span>.credentials =<span style="color: #000000;"> credentials;
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 获取所有的监控指标
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> GetMetricDefinitions()
+        {
+            </span><span style="color: #0000ff;">var</span> metricsClient = <span style="color: #0000ff;">new</span><span style="color: #000000;"> MetricsClient(credentials);
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> Build the resource ID string.</span>
+            <span style="color: #0000ff;">var</span> resourceId = ResourceIdBuilder.BuildVirtualMachineResourceId(<span style="color: #800000;">"</span><span style="color: #800000;">cloudServiceName</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">deploymentName</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Resource Id: {0}</span><span style="color: #800000;">"</span><span style="color: #000000;">, resourceId);
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">Get the metric definitions.</span>
+            <span style="color: #0000ff;">var</span> metricListResponse=<span style="color: #000000;">
+                metricsClient.MetricDefinitions.List(resourceId, </span><span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>);<span style="color: #800080;">34</span><span style="color: #000000;"> 
+            MetricDefinitionCollection metricDefinitions </span>=<span style="color: #000000;"> metricListResponse.MetricDefinitionCollection;           
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> Display the metric definitions.</span>
+            <span style="color: #0000ff;">int</span> count = <span style="color: #800080;">0</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">foreach</span> (MetricDefinition metricDefinition <span style="color: #0000ff;">in</span><span style="color: #000000;"> metricDefinitions.Value)
+            {
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">MetricDefinitio: </span><span style="color: #800000;">"</span> + count++<span style="color: #000000;">);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Display Name: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.DisplayName);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Metric Name: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.Name);                
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Metric Namespace: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.Namespace);                
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Is Altertable: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.IsAlertable);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Min. Altertable Time Window: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.MinimumAlertableTimeWindow);
+                Console.WriteLine();
+            }
+        }
+}
+}</span></pre>
+</div>
+<p>使用上一篇我们的Azure 凭据验证器，获取一个令牌凭据TokenCloudCredentials，然后构造一个MonitorClient，获取指定虚拟机的监控数据。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+{            
+      </span><span style="color: #0000ff;">var</span> credential =<span style="color: #000000;"> Authorizator.GetCredentials();
+      </span><span style="color: #0000ff;">var</span> client = <span style="color: #0000ff;">new</span><span style="color: #000000;"> MonitorClient(credential);
+      client.GetMetricDefinitions();
+      Console.ReadLine();
+}</span></pre>
+</div>
+<p>第一块代码中：</p>
+<p>var resourceId = ResourceIdBuilder.BuildVirtualMachineResourceId("cloudServiceName", "deploymentName");</p>
+<p>这个地方通ResourceIDBuilder获取虚拟机的资源ID，对应的参数分别为：cloudServiceName和deploymentName，第一个是虚拟机使用的云服务名称，第二个是虚拟机名称即可。</p>
+<p>Run...</p>
+<p>出错了：</p>
+<p>{"ForbiddenError: The server failed to authenticate the request. Verify that the certificate is valid and is associated with this subscription."}</p>
+<p>一番Google后未果，咋整，再分析下错误信息：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170309160829813-408226254.png" alt="" /></p>
+<p>可以看到，请求的Uri：</p>
+<p>{https://management.core.windows.net/37*****-5107-*****-*******6/services/monitoring/metricdefinitions/query?&amp;resourceId=%2Fhostedservices%2Fteldptapp%2Fdeployments%2Fteldptapp}</p>
+<p>请求又跑到Azure Global那去了。</p>
+<p>这个错误困扰了好久，还在StackOverflow上发了英文咨询贴，不知道洋人们如何回答了。在此多谢鞠强老大的指导，想办法将请求的Uri定位到中国区的Azure。</p>
+<p>重新分析了代码，找到了Monitor的构造函数中，可以指定Uri，将中国区Azure的Uri指定一下：<strong>https://management.core.chinacloudapi.cn</strong></p>
+<div class="cnblogs_code">
+<pre>MetricsClient metricsClient = <span style="color: #0000ff;">new</span> MetricsClient(credentials, <span style="color: #0000ff;">new</span> Uri(<span style="color: #800000;">"</span><span style="color: #800000;">https://management.core.chinacloudapi.cn/</span><span style="color: #800000;">"</span>));</pre>
+</div>
+<p>测试通过，ok。</p>
+<p>获取到了监控指标定义，接下来我们获取监控数据：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> AzureTest
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Metrics;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Metrics.Models;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.WindowsAzure.Management.Monitoring.Utilities;
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 监控客户端
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> MonitorClient
+    {
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> SubscriptionCloudCredentials credentials;
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> MonitorClient(SubscriptionCloudCredentials credentials)
+        {
+            </span><span style="color: #0000ff;">this</span>.credentials =<span style="color: #000000;"> credentials;
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 获取所有的监控指标数据
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> GetMetricData()
+        {
+            </span><span style="color: #0000ff;">var</span> metricsClient = <span style="color: #0000ff;">new</span> MetricsClient(credentials, <span style="color: #0000ff;">new</span> Uri(<span style="color: #800000;">"</span><span style="color: #800000;">https://management.core.chinacloudapi.cn/</span><span style="color: #800000;">"</span><span style="color: #000000;">));
+            
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> Build the resource ID string.</span>
+            <span style="color: #0000ff;">var</span> resourceId = ResourceIdBuilder.BuildVirtualMachineResourceId(<span style="color: #800000;">"</span><span style="color: #800000;">cloudServiceName</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">deploymentName</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Resource Id: {0}</span><span style="color: #800000;">"</span><span style="color: #000000;">, resourceId);
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">Get the metric definitions.</span>
+            <span style="color: #0000ff;">var</span> metricListResponse = metricsClient.MetricDefinitions.List(resourceId, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span><span style="color: #000000;">);
+            MetricDefinitionCollection metricDefinitions </span>=<span style="color: #000000;"> metricListResponse.MetricDefinitionCollection;
+            
+            </span><span style="color: #0000ff;">var</span> metricNamespace = <span style="color: #800000;">""</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">var</span> metricNames = <span style="color: #0000ff;">new</span> List&lt;<span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;">();
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> Display the metric definitions.</span>
+            <span style="color: #0000ff;">int</span> count = <span style="color: #800080;">0</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">foreach</span> (MetricDefinition metricDefinition <span style="color: #0000ff;">in</span><span style="color: #000000;"> metricDefinitions.Value)
+            {
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">MetricDefinitio: </span><span style="color: #800000;">"</span> + count++<span style="color: #000000;">);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Display Name: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.DisplayName);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Metric Name: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.Name);
+                </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">metricNames.Contains(metricDefinition.Name))
+                    metricNames.Add(metricDefinition.Name);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Metric Namespace: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.Namespace);
+                metricNamespace </span>=<span style="color: #000000;"> metricDefinition.Namespace;
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Is Altertable: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.IsAlertable);
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Min. Altertable Time Window: </span><span style="color: #800000;">"</span> +<span style="color: #000000;"> metricDefinition.MinimumAlertableTimeWindow);
+                Console.WriteLine();
+            }
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> timeGrain must be 5, 60 or 720 minutes.</span>
+            TimeSpan timeGrain = TimeSpan.FromMinutes(<span style="color: #800080;">5</span><span style="color: #000000;">);
+            DateTime startTime </span>= DateTime.UtcNow.AddHours(-<span style="color: #800080;">1</span><span style="color: #000000;">);
+            DateTime endTime </span>=<span style="color: #000000;"> DateTime.UtcNow;
+
+            MetricValueListResponse response </span>=<span style="color: #000000;"> metricsClient.MetricValues.List(resourceId, metricNames, metricNamespace, timeGrain, startTime, endTime);
+
+            </span><span style="color: #0000ff;">foreach</span> (MetricValueSet value <span style="color: #0000ff;">in</span><span style="color: #000000;"> response.MetricValueSetCollection.Value)
+            {
+                String valueName </span>=<span style="color: #000000;"> value.Name;
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">MetricValue:{0}</span><span style="color: #800000;">"</span><span style="color: #000000;">, valueName);
+                </span><span style="color: #0000ff;">foreach</span> (MetricValue metricValue <span style="color: #0000ff;">in</span><span style="color: #000000;"> value.MetricValues)
+                {
+                    Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Maximum:{0}{1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, metricValue.Maximum, value.Unit);
+                    Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Average:{0}{1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, metricValue.Average, value.Unit);
+                    Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Minimum:{0}{1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, metricValue.Minimum, value.Unit);
+                }
+            }
+        }
+    }
+}</span></pre>
+</div>
+<p>Run...</p>
+<p>程序在metricsClient.MetricValues.List(resourceId, metricNames, metricNamespace, timeGrain, startTime, endTime);</p>
+<p>出错了：<br /><strong>Additional information: &lt;string xmlns="http://schemas.microsoft.com/2003/10/Serialization/"&gt;{"Code":"InvalidRequest","Message":"Could not retrieve metrics."}&lt;/string&gt;</strong></p>
+<p>为啥不能获取监控指标呢？</p>
+<p>这个错误，Google一番依旧未果，咨询了微软的技术工程师，给了如下指导，resouceID必须执行RoleName：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> resourceId = ResourceIdBuilder.BuildVirtualMachineResourceId(<span style="color: #800000;">"</span><span style="color: #800000;">cloudService</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">deploymentName</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">roleName</span><span style="color: #800000;">"</span>);</pre>
+</div>
+<p>修改之后，问题解决。</p>
+<p>至此，我们已经可以获取到监控指标和监控数据，下一步我们要获取自定义的性能计数器，基于自定义的性能计数器来实现自动伸缩。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2016/3</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-03-09 16:10</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6526206" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6526206);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6526206, cb_entryCreatedDate = '2017-03-09 16:10', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

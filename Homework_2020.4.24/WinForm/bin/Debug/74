@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="最近在研究容器技术，作为入门，基本概念必须搞明白，今天整理一下Kubernetes的基本概念。 一、什么是Kubernetes Kubernetes（k8s）是自动化容器操作的开源平台，这些操作包括部" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>容器技术研究-Kubernetes基本概念 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10652860.html">容器技术研究-Kubernetes基本概念</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>最近在研究容器技术，作为入门，基本概念必须搞明白，今天整理一下Kubernetes的基本概念。</p>
+<p><span style="font-size: 16px;"><strong>一、什么是Kubernetes</strong></span></p>
+<p>Kubernetes（k8s）是自动化容器操作的开源平台，这些操作包括部署，调度和节点集群间扩展。如果你曾经用过Docker容器技术部署容器，那么可以将Docker看成Kubernetes内部使用的低级别组件。Kubernetes不仅仅支持Docker，还支持Rocket，这是另一种容器技术。<br />使用Kubernetes可以：</p>
+<ul>
+<li>自动化容器的部署和复制</li>
+<li>随时扩展或收缩容器规模</li>
+<li>将容器组织成组，并且提供容器间的负载均衡</li>
+<li>很容易地升级应用程序容器的新版本</li>
+<li>提供容器弹性，如果容器失效就替换它，等等...</li>
+
+</ul>
+<p>实际上，使用Kubernetes只需一个部署文件(yaml)，使用一条命令就可以部署多层容器（前端，后台等）的完整集群：</p>
+<div class="cnblogs_code">
+<pre>$&nbsp;kubectl&nbsp;create&nbsp;-f&nbsp;single-config-file.yaml </pre>
+</div>
+<p>&nbsp;注:&nbsp;kubectl是和Kubernetes API交互的命令行程序.</p>
+<p><strong>二、Kubernetes核心概念</strong></p>
+<p><strong>1. 集群</strong></p>
+<p><strong>&nbsp;&nbsp;</strong>集群是一组节点，这些节点可以是物理服务器或者虚拟机，之上安装了Kubernetes平台。下图展示这样的集群。注意该图为了强调核心概念有所简化。以下是一个典型的Kubernetes架构图。</p>
+<p>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190404084309453-371192091.png" alt="" /></p>
+<p>&nbsp; 上图可以看到如下组件，使用特别的图标表示Service和Label：</p>
+<ul>
+<li>Pod</li>
+<li>Container（容器）</li>
+<li>Label(label)（标签）</li>
+<li>Replication Controller（复制控制器）</li>
+<li>Service（服务）</li>
+<li>Node（节点）</li>
+<li>Kubernetes Master（Kubernetes主节点）</li>
+</ul>
+<p><strong>&nbsp;2. Pod</strong></p>
+<p style="margin-left: 30px;">Pod（上图绿色方框）安排在节点上，包含<strong><span style="color: #3366ff;">一组容器和卷</span></strong>。<br />同一个Pod里的容器<strong><span style="color: #3366ff;">共享同一个网络命名空间</span></strong>，可以使用localhost互相通信。<br />Pod是短暂的，不是持续性实体。</p>
+<p style="margin-left: 30px;">我们可能会有以下这些问题：<br />如果Pod是短暂的，那么我怎么才能持久化容器数据使其能够跨重启而存在呢？ 是的，Kubernetes支持卷的概念，因此可以<strong><span style="color: #3366ff;">使用持久化的卷类型</span></strong>。<br />是否手动创建Pod，如果想要创建同一个容器的多份拷贝，需要一个个分别创建出来么？可以手动创建单个Pod，但是也可以使用Replication Controller使用Pod模板创建出多份拷贝。<br />如果Pod是短暂的，那么重启时IP地址可能会改变，那么怎么才能从前端容器正确可靠地指向后台容器呢？这时可以使用Service。</p>
+<p>&nbsp;<strong>3. Label标签</strong></p>
+<p style="margin-left: 30px;">一些Pod有Label。<br />一个Label是attach到Pod的一对<span style="color: #3366ff;"><strong>键/值对</strong></span>，用来传递用户定义的属性。比如，你可能创建了一个"tier"和&ldquo;app&rdquo;标签，<br />通过Label（tier=frontend, app=myapp）来标记前端Pod容器，<br />使用Label（tier=backend, app=myapp）标记后台Pod。<br />然后可以使用Selectors选择带有特定Label的Pod，并且将Service或者Replication Controller应用到上面。</p>
+<p><strong>&nbsp;4. Replication Controller&nbsp; &nbsp;</strong> &nbsp;&nbsp;</p>
+<p style="margin-left: 30px;">是否手动创建Pod，如果想要创建同一个容器的多份拷贝，需要一个个分别创建出来么，能否将Pods划到逻辑组里？<br />Replication Controller确保任意时间都有指定数量的Pod&ldquo;副本&rdquo;在运行。如果为某个Pod创建了Replication Controller并且指定3个副本，它会创建3个Pod，并且持续监控它们。如果某个Pod不响应，那么Replication Controller会替换它，保持总数为3.</p>
+<p style="margin-left: 30px;"><img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190404084704206-1573141200.gif" alt="" /></p>
+<p>如果之前不响应的Pod恢复了，现在就有4个Pod了，那么Replication Controller会将其中一个终止保持总数为3。如果在运行中将副本总数改为5，Replication Controller会立刻启动2个新Pod，保证总数为5。还可以按照这样的方式缩小Pod，这个特性在执行滚动升级时很有用。当创建Replication Controller时，需要指定两个东西：</p>
+<ul>
+<li>&nbsp; Pod模板：用来创建Pod副本的模板</li>
+<li>&nbsp; Label：Replication Controller需要监控的Pod的标签</li>
+
+</ul>
+<p><strong>&nbsp;5. Service</strong></p>
+<p style="margin-left: 30px;">如果Pods是短暂的，那么重启时IP地址可能会改变，怎么才能从前端容器正确可靠地指向后台容器呢？？<br /><span style="color: #3366ff;"><strong>Service是定义一系列Pod以及访问这些Pod的策略的一层抽象</strong></span>。<br />Service通过<span style="color: #3366ff;">Label找到Pod</span>组。因为Service是抽象的，所以在图表里通常看不到它们的存在，这也就让这一概念更难以理解。</p>
+<p style="margin-left: 30px;">现在，假定有2个后台Pod，并且定义后台Service的名称为&lsquo;backend-service&rsquo;，lable选择器为（tier=backend, app=myapp）。backend-service 的Service会完成如下两件重要的事情：<br />会为Service创建一个本地集群的DNS入口，因此前端Pod只需要DNS查找主机名为 &lsquo;backend-service&rsquo;，就能够解析出前端应用程序可用的IP地址。<br />现在前端已经得到了后台服务的IP地址，但是它应该访问2个后台Pod的哪一个呢？<br />Service在这2个后台Pod之间提供透明的负载均衡，会将请求分发给其中的任意一个。通过每个Node上运行的代理（kube-proxy）完成。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;下述动画展示了Service的功能。注意该图作了很多简化。如果不进入网络配置，那么达到透明的负载均衡目标所涉及的底层网络和路由相对先进。</p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190404084913906-933716041.gif" alt="" /></p>
+<p>&nbsp; &nbsp; &nbsp;注：有一个特别类型的Kubernetes Service，称为'LoadBalancer'，作为外部负载均衡器使用，在一定数量的Pod之间均衡流量。比如，对于负载均衡Web流量很有用</p>
+<p><strong>&nbsp; 6. Node</strong></p>
+<p style="margin-left: 30px;">节点（上图橘色方框）是<span style="color: #3366ff;"><strong>物理或者虚拟机器</strong></span>，作为Kubernetes worker，通常称为Minion。每个节点都运行如下Kubernetes关键组件：</p>
+<ul>
+<li>Kubelet：是主节点代理。</li>
+<li>Kube-proxy：Service使用其将链接路由到Pod，如上文所述。</li>
+<li>Docker或Rocket：Kubernetes使用的容器技术来创建容器。</li>
+
+</ul>
+<p><strong>&nbsp;7. Kubernetes Master&nbsp; &nbsp;</strong> &nbsp;&nbsp;</p>
+<p style="margin-left: 30px;">集群拥有一个Kubernetes Master（紫色方框）。<br />Kubernetes Master提供集群的独特视角，并且拥有一系列组件，比如Kubernetes API Server。<br />API Server提供可以用来和集群交互的REST端点。<br /><strong><span style="color: #3366ff;">Master节点包括用来创建和复制Pod的Replication Controller</span></strong>。</p>
+<p style="margin-left: 30px;">&nbsp;</p>
+<p>周国庆</p>
+<p>2019/4/4</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-04-04 08:53</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10652860" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10652860);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10652860, cb_entryCreatedDate = '2019-04-04 08:53', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

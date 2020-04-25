@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="前段时间迁移.NET Core做了大量的试水和评估，今天整理一下分享给大家。大致有以下几个部分： 1. .NET Core的由来 2. 为什么要迁移.NET Core 3. .NET Core3.X主" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>.NetCore技术研究-.NET Core迁移前的准备工作 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11619005.html">.NetCore技术研究-.NET Core迁移前的准备工作</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>前段时间迁移.NET Core做了大量的试水和评估，今天整理一下分享给大家。大致有以下几个部分：</p>
+<p>1. .NET Core的由来</p>
+<p>2. 为什么要迁移.NET Core</p>
+<p>3. .NET Core3.X主要特性</p>
+<p>4. .NET Standard和.NET Core</p>
+<p>5. .NET Core Roadmap&amp;版本选择</p>
+<p>接下来，我们详细展开说吧。</p>
+<p><span style="font-size: 16px;"><strong>一、.NET Core的由来</strong></span></p>
+<p>&nbsp; &nbsp;这个更像是科普的资料，因为团队的小伙伴有半路出家的，对.NET 的光辉历史不是非常了解，所以有必要带着大家看一遍.NETCore的由来：</p>
+<p>&nbsp; &nbsp;说.NET Core，需要先说一下.NET. 当年Java刚刚兴起，如火如荼，微软也非常推崇Java，当时Windows平台的Java虚拟机就是微软按照JVM标准实现的，据说也是当时性能最好的Java虚拟机。但是微软也是有私心的，微软总想搞点Windows平台上的特性，有点想把Java绑定到Windows平台上的味道，另外Sun公司确实有点小心眼，于是Sun公司就跟微软闹掰了，然后微软就推出了 .NET，.NET从出生开始其实就借鉴了Java，然后又一步步在语言特性、窗体开发等方面实现了超越。Java在1.6版本以后发展缓慢，后面Java也在语言特性上借鉴了 .NET。</p>
+<p>&nbsp; &nbsp;.NET虽然一直发展的不错，也有WPF、Unity3D这样具有竞争力框架的出现。但是.NET平台在一些较大的项目，不太受互联网公司的喜爱（虽然京东、当当、携程当年也是.NET技术路线）。但是因为.NET不是开源的框架，也不是可跨平台的框架，那就会带来以下问题：</p>
+<p>&nbsp; &nbsp; &nbsp;成本：选择.NET就要选择Visual Studio，Windows Server，license是不可忽视的成本；</p>
+<p>&nbsp; &nbsp; &nbsp;生态：没有来自于社区的贡献，那.NET没有诞生优秀框架的土壤，技术社区虽然有微软的特殊扶持，但是整体不太理想</p>
+<p>&nbsp; &nbsp; &nbsp;人才：无法吸引一线公司优秀互联网工程师加入，因为他们用Java、Go等，但是.NET Core诞生之后会大为改观，腾讯、网易都有在使用。</p>
+<p>&nbsp; &nbsp; 纵使有Mono这么强大的框架，可以让 .NET 跑在Linux上，但是这还不够。毕竟Mono只能发挥.NET部分有限的能力。</p>
+<p>&nbsp; &nbsp; 同时，云计算的普及，跨平台需求势不可挡，Linux 作为Server的不二OS，.NET不支持Linux，比较尴尬！</p>
+<p>&nbsp; &nbsp; 另外，容器时代已经不可逆转，跟Windows的强依赖，如何上Docker？</p>
+<p>&nbsp; &nbsp; 总之，形式所迫，拥抱变化和未来，.NET Core应运而生。</p>
+<p><span style="font-size: 16px;"><strong>二、为什么要迁移.NET Core</strong></span></p>
+<p>&nbsp; &nbsp;总结了以下几点，大家可以补充：</p>
+<ul>
+<li><span style="font-size: 15px; color: #0000ff;">.NET Core代表着未来.Net的发展方向</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">产品新特性、重点技术支持微软优先考虑在最新.NET Core版本上支持</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">更优的代码、更好的性能，社区大家都在贡献、优化代码</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">跨平台支持，支持部署在Linux，可以降低VM的成本</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">Docker部署支持，更低的成本，更高的资源利用率，未来云原生的核心组成</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">面向现代互联网应用、微服务架构、和DevOps更好地集成</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">开源：https://github.com/dotnet/core</span></li>
+<li><span style="font-size: 15px; color: #0000ff;">更好的生态和社区</span></li>
+</ul>
+<p><strong><span style="font-size: 16px;">三、 .NET Core3.X主要特性</span></strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191003075107610-855605328.png" alt="" width="808" height="559" /></p>
+<p>&nbsp; &nbsp;同时支持Windows和Linux、MacOS，满足不同开发者的需求，对于Web开发提供了ASP.NET Core, 对于常用数据库访问，提供了EF Core，对于机器学习，提供了ML.NET。大家可以根据自己业务的需要，选择合适的技术。</p>
+<p><strong><span style="font-size: 16px;">四、 .NET Standard和.NET Core</span></strong></p>
+<p><strong>&nbsp;先说下事情的起源：</strong></p>
+<p>&nbsp;.NET Framework从2002年起，一直在Release新版本，不支持跨平台</p>
+<p>&nbsp;.NET Core是为了支持跨平台产生的，类似的有Mono、Xamarin</p>
+<p>&nbsp; 这样，出现了两套代码、两套类库，对于开发者来说，要同时掌握两套SDK，会产生社区和技术的分裂。</p>
+<p>&nbsp;&nbsp;因此，.NET 要统一类库标准，统一所有的API定义，这就是.NET Standard. 如下图：</p>
+<p>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191003075745073-631768734.png" alt="" /></p>
+<p>&nbsp;<strong>.NET Standard的统一:</strong></p>
+<p>&nbsp;&nbsp;.NET Standard定义了.NET平台，统一实现的一组API。实现.Net Standard API的平台都与目标.Net Standard库兼容；</p>
+<p>&nbsp;&nbsp;.NET Framework和.NET Core都是.NET Standard的标准实现。 .NET Standard是二者的交集。</p>
+<p>&nbsp; &nbsp;但是.NET Framework和.NET Core存在其个性化、扩展的类库，需要牺牲兼容性，即：</p>
+<p>&nbsp; &nbsp;假如用.NET Framework的个性化SDK。例如注册表、Windows Service、Winform，这样只能部署在Windows中。</p>
+<p>&nbsp; &nbsp;假如用.NET Core的个性化SDK，部署运行时，与Windows环境下.NET Framework不兼容。</p>
+<p>&nbsp; &nbsp;所以，如果应用程序采用.NET Standard，同时支持.NET Framework和.NET Core，则可以实现两者的兼容。一套代码既支持运行在.NET Framework运行时下，又支持运行在.NET Core运行时下。</p>
+<p>&nbsp; &nbsp;同时.NET Standard的版本对应.NET Core、.NET Framework、Mono、Xamarin等的版本，有个对照表：</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191003080031124-409898779.png" alt="" /></p>
+<p>&nbsp; &nbsp;这张表非常重要。体现了一个规则：</p>
+<p>&nbsp; &nbsp;假如程序的目标框架Targetframework 使用.NET Standard2.0, 则支持：</p>
+<p>&nbsp; &nbsp;.NET Core 2.0版本的工程可以引用</p>
+<p>&nbsp; &nbsp;.NET 4.6 版本的工程可以引用</p>
+<p>&nbsp; &nbsp; 但是低版本的.NET Core和.NET Framework则无法引用。</p>
+<p><span style="font-size: 16px;"><strong>五 .NET Core Roadmap&amp;版本选择</strong></span></p>
+<p>&nbsp;先看一下.NET Core最新的Roadmap：</p>
+<p>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191003080432619-1939057448.png" alt="" width="886" height="474" /></p>
+<p>&nbsp;最新的.NET Core 3.1 将2019年11月发布，同时是LTS版本。如果大家现在开始迁移.NET Core，建议选择一个大版本、LTS版本。我们也将选择这个版本。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/10/03</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>&nbsp; &nbsp;</strong></span></p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-10-03 08:07</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11619005" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11619005);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11619005, cb_entryCreatedDate = '2019-10-03 08:07', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

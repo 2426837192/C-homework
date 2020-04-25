@@ -1,0 +1,576 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中给大家分享了使用Windbg分析线程阻塞问题： Windbg程序调试系列3-线程阻塞问题 本篇中我们继续，跟大家分享附加进程实时调试-Live Debugging。 先说一下使用Windbg" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列4-Live Debugging - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9905738.html">Windbg程序调试系列4-Live Debugging</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中给大家分享了使用Windbg分析线程阻塞问题：</p>
+<p><a href="https://www.cnblogs.com/tianqing/p/9887309.html" target="_blank">Windbg程序调试系列3-线程阻塞问题</a></p>
+<p>本篇中我们继续，跟大家分享附加进程实时调试-Live Debugging。</p>
+<p>先说一下使用Windbg附加进程实时调试的<span style="background-color: #339966;"><strong>应用场景和注意事项</strong></span>：</p>
+<p><strong>应用场景：</strong></p>
+<ul>
+<li>集成测试环境，影响异常后，分析异常和线程上下文的执行堆栈、参数情况；</li>
+<li>生产环境：短时间内调试程序异常，查看异常上下文和参数，但是调试时间不能太久。</li>
+</ul>
+<p><span style="color: #ff0000;"><strong>注意事项：</strong></span>附加进程调试会阻塞请求，调试后新的请求被阻塞住，前端调用受影响，因此要谨慎、权衡利弊，开发测试环境可以，生产环境要谨慎。</p>
+<p><strong>附加进程实时调试的套路：</strong></p>
+<ol>
+<li><strong><span style="color: #0000ff; font-size: 14px;">F6 Attache进程</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">加载SOS, .loadby sos clr</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">启用异常捕获 sxe clr</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">运行，捕获&amp;查看异常 g&nbsp; !pe</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">查看异常所在线程堆栈!clrstack, 查看异常所在线程堆栈的参数和变量 !clrstack -a / !dso</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">禁用异常捕获 sxd clr</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">退出调试 qd</span></strong></li>
+</ol>
+<p><strong>动手实操：</strong></p>
+<p><span style="font-size: 16px;"><strong>1. F6 Attache进程</strong></span></p>
+<p>打开Windbg，按下F6键，选择要调试的进程，支持输入进程ID：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181104205447351-1468913249.png" alt="" /></p>
+<p><span style="font-size: 16px;"><strong>2.&nbsp;加载SOS, .loadby sos clr</strong></span></p>
+<div class="cnblogs_code">
+<pre>.loadby sos clr</pre>
+</div>
+<p><span style="font-size: 18px;"><strong>3.&nbsp;启用异常捕获 sxe clr</strong></span></p>
+<div class="cnblogs_code">
+<pre>sxe clr</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181104205657137-632063684.png" alt="" /></p>
+<p><strong><span style="font-size: 18px;">4.&nbsp;运行，捕获&amp;查看异常 g&nbsp; !pe</span></strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">g</span></pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181104205843837-633927966.png" alt="" /></p>
+<p>上图的输出中，我们发现了以下异常信息：<span style="color: #ff0000;"><strong>SocketException：远程追究强迫关闭了一个现有的连接</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; !<span style="color: #000000;">pe
+Exception </span><span style="color: #0000ff;">object</span><span style="color: #000000;">: 000000d79aedb7a8
+Exception type:   System.Net.Sockets.SocketException
+Message:          远程主机强迫关闭了一个现有的连接。
+InnerException:   </span>&lt;none&gt;<span style="color: #000000;">
+StackTrace (generated):
+</span>&lt;none&gt;<span style="color: #000000;">
+StackTraceString: </span>&lt;none&gt;<span style="color: #000000;">
+HResult: </span><span style="color: #800080;">80004005</span></pre>
+</div>
+<p>异常Exception对象的内存地址：</p>
+<pre><span>000000d79aedb7a8</span></pre>
+<p><span style="font-size: 18px;"><strong>5.&nbsp;查看异常所在线程堆栈!clrstack, 查看异常所在线程堆栈的参数和变量 !clrstack -a / !dso</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; <span style="color: #0000ff;"><strong>!</strong></span><span style="color: #000000;"><span style="color: #0000ff;"><strong>pe</strong></span>
+Exception </span><span style="color: #0000ff;">object</span><span style="color: #000000;">: 000000d79aedb7a8
+Exception type:   System.Net.Sockets.SocketException
+Message:          远程主机强迫关闭了一个现有的连接。
+InnerException:   </span>&lt;none&gt;<span style="color: #000000;">
+StackTrace (generated):
+</span>&lt;none&gt;<span style="color: #000000;">
+StackTraceString: </span>&lt;none&gt;<span style="color: #000000;">
+HResult: </span><span style="color: #800080;">80004005</span>
+<span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt;<span style="color: #0000ff;"><strong> !</strong></span><span style="color: #000000;"><span style="color: #0000ff;"><strong>clrstack</strong></span>
+OS Thread Id: </span><span style="color: #800080;">0x15968</span> (<span style="color: #800080;">32</span><span style="color: #000000;">)
+        Child SP               IP Call Site
+000000d7b927ea88 00007ffe61c395fc [HelperMethodFrame: 000000d7b927ea88] 
+000000d7b927eb70 00007ffe52e68f0f </span>*** WARNING: Unable to verify checksum <span style="color: #0000ff;">for</span> C:\Windows\assembly\NativeImages_v4.<span style="color: #800080;">0</span><span style="color: #000000;">.30319_64\System\47e0be927382f169f5de470fab0ceb7d\System.ni.dll
+System.Net.Sockets.NetworkStream.Read(Byte[], Int32, Int32) [f:\dd\NDP\fx\src\net\System\Net\Sockets\NetworkStream.cs @ </span><span style="color: #800080;">513</span><span style="color: #000000;">]
+000000d7b927ebe0 00007ffe53e59c04 </span>*** WARNING: Unable to verify checksum <span style="color: #0000ff;">for</span> C:\Windows\assembly\NativeImages_v4.<span style="color: #800080;">0</span><span style="color: #000000;">.30319_64\mscorlib\5d0c037297cc1a64b52ce43b45c2ac2e\mscorlib.ni.dll
+System.IO.BufferedStream.ReadByte() [f:\dd\ndp\clr\src\BCL\system\io\bufferedstream.cs @ </span><span style="color: #800080;">814</span><span style="color: #000000;">]
+000000d7b927ec10 00007ffe53e2183c System.IO.BinaryReader.ReadByte() [f:\dd\ndp\clr\src\BCL\system\io\binaryreader.cs @ </span><span style="color: #800080;">143</span><span style="color: #000000;">]
+000000d7b927ec40 00007ffdf6188eb5 RabbitMQ.Client.Impl.Frame.ReadFrom(RabbitMQ.Util.NetworkBinaryReader)
+000000d7b927ecb0 00007ffdf6188e13 RabbitMQ.Client.Impl.SocketFrameHandler.ReadFrame()
+000000d7b927ed10 00007ffdf6188cfc RabbitMQ.Client.Framing.Impl.Connection.MainLoopIteration()
+000000d7b927ed50 00007ffdf6188a9f RabbitMQ.Client.Framing.Impl.Connection.MainLoop()
+000000d7b927edb0 00007ffe53e34740 System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">954</span><span style="color: #000000;">]
+000000d7b927ee80 00007ffe53e345d4 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">902</span><span style="color: #000000;">]
+000000d7b927eeb0 00007ffe53e345a2 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">891</span><span style="color: #000000;">]
+000000d7b927ef00 00007ffe53ebcf62 System.Threading.ThreadHelper.ThreadStart() [f:\dd\ndp\clr\src\BCL\system\threading\thread.cs @ </span><span style="color: #800080;">111</span><span style="color: #000000;">]
+000000d7b927f158 00007ffe55325a03 [GCFrame: 000000d7b927f158] 
+000000d7b927f4a8 00007ffe55325a03 [DebuggerU2MCatchHandlerFrame: 000000d7b927f4a8] </span></pre>
+</div>
+<p>上面的输出中，我们能看到异常所在的线程是32号线程，线程堆栈如下，RabbitMQ的通讯异常（心跳线程连接RabbitMQ Server异常）</p>
+<p>继续看线程堆栈的变量：</p>
+<pre><strong><span style="color: #0000ff;">!clrstack -a</span></strong></pre>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; !clrstack -<span style="color: #000000;">a
+OS Thread Id: </span><span style="color: #800080;">0x15968</span> (<span style="color: #800080;">32</span><span style="color: #000000;">)
+        Child SP               IP Call Site
+000000d7b927ea88 00007ffe61c395fc [HelperMethodFrame: 000000d7b927ea88] 
+000000d7b927eb70 00007ffe52e68f0f System.Net.Sockets.NetworkStream.Read(Byte[], Int32, Int32) [f:\dd\NDP\fx\src\net\System\Net\Sockets\NetworkStream.cs @ </span><span style="color: #800080;">513</span><span style="color: #000000;">]
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> = &lt;no data&gt;<span style="color: #000000;">
+        buffer </span>= &lt;no data&gt;<span style="color: #000000;">
+        offset </span>= &lt;no data&gt;<span style="color: #000000;">
+        size </span>= &lt;no data&gt;<span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ebe0 00007ffe53e59c04 System.IO.BufferedStream.ReadByte() [f:\dd\ndp\clr\src\BCL\system\io\bufferedstream.cs @ </span><span style="color: #800080;">814</span><span style="color: #000000;">]
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> (&lt;CLR reg&gt;) = <span style="color: #800080;">0x000000d79a3c2f18</span><span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ec10 00007ffe53e2183c System.IO.BinaryReader.ReadByte() [f:\dd\ndp\clr\src\BCL\system\io\binaryreader.cs @ </span><span style="color: #800080;">143</span><span style="color: #000000;">]
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> = &lt;no data&gt;<span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ec40 00007ffdf6188eb5 RabbitMQ.Client.Impl.Frame.ReadFrom(RabbitMQ.Util.NetworkBinaryReader)
+    PARAMETERS:
+        reader (</span>&lt;CLR reg&gt;) = <span style="color: #800080;">0x000000d79a3c2f70</span><span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ecb0 00007ffdf6188e13 RabbitMQ.Client.Impl.SocketFrameHandler.ReadFrame()
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> = &lt;no data&gt;<span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        <span style="color: #800080;">0x000000d7b927ece0</span> = <span style="color: #800080;">0x0000000000000000</span>
+        <span style="color: #800080;">0x000000d7b927ecd8</span> = <span style="color: #800080;">0x000000d79a3c2f70</span><span style="color: #000000;">
+
+000000d7b927ed10 00007ffdf6188cfc RabbitMQ.Client.Framing.Impl.Connection.MainLoopIteration()
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> (&lt;CLR reg&gt;) = <span style="color: #800080;">0x000000d79a3c31b8</span><span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ed50 00007ffdf6188a9f RabbitMQ.Client.Framing.Impl.Connection.MainLoop()
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> (<span style="color: #800080;">0x000000d7b927edb0</span>) = <span style="color: #800080;">0x000000d79a3c31b8</span><span style="color: #000000;">
+    LOCALS:
+        </span><span style="color: #800080;">0x000000d7b927ed8c</span> = <span style="color: #800080;">0x0000000000000000</span>
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927edb0 00007ffe53e34740 System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">954</span><span style="color: #000000;">]
+    PARAMETERS:
+        executionContext </span>= &lt;no data&gt;<span style="color: #000000;">
+        callback </span>= &lt;no data&gt;<span style="color: #000000;">
+        state </span>= &lt;no data&gt;<span style="color: #000000;">
+        preserveSyncCtx </span>= &lt;no data&gt;<span style="color: #000000;">
+    LOCALS:
+        </span>&lt;no data&gt;
+        &lt;no data&gt;
+        &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ee80 00007ffe53e345d4 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">902</span><span style="color: #000000;">]
+    PARAMETERS:
+        executionContext </span>= &lt;no data&gt;<span style="color: #000000;">
+        callback </span>= &lt;no data&gt;<span style="color: #000000;">
+        state </span>= &lt;no data&gt;<span style="color: #000000;">
+        preserveSyncCtx </span>= &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927eeb0 00007ffe53e345a2 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">891</span><span style="color: #000000;">]
+    PARAMETERS:
+        executionContext </span>= &lt;no data&gt;<span style="color: #000000;">
+        callback </span>= &lt;no data&gt;<span style="color: #000000;">
+        state </span>= &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927ef00 00007ffe53ebcf62 System.Threading.ThreadHelper.ThreadStart() [f:\dd\ndp\clr\src\BCL\system\threading\thread.cs @ </span><span style="color: #800080;">111</span><span style="color: #000000;">]
+    PARAMETERS:
+        </span><span style="color: #0000ff;">this</span> = &lt;no data&gt;<span style="color: #000000;">
+
+000000d7b927f158 00007ffe55325a03 [GCFrame: 000000d7b927f158] 
+000000d7b927f4a8 00007ffe55325a03 [DebuggerU2MCatchHandlerFrame: 000000d7b927f4a8] </span></pre>
+</div>
+<p>能看到部分参数的内存地址，但是很多是no data，这样的话，我们尝试用另一个命令，查询线程上下文中的所有变量信息：　</p>
+<p><span style="color: #0000ff;"><strong>!dso</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; <span style="color: #0000ff;"><strong>!</strong></span><span style="color: #000000;"><span style="color: #0000ff;"><strong>dso</strong></span>
+OS Thread Id: </span><span style="color: #800080;">0x15968</span> (<span style="color: #800080;">32</span><span style="color: #000000;">)
+RSP</span>/<span style="color: #000000;">REG          Object           Name
+000000D7B927E8D0 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927E948 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927E9A8 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927E9B0 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927E9E0 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927E9F0 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927EA78 000000d79aedb850 System.Text.StringBuilder
+000000D7B927EAC0 000000d79aedb850 System.Text.StringBuilder
+000000D7B927EAD0 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927EAD8 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927EB20 000000d79aedb7a8 System.Net.Sockets.SocketException
+000000D7B927EB30 000000d79a3c2ed8 System.Net.Sockets.NetworkStream
+000000D7B927EB60 000000d79a809eb0 System.Byte[]
+000000D7B927EB70 000000d799fd1420 System.String    
+000000D7B927EB78 000000d79aeda2e8 RabbitMQ.Client.Framing.BasicProperties
+000000D7B927EB80 000000d79aeda568 System.Byte[]
+000000D7B927EBB0 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927EBB8 000000d79a3c2f18 System.IO.BufferedStream
+000000D7B927EBC0 000000d79a3c2f70 RabbitMQ.Util.NetworkBinaryReader
+000000D7B927EBC8 000000d79a3c3ff0 System.Threading.ThreadHelper
+000000D7B927EBF0 000000d79aeda0a8 System.String    HSF</span>-<span style="color: #000000;">ServiceState
+000000D7B927EBF8 000000d799fd1420 System.String    
+000000D7B927EC00 000000d79a3c2f70 RabbitMQ.Util.NetworkBinaryReader
+000000D7B927EC10 000000d79aeda2e8 RabbitMQ.Client.Framing.BasicProperties
+000000D7B927EC20 000000d79aeda2e8 RabbitMQ.Client.Framing.BasicProperties
+000000D7B927EC28 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927EC30 000000d79a3c6a00 RabbitMQ.Client.Framing.Impl.Model
+000000D7B927EC50 000000d79a3c3ff0 System.Threading.ThreadHelper
+000000D7B927EC78 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927EC80 000000d79a3c2bc0 RabbitMQ.Client.Impl.SocketFrameHandler
+000000D7B927EC88 000000d79a3c2f70 RabbitMQ.Util.NetworkBinaryReader
+000000D7B927EC90 000000d79a3c3ff0 System.Threading.ThreadHelper
+000000D7B927ECB0 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927ECC0 000000d79a3c6688 RabbitMQ.Client.Impl.Session
+000000D7B927ECC8 000000d79aedb430 RabbitMQ.Client.Impl.Frame
+000000D7B927ECD8 000000d79a3c2f70 RabbitMQ.Util.NetworkBinaryReader
+000000D7B927ECF0 000000d79a3c31b8 RabbitMQ.Client.Framing.Impl.Connection
+000000D7B927ED80 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927EDB0 000000d79a3c31b8 RabbitMQ.Client.Framing.Impl.Connection
+000000D7B927EDF0 000000d79a3c3f90 System.Threading.Thread
+000000D7B927EE48 000000d79a3c3ff0 System.Threading.ThreadHelper
+000000D7B927EE50 000000d79a3c4150 System.Threading.ExecutionContext
+000000D7B927EE58 000000d79a017a90 System.Threading.ContextCallback
+000000D7B927EEE8 000000d79a3c3ff0 System.Threading.ThreadHelper
+000000D7B927EEF0 000000d79a3c4150 System.Threading.ExecutionContext
+000000D7B927F100 000000d79a3c4018 System.Threading.ThreadStart</span></pre>
+</div>
+<p>&nbsp;线程上下文中所有的变量的内存地址，我们都能看到，接下来看每个对象的信息，大家应该都会用了&nbsp; !do objectAddress， 如果加载的Mex插件，可以用牛逼的&nbsp; !do2</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; <span style="color: #0000ff;">!</span><span style="color: #000000;"><span style="color: #0000ff;">do2 000000d79a3c6688</span> 
+</span><span style="color: #800080;">0x000000d79a3c6688</span><span style="color: #000000;"> RabbitMQ.Client.Impl.Session
+  </span><span style="color: #800080;">0000</span><span style="color: #000000;">  _shutdownLock                    : 000000d79a3c66d0 (System.Object)
+  </span><span style="color: #800080;">0008</span>  _sessionShutdown                 : 000000d79a3c6cf8 (System.EventHandler&lt;RabbitMQ.Client.ShutdownEventArgs&gt;<span style="color: #000000;">)
+  </span><span style="color: #800080;">0010</span>  &lt;CloseReason&gt;<span style="color: #000000;">k__BackingField     : NULL
+  </span><span style="color: #800080;">0018</span>  &lt;CommandReceived&gt;k__BackingField : 000000d79a3c6c50 (System.Action&lt;RabbitMQ.Client.Impl.ISession,RabbitMQ.Client.Impl.Command&gt;<span style="color: #000000;">)
+  </span><span style="color: #800080;">0020</span>  &lt;Connection&gt;<span style="color: #000000;">k__BackingField      : 000000d79a3c31b8 (RabbitMQ.Client.Framing.Impl.Connection)
+  </span><span style="color: #800080;">0028</span>  &lt;ChannelNumber&gt;k__BackingField   : <span style="color: #800080;">1</span><span style="color: #000000;"> (System.Int32)
+  </span><span style="color: #800080;">0030</span><span style="color: #000000;">  m_assembler                      : 000000d79a3c6790 (RabbitMQ.Client.Impl.CommandAssembler)
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; <span style="color: #0000ff;">!do</span><span style="color: #000000;"><span style="color: #0000ff;"> 000000d79a3c6688</span> 
+Name:        RabbitMQ.Client.Impl.Session
+MethodTable: 00007ffdf6257888
+EEClass:     00007ffdf6264ce8
+Size:        </span><span style="color: #800080;">72</span>(<span style="color: #800080;">0x48</span><span style="color: #000000;">) bytes
+File:        C:\TeldApp\HSF\HSF.Host</span>-BillCM-<span style="color: #800080;">9086</span><span style="color: #000000;">\RabbitMQ.Client.dll
+Fields:
+              MT    Field   Offset                 Type VT     Attr            Value Name
+00007ffe53fd6fd8  </span><span style="color: #800080;">4000283</span>        <span style="color: #800080;">8</span>        System.Object  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c66d0 _shutdownLock
+00007ffdf6250760  </span><span style="color: #800080;">4000284</span>       <span style="color: #800080;">10</span> ...RabbitMQ.Client]]  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c6cf8 _sessionShutdown
+00007ffe53fd9428  </span><span style="color: #800080;">4000285</span>       <span style="color: #800080;">30</span>         System.Int32  <span style="color: #800080;">1</span> instance                <span style="color: #800080;">1</span> &lt;ChannelNumber&gt;<span style="color: #000000;">k__BackingField
+00007ffdf62506c0  </span><span style="color: #800080;">4000286</span>       <span style="color: #800080;">18</span> ...ShutdownEventArgs  <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span> &lt;CloseReason&gt;<span style="color: #000000;">k__BackingField
+00007ffdf6272e78  </span><span style="color: #800080;">4000287</span>       <span style="color: #800080;">20</span> ...RabbitMQ.Client]]  <span style="color: #800080;">0</span> instance 000000d79a3c6c50 &lt;CommandReceived&gt;<span style="color: #000000;">k__BackingField
+00007ffdf62549a0  </span><span style="color: #800080;">4000288</span>       <span style="color: #800080;">28</span> ...g.Impl.Connection  <span style="color: #800080;">0</span> instance <strong><span style="color: #ff0000;">000000d79a3c31b8</span> </strong>&lt;Connection&gt;<span style="color: #000000;">k__BackingField
+00007ffdf62713b0  </span><span style="color: #800080;">4000289</span>       <span style="color: #800080;">38</span> ....CommandAssembler  <span style="color: #800080;">0</span> instance 000000d79a3c6790 m_assembler</pre>
+</div>
+<p>我们继续看Connection对象：000000d79a3c31b8&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; !<span style="color: #0000ff;">do</span><span style="color: #000000;"><strong><span style="color: #ff0000;"> 000000d79a3c31b8</span> </strong>
+Name:        RabbitMQ.Client.Framing.Impl.Connection
+MethodTable: 00007ffdf62549a0
+EEClass:     00007ffdf6260b78
+Size:        </span><span style="color: #800080;">232</span>(<span style="color: #800080;">0xe8</span><span style="color: #000000;">) bytes
+File:        C:\TeldApp\HSF\HSF.Host</span>-BillCM-<span style="color: #800080;">9086</span><span style="color: #000000;">\RabbitMQ.Client.dll
+Fields:
+              MT    Field   Offset                 Type VT     Attr            Value Name
+00007ffe53fd6fd8  </span><span style="color: #800080;">4000247</span>        <span style="color: #800080;">8</span>        System.Object  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c32a0 m_eventLock
+00007ffdf6257c48  </span><span style="color: #800080;">4000248</span>       <span style="color: #800080;">10</span> ...Client.Impl.Frame  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c32b8 m_heartbeatFrame
+00007ffe53fe7378  </span><span style="color: #800080;">4000249</span>       <span style="color: #800080;">18</span> ....ManualResetEvent  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c32f8 m_appContinuation
+</span><span style="color: #800080;">0000000000000000</span>  400024a       <span style="color: #800080;">20</span>                       <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span><span style="color: #000000;"> m_callbackException
+00007ffe53954820  400024b       </span><span style="color: #800080;">28</span> ...bject, mscorlib]]  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c51d8 m_clientProperties
+00007ffdf62506c0  400024c       </span><span style="color: #800080;">30</span> ...ShutdownEventArgs  <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span><span style="color: #000000;"> m_closeReason
+00007ffe53ff9a38  400024d       c2       System.Boolean  </span><span style="color: #800080;">1</span> instance                <span style="color: #800080;">0</span><span style="color: #000000;"> m_closed
+</span><span style="color: #800080;">0000000000000000</span>  400024e       <span style="color: #800080;">38</span>                       <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span><span style="color: #000000;"> m_connectionBlocked
+00007ffdf6250760  400024f       </span><span style="color: #800080;">40</span> ...RabbitMQ.Client]]  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c6750 m_connectionShutdown
+00007ffe53953ff0  </span><span style="color: #800080;">4000250</span>       <span style="color: #800080;">48</span> ...tArgs, mscorlib]]  <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span><span style="color: #000000;"> m_connectionUnblocked
+00007ffdf622f7d0  </span><span style="color: #800080;">4000251</span>       <span style="color: #800080;">50</span> ...ConnectionFactory  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c2698 m_factory
+00007ffdf6255cb8  </span><span style="color: #800080;">4000252</span>       <span style="color: #800080;">58</span> ...mpl.IFrameHandler  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c2bc0 m_frameHandler
+00007ffe53ff40a0  </span><span style="color: #800080;">4000253</span>       c8          System.Guid  <span style="color: #800080;">1</span><span style="color: #000000;"> instance 000000d79a3c3280 m_id
+00007ffdf625a5d0  </span><span style="color: #800080;">4000254</span>       <span style="color: #800080;">60</span> ...nt.Impl.ModelBase  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c3860 m_model0
+00007ffe53ff9a38  </span><span style="color: #800080;">4000255</span>       c3       System.Boolean  <span style="color: #800080;">1</span> instance                <span style="color: #800080;">1</span><span style="color: #000000;"> m_running
+00007ffdf6257a48  </span><span style="color: #800080;">4000256</span>       <span style="color: #800080;">68</span> ....Impl.MainSession  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c35f0 m_session0
+00007ffdf6259050  </span><span style="color: #800080;">4000257</span>       <span style="color: #800080;">70</span> ...pl.SessionManager  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c6018 m_sessionManager
+00007ffdf6258068  </span><span style="color: #800080;">4000258</span>       <span style="color: #800080;">78</span> ...RabbitMQ.Client]]  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c3370 m_shutdownReport
+00007ffe53fd5570  </span><span style="color: #800080;">4000259</span>       c0        System.UInt16  <span style="color: #800080;">1</span> instance               <span style="color: #800080;">60</span><span style="color: #000000;"> m_heartbeat
+00007ffe53ff3f28  400025a       d8      System.TimeSpan  </span><span style="color: #800080;">1</span><span style="color: #000000;"> instance 000000d79a3c3290 m_heartbeatTimeSpan
+00007ffe53fd9428  400025b       b8         System.Int32  </span><span style="color: #800080;">1</span> instance                <span style="color: #800080;">0</span><span style="color: #000000;"> m_missedHeartbeats
+00007ffe53ff4248  400025c       </span><span style="color: #800080;">80</span> ...m.Threading.Timer  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c61f0 _heartbeatWriteTimer
+00007ffe53ff4248  400025d       </span><span style="color: #800080;">88</span> ...m.Threading.Timer  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c6428 _heartbeatReadTimer
+00007ffe53ff4de8  400025e       </span><span style="color: #800080;">90</span> ...ng.AutoResetEvent  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c33a8 m_heartbeatRead
+00007ffe53ff4de8  400025f       </span><span style="color: #800080;">98</span> ...ng.AutoResetEvent  <span style="color: #800080;">0</span><span style="color: #000000;"> instance 000000d79a3c33f8 m_heartbeatWrite
+00007ffe53ff9a38  </span><span style="color: #800080;">4000260</span>       c4       System.Boolean  <span style="color: #800080;">1</span> instance                <span style="color: #800080;">0</span><span style="color: #000000;"> m_inConnectionNegotiation
+00007ffdf6258e90  </span><span style="color: #800080;">4000261</span>       a0 ...nsumerWorkService  <span style="color: #800080;">0</span> instance 000000d79a3c3448 &lt;ConsumerWorkService&gt;<span style="color: #000000;">k__BackingField
+00007ffe53ff21f0  </span><span style="color: #800080;">4000262</span>       bc        System.UInt32  <span style="color: #800080;">1</span> instance           <span style="color: #800080;">131072</span> &lt;FrameMax&gt;<span style="color: #000000;">k__BackingField
+00007ffdf625ace0  </span><span style="color: #800080;">4000263</span>       a8 ...AmqpTcpEndpoint[]  <span style="color: #800080;">0</span> instance <span style="color: #800080;">0000000000000000</span> &lt;KnownHosts&gt;<span style="color: #000000;">k__BackingField
+00007ffe53954820  </span><span style="color: #800080;">4000264</span>       b0 ...bject, mscorlib]]  <span style="color: #800080;">0</span> instance 000000d79a3c5468 &lt;ServerProperties&gt;<span style="color: #000000;">k__BackingField
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">032</span>&gt; !<span style="color: #000000;">do2 000000d79a3c31b8 
+</span><span style="color: #800080;">0x000000d79a3c31b8</span><span style="color: #000000;"> RabbitMQ.Client.Framing.Impl.Connection
+  </span><span style="color: #800080;">0000</span><span style="color: #000000;">  m_eventLock                          : 000000d79a3c32a0 (System.Object)
+  </span><span style="color: #800080;">0008</span><span style="color: #000000;">  m_heartbeatFrame                     : 000000d79a3c32b8 (RabbitMQ.Client.Impl.Frame)
+  </span><span style="color: #800080;">0010</span><span style="color: #000000;">  m_appContinuation                    : 000000d79a3c32f8 (System.Threading.ManualResetEvent)
+  </span><span style="color: #800080;">0018</span><span style="color: #000000;">  m_callbackException                  : NULL
+  </span><span style="color: #800080;">0020</span>  m_clientProperties                   : 000000d79a3c51d8 (System.Collections.Generic.Dictionary&lt;System.String,System.Object&gt;<span style="color: #000000;">)
+  </span><span style="color: #800080;">0028</span><span style="color: #000000;">  m_closeReason                        : NULL
+  </span><span style="color: #800080;">0030</span><span style="color: #000000;">  m_connectionBlocked                  : NULL
+  </span><span style="color: #800080;">0038</span>  m_connectionShutdown                 : 000000d79a3c6750 (System.EventHandler&lt;RabbitMQ.Client.ShutdownEventArgs&gt;<span style="color: #000000;">)
+  </span><span style="color: #800080;">0040</span><span style="color: #000000;">  m_connectionUnblocked                : NULL
+  </span><span style="color: #800080;">0048</span><span style="color: #000000;">  m_factory                            : 000000d79a3c2698 (RabbitMQ.Client.ConnectionFactory)
+  </span><span style="color: #800080;">0050</span><span style="color: #000000;">  m_frameHandler                       : 000000d79a3c2bc0 (RabbitMQ.Client.Impl.SocketFrameHandler)
+  </span><span style="color: #800080;">0058</span><span style="color: #000000;">  m_model0                             : 000000d79a3c3860 (RabbitMQ.Client.Framing.Impl.Model)
+  </span><span style="color: #800080;">0060</span><span style="color: #000000;">  m_session0                           : 000000d79a3c35f0 (RabbitMQ.Client.Impl.MainSession)
+  </span><span style="color: #800080;">0068</span><span style="color: #000000;">  m_sessionManager                     : 000000d79a3c6018 (RabbitMQ.Client.Impl.SessionManager)
+  </span><span style="color: #800080;">0070</span>  m_shutdownReport                     : 000000d79a3c3370 (RabbitMQ.Util.SynchronizedList&lt;RabbitMQ.Client.ShutdownReportEntry&gt;<span style="color: #000000;">)
+  </span><span style="color: #800080;">0078</span><span style="color: #000000;">  _heartbeatWriteTimer                 : 000000d79a3c61f0 (System.Threading.Timer)
+  </span><span style="color: #800080;">0080</span><span style="color: #000000;">  _heartbeatReadTimer                  : 000000d79a3c6428 (System.Threading.Timer)
+  </span><span style="color: #800080;">0088</span><span style="color: #000000;">  m_heartbeatRead                      : 000000d79a3c33a8 (System.Threading.AutoResetEvent)
+  </span><span style="color: #800080;">0090</span><span style="color: #000000;">  m_heartbeatWrite                     : 000000d79a3c33f8 (System.Threading.AutoResetEvent)
+  </span><span style="color: #800080;">0098</span>  &lt;ConsumerWorkService&gt;<span style="color: #000000;">k__BackingField : 000000d79a3c3448 (RabbitMQ.Client.ConsumerWorkService)
+  00a0  </span>&lt;KnownHosts&gt;<span style="color: #000000;">k__BackingField          : NULL
+  00a8  </span>&lt;ServerProperties&gt;k__BackingField    : 000000d79a3c5468 (System.Collections.Generic.Dictionary&lt;System.String,System.Object&gt;<span style="color: #000000;">)
+  00b0  m_missedHeartbeats                   : </span><span style="color: #800080;">0</span><span style="color: #000000;"> (System.Int32)
+  00b4  </span>&lt;FrameMax&gt;k__BackingField            : <span style="color: #800080;">131072</span><span style="color: #000000;"> (System.UInt32)
+  00b8  m_heartbeat                          : </span><span style="color: #800080;">60</span><span style="color: #000000;"> (System.UInt16)
+  00ba  m_closed                             : False (System.Boolean)
+  00bb  m_running                            : True (System.Boolean)
+  00bc  m_inConnectionNegotiation            : False (System.Boolean)
+  00c0  m_id                                 : 000000d79a3c3280 1c8d8e96</span>-0c6a-4c62-84b7-<span style="color: #000000;">9feb241b67ad (System.Guid)
+  00d0  m_heartbeatTimeSpan                  : 000000d79a3c3290 </span><span style="color: #800080;">00</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">15</span> (System.TimeSpan)</pre>
+</div>
+<p>类似的，其他的内存变量也可以看，帮助我们分析问题。</p>
+<p>找到问题的大致原因后，我们需要禁用异常捕获，退出调试，<strong><span style="color: #ff0000;">如果直接关闭Windbg，此时附加调试的进程就被强制退出了，一定要注意，请使用下面的指令：</span></strong></p>
+<p><span style="font-size: 18px;"><strong>6. 禁用异常捕获 sxd clr</strong></span><br /><span style="font-size: 18px;"><strong>7. 退出调试 qd</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">sxd  clr
+qd</span></pre>
+</div>
+<p>以上就是跟大家分享的附加进程实时调试，总结一下套路：</p>
+<ol>
+<li><strong>F6 Attache进程</strong></li>
+<li><strong>加载SOS, .loadby sos clr</strong></li>
+<li><strong>启用异常捕获 sxe clr</strong></li>
+<li><strong>运行，捕获&amp;查看异常 g&nbsp; !pe</strong></li>
+<li><strong>查看异常所在线程堆栈!clrstack, 查看异常所在线程堆栈的参数和变量 !clrstack -a / !dso</strong></li>
+<li><strong>禁用异常捕获 sxd clr</strong></li>
+<li><strong>退出调试 qd</strong></li>
+</ol>
+<p>分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/11/4</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-11-05 07:03</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9905738" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9905738);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9905738, cb_entryCreatedDate = '2018-11-05 07:03', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="近期准备将一个项目开源到GitHub中，N-Sharding，.Net版本的分库分表数据访问框架。中间遇到了点小问题，整理了一下。 1. GitHub上Create New Repos 2. 代码Ch" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Visual Studio Git本地Repos和GitHub远程Repos互操作 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10545294.html">Visual Studio Git本地Repos和GitHub远程Repos互操作</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>近期准备将一个项目开源到GitHub中，N-Sharding，.Net版本的分库分表数据访问框架。中间遇到了点小问题，整理了一下。</p>
+<p>1. GitHub上Create New Repos</p>
+<p>2. 代码Check In到本地Git Repos</p>
+<p>3. Push到GitHub远程Repos</p>
+<p><strong>一、GitHub上Create New Repos:N-Sharding</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190317074135240-810416877.png" alt="" /></strong></p>
+<p><strong>2. 代码Check In到本地Git Repos&nbsp;</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190317074512821-1576466524.png" alt="" /></strong></p>
+<p>&nbsp;</p>
+<p><strong>3. Push到GitHub远程Repos</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190317074727562-1630540352.png" alt="" /></p>
+<p>推送提示一下错误：</p>
+<div class="cnblogs_code">
+<pre>将分支推送到远程存储库时遇到错误: rejected Updates were rejected because the tip of your current branch <span style="color: #0000ff;">is</span><span style="color: #000000;"> behind its remote counterpart. Integrate the remote changes  before pushing again.
+Error: failed to push some refs to </span><span style="color: #800000;">'</span><span style="color: #800000;">https://github.com/*****/N-Sharding.git</span><span style="color: #800000;">'</span><span style="color: #000000;">
+Error: hint: <strong>Updates were rejected because the tip of your current branch </strong></span><strong><span style="color: #0000ff;">is</span></strong><span style="color: #000000;"><strong> behind</strong>
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: </span><span style="color: #800000;">'</span><span style="color: #800000;">git pull ...</span><span style="color: #800000;">'</span><span style="color: #000000;">) before pushing again.
+hint: See the </span><span style="color: #800000;">'</span><span style="color: #800000;">Note about fast-forwards</span><span style="color: #800000;">'</span> <span style="color: #0000ff;">in</span> <span style="color: #800000;">'</span><span style="color: #800000;">git push --help</span><span style="color: #800000;">'</span> <span style="color: #0000ff;">for</span> details.</pre>
+</div>
+<p>看中间第三句话：Updates were rejected because the tip of your current branch is behind</p>
+<p>说明本地分支是旧的，远程Master分支要新。为什么呢？</p>
+<p>突然想起来，在GitHub上Create New Repos时，增加了Readme.md。本地没有这个文件。</p>
+<p>一顿百度后：<a href="https://www.cnblogs.com/gzdaijie/p/5186516.html">https://www.cnblogs.com/gzdaijie/p/5186516.html</a></p>
+<p>解决方案：</p>
+<p>1. 打开Git Bash</p>
+<p>2. Git拉取最新的代码到本地，一定要rebase，强制同步更新本地分支</p>
+<div class="cnblogs_code">
+<pre>git pull --<strong>rebase</strong> origin master</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190317075235162-2082279140.png" alt="" /></p>
+<p>关于Git rebase，可以参考：<a href="https://git-scm.com/docs/git-rebase" target="_blank">https://git-scm.com/docs/git-rebase</a></p>
+<p>3. 推送Push到Master主分支</p>
+<div class="cnblogs_code">
+<pre>git push -u origin master</pre>
+</div>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190317075641533-617536952.png" alt="" /></p>
+<p>Push 成功，代码成功提交到master。</p>
+<p>Tips：关于git merge 与 git rebase</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">1</span><span style="color: #000000;">. git merge 和 git rebase 都是将远程分支与本地分支合并的一种方法，git merge 会生成一个新的节点，例如A和B都位于同一个HEAD，A提交了2个commit C1和C2，B 提交了2个commit C3和C4，git merge的结果是在C3和C4之后合并生成C5，这样提交历史比较清晰，但多了一个C5
+</span><span style="color: #800080;">2</span>. 假设A已经将C1和C2 push到了远程分支，那么B 使用git rebase则会将C3和C4缓存到.git/<span style="color: #000000;">rebase中，恢复到之前的状态，更新C1和C2，然后再将C3和C4作为补丁应用到C2的状态上。结果如下：
+原始状态</span>-&gt;C1-&gt;C2-&gt;C3<span style="color: #800000;">'</span><span style="color: #800000;">-&gt;C4</span><span style="color: #800000;">'</span>，C3<span style="color: #800000;">'</span><span style="color: #800000;">和C4</span><span style="color: #800000;">'</span>为git 根据C3和C4生成的补丁，log是一条直线，而且没有多余的C5，但是平行信息丢失。</pre>
+</div>
+<p>关于git pull 与 git pull --rebase</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">1</span>. git pull = git fetch +<span style="color: #000000;"> git merge
+</span><span style="color: #800080;">2</span>. git pull --rebase = git fetch + git rebase</pre>
+</div>
+<p>&nbsp;</p>
+<p>以上，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/3/17</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-03-17 07:58</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10545294" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10545294);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10545294, cb_entryCreatedDate = '2019-03-17 07:58', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

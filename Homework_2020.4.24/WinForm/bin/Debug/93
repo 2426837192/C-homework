@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="一、Linux简介1、Linux操作系统诞生于1991年10月5日，由林纳斯&amp;#183;托瓦兹在comp.os.minix新闻组上发布消息，正式向外宣布Linux内核的诞生。2、Linux同时也衍生了" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Linux基础培训知识点汇总 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9198960.html">Linux基础培训知识点汇总</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>一、Linux简介<br />1、Linux操作系统诞生于1991年10月5日，由林纳斯&middot;托瓦兹在comp.os.minix新闻组上发布消息，正式向外宣布Linux内核的诞生。<br />2、Linux同时也衍生了很多版本（Debian，RedHat、Ubuntu等）<br />3、Linux的基本思想：一切皆文件、程序用途单一性<br />4、Linux八大特点：开放性、多用户、多任务、界面良好、支持多种平台、可靠安全、设备独立性、丰富的网络功能。</p>
+<p>二、Linux基础<br />1、Linux目录结构：树型目录结构，仅一个根目录。<br />2、FHS标准：定义Linux各目录用途及功能、规范用户对目录的使用。<br />3、重要目录<br />/boot 启动目录：存放kernel和initrd引导<br />/home 普通用户家目录<br />/root root用户家目录<br />/bin  可执行的命令目录<br />/etc  系统配置文件和可执行文件目录<br />/tmp  临时文件夹<br />/usr  系统资源目录，存放应用程序<br />/usr/bin 大部分用户命令<br />/var  存放系统运行数据<br />/var/log 日志文件目录<br />/opt  用户级程序目录<br />/mnt  挂载目录<br />4、计算机结构：硬件、内核、系统调用接口、应用程序。<br />内核：负责驱动硬件、管理活动和分配及管理硬件资源。<br />shell：用户与内核的命令解释器，使用交互与非交互的方式，接收用户命令调用系统接口完成操作。</p>
+<p><br />三、Linux基础命令<br />1、登陆Linux<br />登陆显示：[teld@localhost ~]$<br />格式含义：[当前用户@本机域名 工作目录] 提示符 <br />提示符：$(普通用户)/#(root)</p>
+<p>2、Linux命令格式：命令名称 【命令参数】 【命令对象】<br />命令参数：是对命令的一种完善，不同的环境和不通的命令，参数的使用也是不同的，也是日常使用的重点。<br />命令参数便是方法："--"表示完整选项；"-"表示短格式选项</p>
+<p>3、帮助命令：man、info、help、whatis</p>
+<p>4、切换登陆用户及提权：<br />su - /su 区别：工作目录和环境变量是否同时切换<br />su -/ sudo su - 区别：su是用户切换命令，sudo是临时命令提权工具</p>
+<p>5、系统操作基础命令：<br />uname：显示系统内核信息<br />date：显示系统时间<br />top：查看进程实时监控状态<br />ps：查看当前进程的瞬间状态<br />last：查看所有系统的登入记录<br />history：显示历史执行命令<br />netstat：用于显示与IP、TCP、UDP和ICMP协议相关的统计数据，一般用于检验本机各端口的网络连接情况</p>
+<p>6、文件及目录操作命令<br />cd：目录切换命令<br />pwd：显示当前工作目录<br />ls：显示目录中的文件<br />tree：显示文件和目录由根目录开始的树型结构<br />touch：用于创建空文件与修改文件时间<br />cp：复制文件及目录<br />mkdir：创建目录<br />rm：删除文件及目录<br />rmdir：删除空文件<br />cat：查看纯文本文件<br />more：以逐页显示的方式查看纯文本文件<br />head：查看纯文本文件前N行<br />tail：查看纯文本文件后N行<br />wc：用于计算指定文件的行数、字数，以及字节数<br />cut：用于显示每行从开头算起 num1 到 num2 的文字，剪切字节、字符和字段写至标准输出<br />diff：用于比较文件的差异<br />tar：用于对于文件的归档打包，结合相应的选项参数可进行解压缩操作<br />grep：查找文件里符合条件的字符串<br />find：用于查找文件</p>
+<p>7、vim文本编辑器学习<br />vim的三种模式：命令模式、插入模式、末行模式</p>
+<p>8、用户和组管理<br />管理员：uid为0<br />系统用户：uid为1~99<br />普通用户：uid从500开始<br />管理员组：gid为0<br />普通用户组：1-65535（包含系统用户组和登陆用户组）<br />Linux在创建用户时，会自动创建一个与其同名的基本用户组，且组内只有其一个用户</p>
+<p>9、文件权限<br />-rwxrwxrwx ：普通文件、所有者（读、写、执行）、所属组（读、写、执行）、其他用户（读、写、执行）<br />文件默认权限：rw-r--r--（644）<br />文件夹默认权限：rwxr-xr-x(755)</p>
+<p>10、Linux常用工具paping的使用<br />paping：计算机网络管理工具，用于测试网络协议（TCP/IP）可达性和耗时开销。</p>
+<p>四、Linux操作规范及注意事项<br />1、生产环境中root用户权限被回收，禁止使用root用户直接登陆。<br />2、生产环境中进行文件查看操作时，请使用cat/more/less等操作，勿使用vim/nano/gedit等文件编辑命令。<br />3、windows用户，在对Linux系统某文件进行粘贴操作时，请使用Editplus/NotePad++等文本编辑工具进行字符编码转换后再粘贴。</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-06-19 15:56</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9198960" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9198960);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9198960, cb_entryCreatedDate = '2018-06-19 15:56', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

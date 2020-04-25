@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="前文我们聊到了nginx作为负载均衡的配置，前端nginx作为调度器调度http或https请求，回顾请参考https://www.cnblogs.com/qiuhom-1874/p/12458159" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Nginx之负载均衡配置（二） - Linux-1874 - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simplememory/bundle-simplememory.min.css?v=OL4qeo1LNGlN1rKIhv5UctANvt0M6Nx6kLzr_ffx3Xk" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/qiuhom-1874/custom.css?v=CoRh7Stuy07fr4ApovuwMIdke9Y=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/SimpleMemory/bundle-SimpleMemory-mobile.min.css" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/qiuhom-1874/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/qiuhom-1874/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/qiuhom-1874/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 465299;
+        var currentBlogApp = 'qiuhom-1874';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleMemory';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    <div id="page_begin_html">
+        <!-- 鼠标点击小星星 -->
+<script type="text/javascript" src="https://blog-static.cnblogs.com/files/qiuhom-1874/xiaoxinxin.js" defer></script>
+
+<!-- 背景动画 -->
+<!--<canvas id="c_n9" width="1920" height="990"  style="position: fixed; top: 0px; left: 0px; z-index: -2; opacity: 0.1;"></canvas>-->
+<!--<script src="https://blog-static.cnblogs.com/files/qiuhom-1874/canvas-nest.js" defer></script>-->
+
+<!-- tctip 支付赞赏/打赏 -->
+<script>
+window.tctipConfig = {
+        imagePrefix: "https://files-cdn.cnblogs.com/files/qiuhom-1874/",
+        cssPrefix:     "https://files-cdn.cnblogs.com/files/qiuhom-1874/",
+        buttonImageId:  4,
+        buttonTip:  "dashang",
+        list:{
+            alipay: {qrimg: "https://files-cdn.cnblogs.com/files/qiuhom-1874/ZFB.bmp"},
+            weixin:{qrimg: "https://files-cdn.cnblogs.com/files/qiuhom-1874/WX.bmp"},
+        }
+};
+</script>
+<script src="https://blog-static.cnblogs.com/files/qiuhom-1874/tctip.min.js" defer></script>
+
+<!--回到顶部小火箭 -->
+<link href="https://blog-static.cnblogs.com/files/qiuhom-1874/scroller.css" type="text/css" rel="stylesheet">
+ <script src="https://blog-static.cnblogs.com/files/qiuhom-1874/scrollspy.js" type="text/javascript" defer></script>
+ <script src="https://blog-static.cnblogs.com/files/qiuhom-1874/stickUp.min.js" type="text/javascript" defer></script>
+<style>
+#back-top {
+     position: fixed;
+     bottom: 10px;
+     right: 5px;
+     z-index: 99;
+}
+#back-top span {
+     width: 50px;
+     height: 64px;
+     display: block;
+     background:url(https://images.cnblogs.com/cnblogs_com/qiuhom-1874/1640280/o_200201115539hj.png) no-repeat center center;
+}
+#back-top a{outline:none}
+</style>
+<script type="text/javascript">
+$(function() {
+    // hide #back-top first
+    $("#back-top").hide();
+    // fade in #back-top
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 500) {
+            $('#back-top').fadeIn();
+        } else {
+            $('#back-top').fadeOut();
+        }
+    });
+    // scroll body to 0px on click
+    $('#back-top a').click(function() {
+        $('body,html').animate({
+            scrollTop: 0
+        }, 800);
+        return false;
+    });
+});
+</script>
+<p id="back-top" style="display:none"><a href="#top"><span></span></a></p>
+
+<!--网站图标 -->
+<script type="text/javascript" language="javascript">
+　　//Setting ico for cnblogs
+　　var linkObject = document.createElement('link');
+　　linkObject.rel = "shortcut icon";
+　　linkObject.href = "https://blog-static.cnblogs.com/files/qiuhom-1874/favicon.ico";
+　　document.getElementsByTagName("head")[0].appendChild(linkObject);
+</script>
+
+
+    </div>
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/qiuhom-1874/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/qiuhom-1874/">1874</a>
+</h1>
+<h2>
+
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/qiuhom-1874/">
+首页</a>
+</li>
+<li>
+
+
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Linux-1874">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/qiuhom-1874/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+84&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+9</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/qiuhom-1874/p/12468946.html">Nginx之负载均衡配置（二）</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+    <div id="cnblogs_post_description" style="display: none">
+        <img src="https://images.cnblogs.com/cnblogs_com/qiuhom-1874/1655970/o_200227010408o_200226171105timg.jpeg" class="desc_img">
+其实nginx面向客户端一侧它除了可以代理http或https的请求外，它还可以代理tcp的请求，因为nginx它本身工作在应用层，通常情况下我们把它代理tcp的请求叫做伪四层调度；在之前的文章中我们有说到过四层调度，比如LVS，它就是一个纯粹的四层调度，用户的请求报文根本就不会到达应用层，在TCP通信子网的三层或四层中就会把用户的请求处理（转发）调度给后端主机；
+    </div>
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>　　前文我们聊到了nginx作为负载均衡的配置，前端nginx作为调度器调度http或https请求，回顾请参考<a href="https://www.cnblogs.com/qiuhom-1874/p/12458159.html" target="_blank">https://www.cnblogs.com/qiuhom-1874/p/12458159.html</a>；其实nginx面向客户端一侧它除了可以代理http或https的请求外，它还可以代理tcp的请求，因为nginx它本身工作在应用层，通常情况下我们把它代理tcp的请求叫做伪四层调度；在之前的文章中我们有说到过四层调度，比如LVS，它就是一个纯粹的四层调度，用户的请求报文根本就不会到达应用层，在TCP通信子网的三层或四层中就会把用户的请求处理（转发）调度给后端主机；早期版本的nginx是不支持tcp调度的，在1.9.0之后的版本中，nginx新增了ngx_stream_core_module模块后，就支持对tcp请求的调度；我们来看看这个模块的相关介绍吧！！！</p>
+<p>　　一、ngx_stream_core_module：此模块模拟了反代基于TCP或UDP的服务连接，即工作于传输层的反代或调度器；</p>
+<p>　　　　1、stream {&hellip;&hellip;}：此指令只能用于mian配置段中，主要用于定义stream相关的服务；</p>
+<p>　　　　2、listen：定义监听地址和端口；默认为tcp协议；此指令只能用于server 配置段中，表示定义虚拟主机的监听地址和端口；</p>
+<p>　　　　3、server：定义虚拟服务器，此指令只能用于stream的配置段中；表示定义虚拟服务器的属性；用法类似http配置段的server用法；</p>
+<p>　　二、ngx_stream_proxy_module：此模块在1.9.0后的版本支持对tcp请求的代理，在1.9.13后的版本支持udp请求的代理和unix_domain sockets的代理；</p>
+<p>　　　　1、&nbsp;proxy_pass address：<span class="tgt" data-group="0-0" data-section="0" data-sentence="0">设置代理服务器的地址。<span class="tgt" data-group="0-1" data-section="0" data-sentence="1">地址可以指定为一个域名或IP地址，以及一个端口或者unix-domain socket路径文件；</span></span></p>
+<p>　　　　2、proxy_timeout time：<span class="tgt" data-group="0-0" data-section="0" data-sentence="0">设置客户端或代理服务器连接上的两个连续读或写操作之间的超时。<span class="tgt" data-group="0-1" data-section="0" data-sentence="1">如果在此时间内没有传输数据，则连接关闭。</span></span>默认时长是10分钟；</p>
+<p>　　　　3、proxy_connect_timeout time;设置nginx与被代理的服务器尝试建立连接的超时时长；默认为60s；</p>
+<p>　　三、ngx_stream_upstream_module：此模块(1.9.0)用于定义可以由proxy_pass指令引用的服务器组。</p>
+<p>　　　　1、upstream name {&hellip;&hellip;}：此指令表示定义一个服务器组，以及组中各server的地址和属性，用法同ngx_http_upstream_module中的upstream用法一致，两者不同的是这里的upstream只能用于stream配置段，表示该组服务器是支持通过nginx基于tcp或udp协议进行调度；</p>
+<p>　　　　2、server：定义组中服务器成员以及服务器属性；用法同ngx_http_upstream_module中的server用法一致；</p>
+<p>　　　　3、hash key：基于指定的key的hash表实现请求调度，此处的key可以文本、变量或二者的组合；同ngx_http_upstream_module中的hash指令用法一致；</p>
+<p>　　　　4、least_conn：定义调度算法为最近最少连接算法；当server拥有不同的权重时为wlc；当所有后端主机的连接数相同时，则使用wrr进行调度；</p>
+<p>　　示例：</p>
+<p><img src="https://img2020.cnblogs.com/i-beta/1503305/202003/1503305-20200312135253548-1540582733.png" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：以上配置在/etc/nginx/nginx.conf这个主配置文件中的main配置段中配置，表示把/etc/nginx/conf.d/stream.d/下的所有以.conf的文件导入到该位置，这样配置我们就可以把stream配置段单独的用一个文件来书写，方便管理；</p>
+<p><img src="https://img2020.cnblogs.com/i-beta/1503305/202003/1503305-20200312135512953-149126900.png" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：以上配置表示在stream配置段中定义一个服务器组，名称为sshserver，该组下有两个服务器，分别是0.20的22号端口，和0.22的22号端口；并且在stream配置段中定义了一个虚拟主机，监听在192.168.0.30的41319号端口，该虚拟主机作用是接受用户的请求，并且基于用户的请求把用户请求代理到到sshserver组上，代理超时时间为60s，如果客户端请求该虚拟主机，在60s未得到任何响应，将被断开；设置nginx与被代理服务器建立连接的超时时长为10s;有了以上配置，我们就可以通过访问192.168.0.30：41319这个socket就可以实现远程连接后端服务器；</p>
+<p><img src="https://img2020.cnblogs.com/blog/1503305/202003/1503305-20200312140938749-1325719001.gif" alt=""></p>
+<p>　　提示：从上面的现实结果我们可以看到nginx此时可以代理ssh，而且还是以轮询的方式向后端服务器调度客户端的请求；以这样的逻辑，我们不难想象它可以基于tcp或udp代理其他应用层协议，比如nginx代理mysql也可以用类似的配置来代理后端mysql服务器；</p>
+<p>　　当然我们也可以给不同的服务器给定不同的权重，这个配置同我们上一篇文中的配置相同，都是用weight来指定权重；</p>
+<p><img src="https://img2020.cnblogs.com/i-beta/1503305/202003/1503305-20200312214803247-373614089.png" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：以上配置就表示给定0.20的权重为5，0.22的权重为2，也就是说7个请求中有5个会被调度到0.20上，有2个会被调度到0.22上；</p>
+<p><img src="https://img2020.cnblogs.com/i-beta/1503305/202003/1503305-20200312220624064-293481286.png" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：可以看到我们给不同的服务器加上不同的权重后，客户端的请求也就以不同比例调度到后端服务器上；不加权重默认是1；</p>
+<p>　　示例：</p>
+<p><img src="https://img2020.cnblogs.com/i-beta/1503305/202003/1503305-20200312222118397-777156694.png" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：以上配置我们在原有的基础上加了一组新负载均衡虚拟服务器，用于代理后端两台mariadb服务；</p>
+<p><img src="https://img2020.cnblogs.com/blog/1503305/202003/1503305-20200312225332460-1245545505.gif" alt=""></p>
+<p>&nbsp;&nbsp;　　提示：可以看到在默认情况下，nginx负载均衡是使用的rr轮询的调度算法；</p>
+<p>　　假如后端服务器宕机了，nginx还会往后端宕机的服务器上调度请求吗？</p>
+<p><img src="https://img2020.cnblogs.com/blog/1503305/202003/1503305-20200312225729403-1834999336.gif" alt=""></p>
+<p>　　提示：可以看到nginx不管是基于http还是tcp调度用户请求都会自动对后端服务器做健康状态检测，当发现后端主机有服务不可用时，它就不会把用户的请求调度到有问题的主机上；</p>
+<p>有关nginx基于tcp做伪四层调度的方法，基本上同基于http协议的七层调度方法是一样的，这里就不过多演示；更多有关于nginx的指令和配置说明请参考nginx官方文档<a href="http://nginx.org/en/docs/" target="_blank">http://nginx.org/en/docs/</a></p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-03-12 23:17</span>&nbsp;
+<a href="https://www.cnblogs.com/qiuhom-1874/">Linux-1874</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12468946" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12468946);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 465299, cb_blogApp = 'qiuhom-1874', cb_blogUserGuid = 'c59550a8-b7e6-4fd5-7bec-08d6284f5a10';
+    var cb_entryId = 12468946, cb_entryCreatedDate = '2020-03-12 23:17', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright &copy; 2020 Linux-1874
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <!-- lightbox的样式 -->
+<link href="https://blog-static.cnblogs.com/files/qiuhom-1874/lightbox.css" rel="stylesheet">
+
+<!-- lightbox.js核心代码 -->
+<script src="https://blog-static.cnblogs.com/files/qiuhom-1874/lightbox-plus-jquery.js"></script>
+<script type='text/javascript'>$('#cnblogs_post_body img').wrap(function(){return "<a href='"+$(this).attr("src")+"' data-lightbox='example-set'></a>"});</script>
+<script type='text/javascript'>$(".code_img_closed").unwrap();</script>
+<script type='text/javascript'>$(".code_img_opened").unwrap();</script>
+
+
+<!--评论带头像 -->
+<script type="text/javascript" src="https://blog-static.cnblogs.com/files/qiuhom-1874/Comments.js"></script>
+
+
+<!--评论像微信样式 -->
+<link  type="text/css" rel="stylesheet" href="https://blog-static.cnblogs.com/files/qiuhom-1874/comment.css">
+<script type="text/javascript">
+$(function(){
+    $('#blogTitle h1').addClass('bounceInLeft animated');
+    $('#blogTitle h2').addClass('bounceInRight animated');
+    // 删除反对按钮    $('.buryit').remove();
+    initCommentData();
+});
+function initCommentData() {
+    $('.feedbackItem').each(function() {
+        var text = $(this).find('.feedbackListSubtitle .layer').text();
+        // 将楼层信息放到data里面
+        // $(this).find('.blog_comment_body').attr('data-louceng', text.replace(/^#/g, ''));
+        if($(this).find('.feedbackListSubtitle .louzhu').length>0) $(this).addClass('myself');
+        var avatar = $(this).find('> .feedbackCon > span').html() || 'http://pic.cnitblog.com/face/sample_face.gif';
+        $(this).find('> .feedbackCon > .blog_comment_body').append('<img class="user-avatar" src="'+avatar+'"/>')
+    });
+}
+$(document).ajaxComplete(function(event, xhr, settings) {
+  // 监听获取评论ajax事件
+  if(settings.url.indexOf('/mvc/blog/GetComments.aspx') >= 0) {
+    initCommentData();
+  }
+});
+</script>
+
+
+    </div>
+</body>
+</html>

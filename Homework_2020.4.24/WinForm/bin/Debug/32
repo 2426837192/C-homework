@@ -1,0 +1,417 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博客中给大家分享了使用Windbg进行Live Debugging： Windbg程序调试系列4-Live Debugging 本篇中我们继续，跟大家分享常见的应用程序高CPU使用率问题分析。 先" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列5-高CPU问题分析 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10016778.html">Windbg程序调试系列5-高CPU问题分析</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博客中给大家分享了使用Windbg进行Live Debugging：</p>
+<p><a id="post_title_link_9905738" href="https://www.cnblogs.com/tianqing/p/9905738.html">Windbg程序调试系列4-Live Debugging</a></p>
+<p>本篇中我们继续，跟大家分享常见的应用程序高CPU使用率问题分析。</p>
+<p>先说Windows下CPU使用率这个概念：</p>
+<p><strong>CPU使用率：在任务管理器的刷新周期内CPU忙的时间与整个刷新周期的比值。默认的刷新周期是1s。<br /></strong></p>
+<p><strong>即1s内，反映出系统的CPU繁忙程度</strong></p>
+<p>我们打开Windows的任务管理器，可以看到CPU的使用率:</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125191108397-500070648.png" alt="" /></p>
+<p>当然，这个CPU使用率是整个所有核心CPU的使用率。比如我本机是8核心的CPU。整体的CPU使用率 在某一瞬间是14%。</p>
+<p>这个CPU使用率是如何计算出来的，有两个重要的时间sysTime和idleTime:</p>
+<p><strong>sysTime：</strong>表示该时间段内总的CPU时间=CPU处于用户态和内核态CPU时间的总和，即sysTime =kerneTimel + userTime</p>
+<p>（注：这里并不包括idleTime，因为当CPU处于空闲状态时，是在内核模式下运行System Idle Process这个进程，所以kernelTime实际上已经包含了idleTime）；</p>
+<p><strong>idleTime：</strong>表示在该时间段内CPU处于空闲状态的时间；</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">CPU% = 1 &ndash; idleTime / sysTime * 100</pre>
+</div>
+<p>&nbsp;说到这里，我们分析一个应用的高cpu问题，更多的是：<strong>分析用户态的CPU耗时。即，我们应用程序本身运行时消耗的CPU时间片总和。</strong></p>
+<p>然后，进入今天的正题，使用Windbg分析高CPU问题：</p>
+<p><strong><span style="font-size: 16px;">一、首先我们用C#写一个Any CPU架构的Console模拟程序</span></strong></p>
+<div class="cnblogs_code">
+<pre>using&nbsp;System;
+using&nbsp;System.Collections.Generic;
+using&nbsp;System.Linq;
+using&nbsp;System.Text;
+using&nbsp;System.Threading;
+using&nbsp;System.Threading.Tasks;
+ 
+namespace&nbsp;HighCpuDemo
+{
+&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;Program
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;void&nbsp;Main(string[]&nbsp;args)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;<strong>normalThread&nbsp;</strong>=&nbsp;new&nbsp;Thread(NormalMethod);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;normalThread.Start();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;<span style="color: #ff0000;"><strong>longRunningThread</strong>&nbsp;</span>=&nbsp;new&nbsp;Thread(LongRunningMethod);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;longRunningThread.Start();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.ReadKey();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;void&nbsp;NormalMethod()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;a&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;b&nbsp;=&nbsp;100000;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;list&nbsp;=&nbsp;new&nbsp;List&lt;int&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;b;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;+=&nbsp;i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Add(a);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;max&nbsp;=&nbsp;list.Max();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;min&nbsp;=&nbsp;list.Min();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;avg&nbsp;=&nbsp;list.Average();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine(string.Format("Thread:{0},&nbsp;writeline:{1}",&nbsp;Thread.CurrentThread.ManagedThreadId,&nbsp;a));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//休息一下
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.Sleep(100);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;void&nbsp;LongRunningMethod()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;c&nbsp;=&nbsp;0;&nbsp;c&nbsp;&lt;&nbsp;100000;&nbsp;c++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;a&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;b&nbsp;=&nbsp;100000;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;list&nbsp;=&nbsp;new&nbsp;List&lt;int&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;b;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;+=&nbsp;i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Add(a);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;max&nbsp;=&nbsp;list.Max();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;min&nbsp;=&nbsp;list.Min();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;avg&nbsp;=&nbsp;list.Average();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine(string.Format("Thread:{0},&nbsp;writeline:{1}",&nbsp;Thread.CurrentThread.ManagedThreadId,&nbsp;a));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+</div>
+<p>代码中有两个线程，一个是&ldquo;<strong>正常</strong>&rdquo;的计算输出线程NormalThread（每次输出，会休息一下 100s），一个是长时间运行的线程LongRunningThread，一直在计算，输出。</p>
+<p>代码写好之后，设置为Any CPU架构，支持64位模式：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125193449585-58605878.png" alt="" /></p>
+<p>看程序输出：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125200458755-540728216.png" alt="" /></p>
+<p>很明显，3号线程是NormalThread， 4号线程是LongRunningThread。</p>
+<p><span style="font-size: 16px;"><strong>二、 查看应用进程的CPU使用率</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125193627046-1118268368.png" alt="" /></p>
+<p>从任务管理器上，能够发现，HighCpuDemo这个进程的CPU使用率是12%</p>
+<p><span style="font-size: 16px;"><strong>三、间隔30s，抓两个Dump</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125193729836-583825609.png" alt="" /></p>
+<p>这里有个问题：为什么要间隔一段时间抓2个dump？我们先把问题放在这。</p>
+<p><span style="font-size: 16px;"><strong>四、使用Windbg分析两个Dump文件，使用!runaway找到最消耗CPU时间片的线程，然后优化</strong></span></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201811/23525-20181125194142318-100404250.png" alt="" /></p>
+<p>Windbg打开这两个Dump后，分别执行以下命令：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt;<span style="color: #000000;"> .loadby sos clr
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; !runaway</pre>
+</div>
+<p>对比看着两个Dump的输出：</p>
+<p>第一个Dump：</p>
+<div class="cnblogs_code">
+<pre>Debug session time: Sun Nov <span style="color: #800080;">25</span><span style="color: #ff0000; font-size: 14px;"> 20:16:39.000 2018 (GMT+8</span><span style="color: #000000;"><span style="color: #ff0000; font-size: 14px;">)</span>
+System Uptime: </span><span style="color: #800080;">0</span> days <span style="color: #800080;">3</span>:<span style="color: #800080;">03</span>:<span style="color: #800080;">00.195</span><span style="color: #000000;">
+Process Uptime: </span><span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">08</span>:<span style="color: #800080;">31.000</span><span style="color: #000000;">
+.............................
+Loading unloaded module list
+.
+ntdll</span>!ZwDeviceIoControlFile+<span style="color: #800080;">0x14</span><span style="color: #000000;">:
+00007ffc`c01b03a4 c3              ret
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt;<span style="color: #000000;"> .loadby sos clr
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; !<span style="color: #000000;">runaway
+ User Mode Time
+  Thread       Time
+   </span><span style="color: #800080;">4</span>:<span style="color: #800080;">3758</span>      <span style="color: #ff0000;"><strong><span style="font-size: 14px;">0 days 0:07:38.531</span></strong></span>
+   <span style="color: #800080;">3</span>:325c      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.390</span>
+   <span style="color: #800080;">0</span>:<span style="color: #800080;">2248</span>      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.015</span>
+   <span style="color: #800080;">6</span>:4c3c      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">5</span>:17d0      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">2</span>:<span style="color: #800080;">278</span>       <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">1</span>:<span style="color: #800080;">2424</span>      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span></pre>
+</div>
+<p>第二个Dump：</p>
+<div class="cnblogs_code">
+<pre>Debug session time: Sun Nov <span style="color: #800080;">25</span> <strong><span style="font-size: 14px; color: #ff0000;">20:17:06.000 2018 (GMT+8</span></strong><span style="color: #000000;"><strong><span style="font-size: 14px; color: #ff0000;">)</span></strong>
+System Uptime: </span><span style="color: #800080;">0</span> days <span style="color: #800080;">3</span>:<span style="color: #800080;">03</span>:<span style="color: #800080;">27.136</span><span style="color: #000000;">
+Process Uptime: </span><span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">08</span>:<span style="color: #800080;">58.000</span><span style="color: #000000;">
+.............................
+Loading unloaded module list
+.
+ntdll</span>!ZwDeviceIoControlFile+<span style="color: #800080;">0x14</span><span style="color: #000000;">:
+00007ffc`c01b03a4 c3              ret
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt;<span style="color: #000000;"> .loadby sos clr
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; !<span style="color: #000000;">runaway
+ User Mode Time
+  Thread       Time
+   </span><span style="color: #800080;">4</span>:<span style="color: #800080;">3758</span>      <span style="color: #800080;">0</span> days<strong><span style="color: #ff0000; font-size: 14px;"> 0:08:01.984</span></strong>
+   <span style="color: #800080;">3</span>:325c      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.406</span>
+   <span style="color: #800080;">0</span>:<span style="color: #800080;">2248</span>      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.015</span>
+   <span style="color: #800080;">6</span>:4c3c      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">5</span>:17d0      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">2</span>:<span style="color: #800080;">278</span>       <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span>
+   <span style="color: #800080;">1</span>:<span style="color: #800080;">2424</span>      <span style="color: #800080;">0</span> days <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.000</span></pre>
+</div>
+<p>这里有个关键的Windbg指令&nbsp; !runaway， 它有什么作用，输出的是什么：</p>
+<div class="cnblogs_code">
+<pre><span style="font-size: 13px;"><strong><span style="color: #ff0000;">This extension is a quick way to find out which threads are spinning out</span></strong></span><span style="color: #000000;"><span style="font-size: 13px;"><strong><span style="color: #ff0000;"> of control or consuming too much CPU time.</span></strong></span>
+
+The display identifies each thread by the debugger</span><span style="color: #800000;">'</span><span style="color: #800000;">s internal thread numbering and by the thread ID in hexadecimal. The debugger IDs are also shown.</span>
+<span style="color: #000000;">
+Here </span><span style="color: #0000ff;">is</span><span style="color: #000000;"> an example: 
+
+
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">001</span>&gt; !runaway <span style="color: #800080;">7</span><span style="color: #000000;">
+
+ User Mode Time
+ Thread       Time
+ </span><span style="color: #800080;">0</span>:55c        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.0093</span>
+ <span style="color: #800080;">1</span>:1a4        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.0000</span><span style="color: #000000;">
+
+ Kernel Mode Time
+ Thread       Time
+ </span><span style="color: #800080;">0</span>:55c        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.0140</span>
+ <span style="color: #800080;">1</span>:1a4        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">00.0000</span><span style="color: #000000;">
+
+ Elapsed Time
+ Thread       Time
+ </span><span style="color: #800080;">0</span>:55c        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">43.0533</span>
+ <span style="color: #800080;">1</span>:1a4        <span style="color: #800080;">0</span>:<span style="color: #800080;">00</span>:<span style="color: #800080;">25.0876</span></pre>
+</div>
+<p>使用这个指令，可以查看每个线程的"用户态"CPU使用时间：</p>
+<p>从上面两个Dump中，我们能看出，4号线程 User Mode Time 一直在增加，我们看看4号线程的堆栈：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; ~<span style="color: #000000;">4s
+</span>*** WARNING: Unable to verify checksum <span style="color: #0000ff;">for</span><span style="color: #000000;"> System.Core.ni.dll
+System_Core_ni</span>+<span style="color: #800080;">0x588b44</span><span style="color: #000000;">:
+00007ffc`a4268b44 488b4de8        mov     rcx,qword ptr [rbp</span>-18h] ss:000000c1`df0ff2a8=<span style="color: #000000;">000001d4633eb280
+</span><span style="color: #800080;">0</span>:<span style="color: #800080;">004</span>&gt; !<span style="color: #000000;">clrstack
+OS Thread Id: </span><span style="color: #800080;">0x3758</span> (<span style="color: #800080;">4</span><span style="color: #000000;">)
+        Child SP               IP Call Site
+000000c1df0ff280 00007ffca4268b44 System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable`</span><span style="color: #800080;">1</span>&lt;Int32&gt;<span style="color: #000000;">)
+000000c1df0ff2d0 00007ffc4b930660 </span>*** WARNING: Unable to verify checksum <span style="color: #0000ff;">for</span><span style="color: #000000;"> HighCpuDemo.exe
+<strong><span style="color: #ff0000;">HighCpuDemo.Program.LongRunningMethod()</span> </strong>[c:\users\zhougq\documents\visual studio </span><span style="color: #800080;">2015</span>\Projects\HighCpuDemo\Program.cs @ <span style="color: #800080;">54</span><span style="color: #000000;">]
+000000c1df0ff3a0 00007ffca7e24770 System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">954</span><span style="color: #000000;">]
+000000c1df0ff470 00007ffca7e24604 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">902</span><span style="color: #000000;">]
+000000c1df0ff4a0 00007ffca7e245d2 System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object) [f:\dd\ndp\clr\src\BCL\system\threading\executioncontext.cs @ </span><span style="color: #800080;">891</span><span style="color: #000000;">]
+000000c1df0ff4f0 00007ffca7eacff2 System.Threading.ThreadHelper.ThreadStart() [f:\dd\ndp\clr\src\BCL\system\threading\thread.cs @ </span><span style="color: #800080;">111</span><span style="color: #000000;">]
+000000c1df0ff748 00007ffcaaf35863 [GCFrame: 000000c1df0ff748] 
+000000c1df0ffa98 00007ffcaaf35863 [DebuggerU2MCatchHandlerFrame: 000000c1df0ffa98] </span></pre>
+</div>
+<p>正如我们代码中所写的，LongRunningMethod方法一直在执行、消耗CPU资源。</p>
+<p>定位到代码问题，就可以进一步修改代码，解决问题了。</p>
+<p>以上就是使用Windbg 调试高CPU问题的方法思路，总结一下：</p>
+<p><span style="color: #3366ff;"><strong>1. 查看应用进程的CPU使用率</strong></span><br /><span style="color: #3366ff;"><strong>2. 间隔一段时间，抓两个Dump</strong></span><br /><span style="color: #3366ff;"><strong>3. 使用Windbg分析两个Dump文件，使用!runaway找到最消耗CPU时间片的线程，然后优化</strong></span></p>
+<p>&nbsp;分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/11/25</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-11-25 20:22</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10016778" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10016778);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10016778, cb_entryCreatedDate = '2018-11-25 20:22', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

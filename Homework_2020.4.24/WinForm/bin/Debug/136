@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中，我们介绍了Azure Event Hub的一些基本概念和架构： Azure Event Hub 技术研究系列1-Event Hub入门篇 本篇文章中，我们继续深入研究，了解Azure Ev" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure Event Hub 技术研究系列2-发送事件到Event Hub - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6865046.html">Azure Event Hub 技术研究系列2-发送事件到Event Hub</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中，我们介绍了Azure Event Hub的一些基本概念和架构：</p>
+<p><a id="link_post_title" class="link-post-title" href="http://www.cnblogs.com/tianqing/p/6839149.html">Azure Event Hub 技术研究系列1-Event Hub入门篇</a></p>
+<p>本篇文章中，我们继续深入研究，了解Azure Event Hub的创建、编程SDK，实现将事件发送到云端的Azure Event Hub。</p>
+<p>一、Azure Portal中创建Event Hub</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517015725572-1599555724.png" alt="" /></p>
+<p>创建一个新的Event Hub：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517015744666-107666288.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517015909400-1770134074.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517020157572-2035950056.png" alt="" /></p>
+<p>将连接字符串拷贝出来，备用。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517020443244-1999553711.png" alt="" /></p>
+<p>二、通过Event Hub的SDK将事件发送到Event Hub</p>
+<p>新建一个Console工程：EventHubSend</p>
+<p>添加Nuget：</p>
+<p>Microsoft.Azure.EventHubs</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517020721338-920777611.png" alt="" /></p>
+<p>添加关键引用：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.Azure.EventHubs;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+</span><span style="color: #0000ff;">using</span> System.Threading.Tasks;</pre>
+</div>
+<p>添加常量作为事件中心连接字符串和实体路径（单个事件中心名称）</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> EventHubClient eventHubClient;
+</span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> EhConnectionString = <span style="color: #800000;">"</span><span style="color: #800000;">{Event Hubs connection string}</span><span style="color: #800000;">"</span>;  <span style="color: #008000;">//</span><span style="color: #008000;">第一步拷贝的连接字符串</span>
+ <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> EhEntityPath = <span style="color: #800000;">"</span><span style="color: #800000;">{Event Hub path/name}</span><span style="color: #800000;">"</span>; <span style="color: #008000;">//</span><strong><span style="color: #008000;">MyEventHub</span></strong></pre>
+</div>
+<p>新加MainAsync函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">async</span> Task MainAsync(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+        {            
+            </span><span style="color: #0000ff;">var</span> connectionStringBuilder = <span style="color: #0000ff;">new</span><span style="color: #000000;"> EventHubsConnectionStringBuilder(EhConnectionString)
+            {
+                EntityPath </span>=<span style="color: #000000;"> EhEntityPath
+            };
+
+<strong>            eventHubClient </strong></span><strong>=<span style="color: #000000;"> EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
+
+            </span></strong><span style="color: #0000ff;">await</span> <strong>SendEvents</strong>(<span style="color: #800080;">100</span><span style="color: #000000;">);
+
+            </span><span style="color: #0000ff;">await</span><span style="color: #000000;"> eventHubClient.CloseAsync();
+
+            Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Press ENTER to exit.</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            Console.ReadLine();
+        }</span></pre>
+</div>
+<p>将100个事件消息发送到EventHub方法：SendEvents</p>
+<div class="cnblogs_code">
+<pre>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 创建100个消息事件，异步发送到EventHub
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="count"&gt;</span><span style="color: #008000;">个数</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">async</span> Task SendEvents(<span style="color: #0000ff;">int</span><span style="color: #000000;"> count)
+        {
+            </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = <span style="color: #800080;">0</span>; i &lt; count; i++<span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">try</span><span style="color: #000000;">
+                {
+                    </span><span style="color: #0000ff;">var</span> eventEntity = $<span style="color: #800000;">"</span><span style="color: #800000;">Event {i}</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+                    Console.WriteLine($</span><span style="color: #800000;">"</span><span style="color: #800000;">Sending Event: {eventEntity}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                    </span><span style="color: #0000ff;">await</span> eventHubClient.SendAsync(<span style="color: #0000ff;">new</span><span style="color: #000000;"> EventData(Encoding.UTF8.GetBytes(eventEntity)));
+                }
+                </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (Exception exception)
+                {
+                    Console.WriteLine($</span><span style="color: #800000;">"</span><span style="color: #800000;">{DateTime.Now} &gt; Exception: {exception.Message}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                }
+
+                </span><span style="color: #0000ff;">await</span> Task.Delay(<span style="color: #800080;">10</span><span style="color: #000000;">);
+            }
+
+            Console.WriteLine($</span><span style="color: #800000;">"</span><span style="color: #800000;">{count} messages sent.</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+        }</span></pre>
+</div>
+<p>在Main函数中添加：</p>
+<div class="cnblogs_code">
+<p>static void Main(string[] args)<br />        {<br />&nbsp; &nbsp; &nbsp;<strong>MainAsync(args).GetAwaiter().GetResult();</strong><br />        }</p>
+
+</div>
+<p>Run：</p>
+<p>&nbsp;<img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517022251916-955587074.png" alt="" /></p>
+<p>发现错误了：The messaging entity 'sb://myeventhubtest.servicebus.chinacloudapi.cn/MyEventHub' could not be found.</p>
+<p>MyEventHub这个是我们在代码中指定的。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> EhEntityPath = <span style="color: #800000;">"</span><span style="color: #800000;">MyEventHub</span><span style="color: #800000;">"</span>; <span style="color: #008000;">//</span><span style="color: #008000;">MyEventHub</span></pre>
+</div>
+<p>这个是否需要在Azure Portal中提前创建好？</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517022657541-466173622.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517022711260-1152484625.png" alt="" /></p>
+<p>再次Run：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201705/23525-20170517022840150-102041511.png" alt="" /></p>
+<p>这次可以了。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/5/17</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-05-17 02:30</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6865046" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6865046);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6865046, cb_entryCreatedDate = '2017-05-17 02:30', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

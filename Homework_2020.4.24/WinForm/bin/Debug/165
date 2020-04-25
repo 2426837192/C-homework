@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中我们将模拟设备注册到Azure IoT Hub中：我们得到了设备的唯一标识。 Azure IoT 技术研究系列2-设备注册到Azure IoT Hub 本文中我们继续深入研究，设备到云、云到" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure IoT 技术研究系列3-设备到云、云到设备通信 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6726081.html">Azure IoT 技术研究系列3-设备到云、云到设备通信</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中我们将模拟设备注册到Azure IoT Hub中：我们得到了设备的唯一标识。</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl00_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/6719607.html">Azure IoT 技术研究系列2-设备注册到Azure IoT Hub</a></p>
+<p>本文中我们继续深入研究，设备到云、云到设备通信。</p>
+<p>1. 在Azure IoT Hub中接收模拟设备的消息</p>
+<p>读取设备到云消息的Event Hub兼容终结点，使用 AMQP 协议。</p>
+<p>我们新建一个Console控制台工程：IoTServer，添加Nuget引用：WindowsAzure.ServiceBus</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418084055649-1052382834.png" alt="" /></p>
+<p>核心的命名空间：using Microsoft.ServiceBus.Messaging;</p>
+<p>核心类：EventHubClient&nbsp;</p>
+<p>通过EventHubClient创建一个EventHubReceiver，不间断的接收设备侧的消息。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> connectionString = <span style="color: #800000;">"</span><span style="color: #800000;">HostName=IoTTest.*******;SharedAccessKeyName=iothubowner;SharedAccessKey=***</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">2</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> iotHubD2cEndpoint = <span style="color: #800000;">"</span><span style="color: #800000;">messages/events</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>         <span style="color: #0000ff;">static</span> EventHubClient eventHubClient;</pre>
+</div>
+<p>ReceiveMessagesFromDeviceAsync方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;"> 2</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 接收设备侧的消息
+</span><span style="color: #008080;"> 3</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="partition"&gt;</span><span style="color: #008000;">分区</span><span style="color: #808080;">&lt;/param&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="ct"&gt;</span><span style="color: #008000;">取消标识</span><span style="color: #808080;">&lt;/param&gt;</span>
+<span style="color: #008080;"> 6</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">Task</span><span style="color: #808080;">&lt;/returns&gt;</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">async</span> Task ReceiveMessagesFromDeviceAsync(<span style="color: #0000ff;">string</span><span style="color: #000000;"> partition, CancellationToken ct)
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">var</span> eventHubReceiver =<span style="color: #000000;"> eventHubClient.GetDefaultConsumerGroup().<strong>CreateReceiver</strong>(partition, DateTime.UtcNow);
+</span><span style="color: #008080;">10</span>             <span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span><span style="color: #000000;">)
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">12</span>                 <span style="color: #0000ff;">if</span> (ct.IsCancellationRequested) <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>                 EventData eventData = <span style="color: #0000ff;">await</span><span style="color: #000000;"> eventHubReceiver.ReceiveAsync();
+</span><span style="color: #008080;">14</span>                 <span style="color: #0000ff;">if</span> (eventData == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">continue</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>                 <span style="color: #0000ff;">string</span> data =<span style="color: #000000;"> Encoding.UTF8.GetString(eventData.GetBytes());
+</span><span style="color: #008080;">17</span>                 Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Message received. Partition: {0} Data: '{1}'</span><span style="color: #800000;">"</span><span style="color: #000000;">, partition, data);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">防止CPU被占满</span>
+<span style="color: #008080;">20</span>                 Task.Delay(<span style="color: #800080;">1</span><span style="color: #000000;">).Wait();
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">22</span>         }</pre>
+</div>
+<p>Main函数中我们将整个IoTServer Run起来：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 3</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Azure IoT Hub 接收消息..., Press Ctrl-C to exit.\n</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>             eventHubClient =<span style="color: #000000;"> EventHubClient.<strong>CreateFromConnectionString</strong>(<strong>connectionString</strong>, <strong>iotHubD2cEndpoint</strong>);
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">var</span> d2cPartitions =<span style="color: #000000;"> eventHubClient.GetRuntimeInformation().PartitionIds;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>             CancellationTokenSource cts = <span style="color: #0000ff;">new</span><span style="color: #000000;"> CancellationTokenSource();
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>             System.Console.CancelKeyPress += (s, e) =&gt;
+<span style="color: #008080;">11</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">12</span>                 e.Cancel = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">                cts.Cancel();
+</span><span style="color: #008080;">14</span>                 Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Exiting...</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>             <span style="color: #0000ff;">var</span> tasks = <span style="color: #0000ff;">new</span> List&lt;Task&gt;<span style="color: #000000;">();
+</span><span style="color: #008080;">18</span>             <span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">string</span> partition <span style="color: #0000ff;">in</span><span style="color: #000000;"> d2cPartitions)
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">                tasks.Add(ReceiveMessagesFromDeviceAsync(partition, cts.Token));
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #000000;">            Task.WaitAll(tasks.ToArray());
+</span><span style="color: #008080;">24</span>         }</pre>
+</div>
+<p>2. 模拟设备发送消息到Azure IoT Hub</p>
+<p>我们同样新建一个Console控制台工程：Device，用于模拟向Azure IoT Hub 发送消息。</p>
+<p>首先添加Nuget引用：Microsoft.Azure.Devices.Client，这个Nuget依赖的Nuget很多，不要着急，慢慢Install吧</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418085311681-12738000.png" alt="" /></p>
+<p>核心的命名空间：</p>
+<p>using Microsoft.Azure.Devices.Client;<br />    using Newtonsoft.Json;</p>
+<p>核心类：</p>
+<p>Microsoft.Azure.Devices.Client.DeviceClient</p>
+<p>模拟设备往Azure IoT Hub发消息时，用到了设备的Key（唯一标识）和IoT Hub HostName, 上篇博文中提到的主机名：<a id="homepage1_HomePageDays_DaysList_ctl00_DayList_TitleUrl_0" class="postTitle1" href="http://www.cnblogs.com/tianqing/p/6719607.html">Azure IoT 技术研究系列2-设备注册到Azure IoT Hub</a></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>         <span style="color: #0000ff;">static</span><span style="color: #000000;"> DeviceClient deviceClient;
+</span><span style="color: #008080;">2</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> iotHubUri = <span style="color: #800000;">"</span><span style="color: #800000;">IoTTest.******</span><span style="color: #800000;">"</span>;          <span style="color: #008000;">//</span><span style="color: #008000;">iot hub hostname</span>
+<span style="color: #008080;">3</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> deviceKey = <span style="color: #800000;">"</span><span style="color: #800000;">+jDqO+Nu2g************=</span><span style="color: #800000;">"</span>; <span style="color: #008000;">//</span><span style="color: #008000;">device key</span></pre>
+</div>
+<p>添加一个循环向Azure IoT Hub发送消息的方法：SendDeviceToCloudMessagesAsync，1s 一条消息</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;"> 2</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 循环向Azure IoT Hub发送消息
+</span><span style="color: #008080;"> 3</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">async</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> SendDeviceToCloudMessagesAsync()
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">double</span> avgWindSpeed = <span style="color: #800080;">10</span>; <span style="color: #008000;">//</span><span style="color: #008000;"> m/s</span>
+<span style="color: #008080;"> 7</span>             Random rand = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Random();
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">true</span><span style="color: #000000;">)
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">11</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">发送遥测数据</span>
+<span style="color: #008080;">12</span>                 <span style="color: #0000ff;">double</span> currentWindSpeed = avgWindSpeed + rand.NextDouble() * <span style="color: #800080;">4</span> - <span style="color: #800080;">2</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>                 <span style="color: #0000ff;">var</span> telemetryDataPoint = <span style="color: #0000ff;">new</span>
+<span style="color: #008080;">14</span> <span style="color: #000000;">                {
+</span><span style="color: #008080;">15</span>                     deviceId = <span style="color: #800000;">"</span><span style="color: #800000;">TeldPile001</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+</span><span style="color: #008080;">16</span>                     windSpeed =<span style="color: #000000;"> currentWindSpeed
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">                };
+</span><span style="color: #008080;">18</span>                 <span style="color: #0000ff;">var</span> messageString =<span style="color: #000000;"> JsonConvert.SerializeObject(telemetryDataPoint);
+</span><span style="color: #008080;">19</span>                 <span style="color: #0000ff;">var</span> message = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Message(Encoding.ASCII.GetBytes(messageString));
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>                 <span style="color: #0000ff;">await</span><span style="color: #000000;"> deviceClient.SendEventAsync(message);
+</span><span style="color: #008080;">22</span>                 Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">{0} &gt; Sending message: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, DateTime.Now, messageString);
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">1s 一条</span>
+<span style="color: #008080;">25</span>                 <span style="color: #0000ff;">await</span> Task.Delay(<span style="color: #800080;">1000</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">27</span>         }</pre>
+</div>
+<p>然后，在Main函数中启动模拟设备发送消息：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">3</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">模拟设备通信...\n</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">4</span>             deviceClient = DeviceClient.Create(iotHubUri, <span style="color: #0000ff;">new</span> DeviceAuthenticationWithRegistrySymmetricKey(<span style="color: #800000;">"</span><span style="color: #800000;">TeldPile001</span><span style="color: #800000;">"</span><span style="color: #000000;">, deviceKey), TransportType.Mqtt);
+</span><span style="color: #008080;">5</span> 
+<span style="color: #008080;">6</span> <span style="color: #000000;">            SendDeviceToCloudMessagesAsync();
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">            Console.ReadLine();
+</span><span style="color: #008080;">8</span>         }</pre>
+</div>
+<p>&nbsp;3. 启动运行测试</p>
+<p>在解决方案上设置双启动项目：Device和IoTServer</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418091449024-1126043588.png" alt="" /></p>
+<p>F5 Run：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418091505102-1165765528.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418091514274-1065898788.png" alt="" /></p>
+<p>可以发现，设备侧消息发送、Azure IoT Hub接收是同步的</p>
+<p>我们查看Azure Portal中的统计：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170418091612931-277580008.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>总结： 通过这两篇博文，我们研究验证了Azure IoT Hub 注册设备、设备和云之间的通信，感觉整个Azure 的 IoT Hub还是非常好用、易用，比较容易理解和操作，基于PaaS层的IoT Hub，可以做很多有价值的设计和方案。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/4/18</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-04-18 09:19</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6726081" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6726081);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6726081, cb_entryCreatedDate = '2017-04-18 09:19', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

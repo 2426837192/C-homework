@@ -1,0 +1,7 @@
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\bin\Debug\Homework_2020.4.17.exe.config
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\bin\Debug\Homework_2020.4.17.exe
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\bin\Debug\Homework_2020.4.17.pdb
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\obj\Debug\SimpleCrawler.csprojAssemblyReference.cache
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\obj\Debug\SimpleCrawler.csproj.CoreCompileInputs.cache
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\obj\Debug\Homework_2020.4.17.exe
+C:\Users\zhong\source\repos\Homework_2020.4.17\Homework_2020.4.17\obj\Debug\Homework_2020.4.17.pdb

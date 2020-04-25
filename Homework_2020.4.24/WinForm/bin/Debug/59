@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="首先Kafka是一个分布式消息队列中间件，Apache顶级项目，https://kafka.apache.org/ 高性能、持久化、多副本备份、横向扩展。 生产者Producer往队列里发送消息，消费" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Kafka基本知识整理 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10808717.html">Kafka基本知识整理</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>首先Kafka是一个分布式消息队列中间件，Apache顶级项目，<a href="https://kafka.apache.org/">https://kafka.apache.org/</a>&nbsp; &nbsp;高性能、持久化、多副本备份、横向扩展。</p>
+<p>生产者Producer往队列里发送消息，消费者Consumer从队列里消费消息，然后进行业务逻辑。应用场景主要有：<strong>解耦、削峰（缓冲）、异步处理、排队、分布式事务控制</strong>等等。</p>
+<ol>
+<li>Kafka对外使用<strong>Topic</strong>(主题)的概念，生产者往Topic里写消息，消费者从Topic中消费读消息。</li>
+<li>为了实现水平扩展，一个Topic实际是由多个<strong>Partition</strong>（分区）组成的，遇到瓶颈时，可以通过增加Partition的数量来进行横向扩容。</li>
+<li>单个Parition内是<strong>保证消息有序</strong>。持久化时，每收到一条消息，Kafka就是在对应的日志文件Append写，所以性能非常高。</li>
+</ol>
+<p><strong>Kafka Data Flow 消息流转图</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504153031396-1827951557.png" alt="" /></p>
+<p>上图中，消息生产者Producers往Brokers里面的指定Topic中写消息，消息消费者Consumers从Brokers里面消费指定Topic的消息，然后进行业务处理。</p>
+<p>在实际的部署架构中，Broker、Topic、Partition这些元数据保存在ZooKeeper中，Kafka的监控、消息路由（分区）由ZooKeeper控制。0.8版本的OffSet也由ZooKeeper控制。</p>
+<p><strong>一、消息生产/发送过程</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504153435927-1227387669.png" alt="" /></strong></p>
+<p>Kafka创建Message、发送时要指定对应的Topic和Value（消息体），Key（分区键）和Partition（分区）是可选参数。&nbsp;</p>
+<p>调用Producer的Send()方法后，消息先进行序列化（消息序列化器可自定义实现：例如：Protobuf），然后按照Topic和Partition，临时放到内存中指定的发送队列中。达到阈值后，然后批量发送。</p>
+<p>发送时，当Partition没设置时，如果设置了Key-分区键（例如：单据类型），按照Key进行Hash取模，保证相同的Key发送到指定的分区Partition。如果未设置分区键Key，使用Round-Robin轮询随机选分区Partition。</p>
+<p><strong>二、分区Partition的高可用和选举机制</strong></p>
+<p>分区有副本的概念，保证消息不丢失。当存在多副本的情况下，会尽量把多个副本，分配到不同的broker上。</p>
+<p>Kafka会为Partition选出一个Leader Broker（通过ZooKeeper），之后所有该Partition的请求，实际操作的都是Leader，然后再同步到其他的Follower。</p>
+<p>当一个Kafka Broker宕机后，所有Leader在该Broker上的Partition都会重新选举，在剩余的Follower中选出一个Leader，继续提供服务。</p>
+<p>正如上面所讲：<strong>Kafka使用ZooKeeper在多个Broker中选出一个Controller，用于Partition分配和Leader选举。以下是Partition的分配机制：</strong></p>
+<ul>
+<li>将所有Broker（假设共n个Broker）和待分配的Partition排序</li>
+<li>将第i个Partition分配到第（i mod n）个Broker上 （这个就是leader）</li>
+<li>将第i个Partition的第j个Replica分配到第（(i + j) mode n）个Broker上</li>
+</ul>
+<p>Controller会在ZooKeeper的/brokers/ids节点上注册Watch，一旦有broker宕机，它就能知道。</p>
+<p>当Broker宕机后，Controller就会给受到影响的Partition选出新Leader。</p>
+<p>Controller从ZooKeeper的/brokers/topics/[topic]/partitions/[partition]/state中，读取对应Partition的ISR（in-sync replica已同步的副本）列表，选一个出来做Leader。</p>
+<p>选出Leader后，更新ZooKeeper的存储，然后发送LeaderAndISRRequest给受影响的Broker进行通知。</p>
+<p>如果ISR列表是空，那么会根据配置，随便选一个replica做Leader，或者干脆这个partition就是宕机了。</p>
+<p>如果ISR列表的有机器，但是也宕机了，那么还可以等ISR的机器活过来。</p>
+<p><strong>多副本同步：</strong></p>
+<p>服务端这边的处理是Follower从Leader批量拉取数据来同步。但是具体的可靠性，是由生产者来决定的。</p>
+<p>生产者生产消息的时候，通过request.required.acks参数来设置数据的可靠性。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504155248646-1590195881.png" alt="" /></p>
+<p>&nbsp;在acks=-1的时候，如果ISR少于min.insync.replicas指定的数目，那么就会返回不可用。</p>
+<p>&nbsp;这里ISR列表中的机器是会变化的，根据配置replica.lag.time.max.ms，多久没同步，就会从ISR列表中剔除。以前还有根据落后多少条消息就踢出ISR，在1.0版本后就去掉了，因为这个值很难取，在高峰的时候很容易出现节点不断的进出ISR列表。&nbsp;&nbsp;</p>
+<p>&nbsp;从ISA中选出leader后，follower会从把自己日志中上一个高水位后面的记录去掉，然后去和leader拿新的数据。因为新的leader选出来后，follower上面的数据，可能比新leader多，所以要截取。这里高水位的意思，对于partition和leader，就是所有ISR中都有的最新一条记录。消费者最多只能读到高水位；</p>
+<div>
+<div>
+<p>&nbsp;从leader的角度来说高水位的更新会延迟一轮，例如写入了一条新消息，ISR中的broker都fetch到了，但是ISR中的broker只有在下一轮的fetch中才能告诉leader。</p>
+<p>&nbsp;也正是由于这个高水位延迟一轮，在一些情况下，kafka会出现丢数据和主备数据不一致的情况，0.11开始，使用leader epoch来代替高水位。</p>
+</div>
+<strong>三、消息消费过程</strong></div>
+<div>&nbsp;</div>
+<div>订阅topic是以一个消费组来订阅的，一个消费组里面可以有多个消费者。同一个消费组中的两个消费者，不会同时消费一个partition。</div>
+<div>换句话来说，就是<strong>一个partition，只能被消费组里的一个消费者消费</strong>，但是可以<strong>同时被多个消费组消费</strong>。因此，如果消费组内的消费者如果比partition多的话，那么就会有个别消费者一直空闲。</div>
+<div><img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504155522392-528038587.png" alt="" /></div>
+<div><strong>&nbsp;消息Offset偏移量(消息的顺序号)管理</strong></div>
+<div>&nbsp;一个消费组消费partition，需要保存offset记录消费到哪，以前保存在zk中，由于zk的写性能不好，以前的解决方法都是consumer每隔一分钟上报一次。</div>
+<div>&nbsp;ZooKeeper的性能严重影响了消费的速度，而且很容易出现重复消费。</div>
+<div>&nbsp;在0.10版本后，Kafka把这个offset的保存，从ZooKeeper总剥离，保存在一个名叫<strong>__consumeroffsets topic</strong>的Topic中。</div>
+<div>&nbsp;消息的key由groupid、topic、partition组成，value是偏移量offset。topic配置的清理策略是compact。总是保留最新的key，其余删掉。</div>
+<div>&nbsp;一般情况下，每个key的offset都是缓存在内存中，查询的时候不用遍历partition，如果没有缓存，第一次就会遍历partition建立缓存，然后查询返回。</div>
+<div>&nbsp;</div>
+<div><strong>&nbsp;Partitin的Rebalance</strong></div>
+<div>&nbsp;生产过程中broker要分配partition，消费过程这里，也要分配partition给消费者。类似broker中选了一个controller出来，消费也要从broker中选一个<strong>coordinator</strong>，用于分配partition。</div>
+<div>&nbsp;</div>
+<div>&nbsp;<strong>coordinator的选举过程</strong></div>
+<div><ol>
+<li>看offset保存在那个partition</li>
+<li>该partition leader所在的broker就是被选定的coordinator</li>
+</ol>
+<p>&nbsp;<strong>交互流程</strong>&nbsp;</p>
+<div>
+<div><ol>
+<li>consumer启动、或者coordinator宕机了，consumer会任意请求一个broker，发送ConsumerMetadataRequest请求，broker会按照上面说的方法，选出这个consumer对应coordinator的地址。</li>
+<li>consumer 发送heartbeat请求给coordinator，返回IllegalGeneration的话，就说明consumer的信息是旧的了，需要重新加入进来，进行reblance。返回成功，那么consumer就从上次分配的partition中继续执行。</li>
+</ol></div>
+<strong>&nbsp; Rebalance</strong></div>
+<div>
+<div>
+<div><ol>
+<li>consumer给coordinator发送JoinGroupRequest请求。</li>
+<li>这时其他consumer发heartbeat请求过来时，coordinator会告诉他们，要reblance了。</li>
+<li>其他consumer发送JoinGroupRequest请求。</li>
+<li>所有记录在册的consumer都发了JoinGroupRequest请求之后，coordinator就会在这里consumer中随便选一个leader。然后回JoinGroupRespone，这会告诉consumer你是follower还是leader，对于leader，还会把follower的信息带给它，让它根据这些信息去分配partition</li>
+<li>consumer向coordinator发送SyncGroupRequest，其中leader的SyncGroupRequest会包含分配的情况。</li>
+<li>coordinator回包，把分配的情况告诉consumer，包括leader。</li>
+</ol></div>
+&nbsp; &nbsp;当partition或者消费者的数量发生变化时，都得进行reblance。<br />&nbsp; &nbsp;列举一下会reblance的情况：</div>
+<div><ol>
+<li>增加Partition</li>
+<li>增加消费者</li>
+<li>消费者主动关闭</li>
+<li>消费者宕机</li>
+<li>coordinator宕机</li>
+
+</ol>
+<p><strong>四、消息投递语义</strong></p>
+<p>kafka支持3种消息投递语义，<br />At most once：最多一次，消息可能会丢失，但不会重复<br />At least once：最少一次，消息不会丢失，可能会重复<br />Exactly once：只且一次，消息不丢失不重复，只且消费一次（0.11中实现，仅限于下游也是kafka）</p>
+<p><strong>At least once：（业务中使用比较多）</strong></p>
+<p>先获取数据，再进行业务处理，业务处理成功后commit offset。</p>
+<ol>
+<li>生产者生产消息异常，消息是否成功写入不确定，重做，可能写入重复的消息</li>
+<li>消费者处理消息，业务处理成功后，更新offset失败，消费者重启的话，会重复消费</li>
+
+</ol>
+<p><strong>At most once：</strong></p>
+<p>先获取数据，再commit offset，最后进行业务处理。</p>
+<ol>
+<li>生产者生产消息异常，不管，生产下一个消息，消息就丢了</li>
+<li>消费者处理消息，先更新offset，再做业务处理，做业务处理失败，消费者重启，消息就丢了。</li>
+
+</ol>
+<p><strong>Exactly once：</strong></p>
+<p>首先要保证消息不丢，再去保证不重复。所以盯着At least once的原因来搞。&nbsp;</p>
+<ol>
+<li>生产者重做导致重复写入消息----生产保证幂等性</li>
+<li>消费者重复消费---消灭重复消费，或者业务接口保证幂等性重复消费也没问题</li>
+
+</ol>
+<p>业务处理的幂等性非常重要。Kafka控制不了，需要业务来实现。比如所判断消息是否已经处理。</p>
+<p>解决重复消费有两个方法：</p>
+<ol>
+<li>下游系统保证幂等性，重复消费也不会导致多条记录。</li>
+<li>把commit offset和业务处理绑定成一个事务。</li>
+
+</ol>
+<p><strong>生产的幂等性：</strong></p>
+<div>
+<div>
+<p>为每个producer分配一个pid，作为该producer的唯一标识。producer会为每一个&lt;topic,partition&gt;维护一个单调递增的seq。类似的，broker也会为每个&lt;pid,topic,partition&gt;记录下最新的seq。当req_seq == broker_seq+1时，broker才会接受该消息。因为：</p>
+<ol>
+<li>消息的seq比broker的seq大超过时，说明中间有数据还没写入，即乱序了。</li>
+<li>
+<p>消息的seq不比broker的seq小，那么说明该消息已被保存。</p>
+
+</li>
+
+</ol></div>
+
+<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504161336213-1799850441.png" alt="" /></div>
+<div><strong>&nbsp; 事务性和原子性</strong></div>
+<div>
+<p>&nbsp; &nbsp;场景是这样的：</p>
+<ol>
+<li>先从多个源topic中获取数据。</li>
+<li>做业务处理，写到下游的多个目的topic。</li>
+<li>更新多个源topic的offset。</li>
+</ol>
+<p>&nbsp; &nbsp;其中第2、3点作为一个事务，要么全成功，要么全失败。这里得益与offset实际上是用特殊的topic去保存，这两点都归一为写多个topic的事务性处理。</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504161550424-1573485021.png" alt="" /></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp;引入tid（transaction id），和pid不同，这个id是应用程序提供的，用于标识事务，和producer是谁并没关系。就是任何producer都可以使用这个tid去做事务，这样进行到一半就死掉的事务，可以由另一个producer去恢复。<br />&nbsp; &nbsp;同时为了记录事务的状态，类似对offset的处理，引入transaction coordinator用于记录transaction log。在集群中会有多个transaction coordinator，每个tid对应唯一一个transaction coordinator。<br />&nbsp; &nbsp;注：transaction log删除策略是compact，已完成的事务会标记成null，compact后不保留。<br />&nbsp; &nbsp;启动事务时，先标记开启事务，写入数据，全部成功就在transaction log中记录为prepare commit状态，否则写入prepare abort的状态。之后再去给每个相关的partition写入一条marker（commit或者abort）消息，标记这个事务的message可以被读取或已经废弃。成功后&nbsp; &nbsp; &nbsp;在transaction log记录下commit/abort状态，至此事务结束。</p>
+<p>&nbsp; &nbsp;整体的数据流是这样的：</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504161720964-1103964769.png" alt="" /></p>
+<p>&nbsp;&nbsp;</p>
+<div>
+<div><ol>
+<li>首先使用tid请求任意一个broker（代码中写的是负载最小的broker），找到对应的transaction coordinator。</li>
+<li>请求transaction coordinator获取到对应的pid，和pid对应的epoch，这个epoch用于防止僵死进程复活导致消息错乱，当消息的epoch比当前维护的epoch小时，拒绝掉。tid和pid有一一对应的关系，这样对于同一个tid会返回相同的pid。</li>
+<li>client先请求transaction coordinator记录&lt;topic,partition&gt;的事务状态，初始状态是BEGIN，如果是该事务中第一个到达的&lt;topic,partition&gt;，同时会对事务进行计时；client输出数据到相关的partition中；client再请求transaction coordinator记录offset的&lt;topic,partition&gt;事务状态；client发送offset commit到对应offset partition。</li>
+<li>client发送commit请求，transaction coordinator记录prepare commit/abort，然后发送marker给相关的partition。全部成功后，记录commit/abort的状态，最后这个记录不需要等待其他replica的ack，因为prepare不丢就能保证最终的正确性了。</li>
+</ol></div>
+&nbsp; &nbsp; &nbsp;这里prepare的状态主要是用于事务恢复，例如给相关的partition发送控制消息，没发完就宕机了，备机起来后，producer发送请求获取pid时，会把未完成的事务接着完成。
+<div>
+<div>
+<p>&nbsp; &nbsp; &nbsp;当partition中写入commit的marker后，相关的消息就可被读取。所以kafka事务在prepare commit到commit这个时间段内，消息是逐渐可见的，而不是同一时刻可见。</p>
+<p><strong>&nbsp; &nbsp; 消息消费事务</strong></p>
+<div>
+<div>&nbsp; &nbsp; 消费时，partition中会存在一些消息处于未commit状态，即业务方应该看不到的消息，需要过滤这些消息不让业务看到，kafka选择在消费者进程中进行过来，而不是在broker中过滤，主要考虑的还是性能。kafka高性能的一个关键点是zero copy，如果需要在broker中过 滤，那么势必需要读取消息内容到内存，就会失去zero copy的特性。</div>
+
+<br /><strong>&nbsp; 五、 Kafka文件组织</strong></div>
+<div>&nbsp;&nbsp;kafka的数据，实际上是以文件的形式存储在文件系统的。topic下有partition，partition下有segment，<strong>segment是实际的一个个文件</strong>，topic和partition都是抽象概念。
+<div>
+<div>
+<p>&nbsp; 在目录/${topicName}-{$partitionid}/下，存储着实际的log文件（即segment），还有对应的索引文件。</p>
+<p>&nbsp; <strong>每个segment文件大小相等，文件名以这个segment中最小的offset命名，文件扩展名是.log</strong>；segment对应的索引的文件名字一样，扩展名是.index。有两个index文件，一个是offset index用于按offset去查message，一个是time index用于按照时间去查，其实这里可以优化合到一起，下面只说offset index。总体的组织是这样的：</p>
+</div>
+&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504162009583-1218048824.png" alt="" /></div>
+<div>&nbsp; &nbsp;
+<div>
+<div>
+<p>&nbsp; 为了减少索引文件的大小，降低空间使用，方便直接加载进内存中，这里的索引使用<strong>稀疏矩阵</strong>，不会每一个message都记录下具体位置，而是<strong>每隔一定的字节数，再建立一条索引</strong>。 索引包含两部分，分别是baseOffset，还有position。</p>
+<p>&nbsp; baseOffset：意思是这条索引对应segment文件中的第几条message。这样做方便使用数值压缩算法来节省空间。例如kafka使用的是varint。</p>
+<p>&nbsp; position：在segment中的绝对位置。</p>
+<p>&nbsp; 查找offset对应的记录时，会先用二分法，找出对应的offset在哪个segment中，然后使用索引，在定位出offset在segment中的大概位置，再遍历查找message。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<strong>六、Kafka常用配置项</strong><br />&nbsp; Broker配置</div>
+<div>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504162145881-1747563331.png" alt="" /></div>
+<div>&nbsp; Topic配置</div>
+<div>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201905/23525-20190504162204501-1334262545.png" alt="" /></div>
+<div>&nbsp;</div>
+<div>&nbsp; 参考链接：123archu&nbsp;链接：https://www.jianshu.com/p/d3e963ff8b70&nbsp;<em id="__mceDel"><em id="__mceDel"><em id="__mceDel">来源：简书</em></em></em>
+<p><em id="__mceDel"><em id="__mceDel"><em id="__mceDel">&nbsp;</em></em></em></p>
+</div>
+<br /><br /></div>
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-05-04 15:53</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10808717" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10808717);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10808717, cb_entryCreatedDate = '2019-05-04 15:53', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

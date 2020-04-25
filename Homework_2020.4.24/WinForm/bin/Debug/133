@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中，我们介绍了Azure IoT Hub的使用配额和缩放级别： Azure IoT 技术研究系列4-Azure IoT Hub的配额及缩放级别 本文中，我们比较一下Azure IoT Hub和" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure IoT 技术研究系列5-Azure IoT Hub与Event Hub比较 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6792550.html">Azure IoT 技术研究系列5-Azure IoT Hub与Event Hub比较</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中，我们介绍了Azure IoT Hub的使用配额和缩放级别：</p>
+<p><a id="post_title_link_6736022" href="http://www.cnblogs.com/tianqing/p/6736022.html">Azure IoT 技术研究系列4-Azure IoT Hub的配额及缩放级别</a></p>
+<p>本文中，我们比较一下Azure IoT Hub和Event Hub，同时启动Azure Event Hub(事件中心)的研究。</p>
+<p>Azure IoT Hub的另一个主要应用场景是从设备侧接收遥测数据。&nbsp;与 Azure IoT Hub一样，Azure Event Hub是一个<strong>事件</strong>处理服务，主要用于向云端提供大规模的事件与遥测数据入口，并且具有较低的延迟和较高的可靠性，其有点类似于Kafka作为Hadoop数据入口的场景，唯一不一样的是Azure Event Hub以事件为主要载体和抓手，Kafka更多是各种数据。在我们的实际应用场景中，Kafka作为监控数据、业务数据、设备侧数据的数据缓冲和入口。</p>
+<p>回到正题，Azure IoT Hub和Azure Event Hub的主要不同有哪些：</p>
+<p><strong>1. 通信模式</strong></p>
+<p>&nbsp; &nbsp; Azure IoT Hub：启用设备到云通信（消息传递、文件上传及报告属性）和云到设备之间的通信（直接方法、所需属性、消息传递）</p>
+<p>&nbsp; &nbsp; Azure Event Hub:&nbsp;仅支持事件引入（通常视为设备到云的方案）</p>
+<p><strong>2. 设备状态管理</strong></p>
+<p>&nbsp; &nbsp;&nbsp;Azure IoT Hub：可存储和查询设备状态信息</p>
+<p>&nbsp; &nbsp; Azure Event Hub: 不支持</p>
+<p><strong>3. 设备通信协议支持</strong></p>
+<p>&nbsp; &nbsp;Azure IoT Hub: 支持 MQTT、基于 WebSockets 的 MQTT、AMQP、基于 WebSockets 的 AMQP 和 HTTP。 此外，IoT 中心还可使用&nbsp;Azure IoT 协议网关（一种可自定义协议网关实现）以支持自定义协议。</p>
+<p>&nbsp; &nbsp;Azure Event Hub:&nbsp;支持 AMQP、基于 WebSockets 的 AMQP 和 HTTP。</p>
+<p><strong>4. 安全</strong></p>
+<p>&nbsp; &nbsp;Azure IoT Hub：提供每个设备的标识与可吊销的访问控制权限</p>
+<p>&nbsp; &nbsp;Azure Event Hub:&nbsp;提供事件中心范围的共享访问策略，通过发布者策略提供有限的权限吊销支持</p>
+<p><strong>5. 弹性伸缩</strong></p>
+<p>&nbsp; &nbsp;Azure IoT Hub：支持数百万个设备同时连接</p>
+<p>&nbsp; &nbsp;Azure Event Hub: 可支持的同时连接数具有更大的限制：根据 Azure 服务总线配额，最多只支持 5,000 个 AMQP 连接，另一方面，支持每个发送的消息指定分区</p>
+<p><strong>6. 设备SDK</strong></p>
+<p>&nbsp; &nbsp;Azure IoT Hub：除直接 MQTT、AMQP 和 HTTP API 外，还为各种平台和语言提供设备 SDK</p>
+<p>&nbsp; &nbsp;Azure Event Hub:&nbsp;在 .NET、Java、C 以及 AMQP 和 HTTP 发送接口上提供支持</p>
+<p><strong>7. 文件上传</strong></p>
+<p>&nbsp; &nbsp;Azure IoT Hub：支持将文件从设备上载到云</p>
+<p>&nbsp; &nbsp;Azure Event Hub: 不支持</p>
+<p>综上，Azure IoT Hub主要处理设备到云、云到设备之间的通信，而Azure Event Hub处理的是将后期事件引入实时处理引擎，后者比较类似Kafka将数据写入Hadoop再进行大数据分析场景。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/5/1</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-05-01 19:37</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6792550" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6792550);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6792550, cb_entryCreatedDate = '2017-05-01 19:37', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

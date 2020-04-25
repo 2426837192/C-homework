@@ -3,300 +3,146 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="never" />
-    <meta property="og:description" content="本篇是“事件驱动的微服务”系列的第二篇，主要讲述事件驱动设计。如果想要了解总体设计，请看第一篇 &amp;quot;&amp;quot;事件驱动的微服务 总体设计&amp;quot;&amp;quot; 程序流程 我们通过一个具体的" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="介绍 一款优雅的博客园Android客户端，Xamarin App，Material Design风格。如有意见反馈或bug提交，请加QQ群(181050206)交流. 项目地址 Github： &amp;q" />
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>事件驱动的微服务-事件驱动设计 - 倚天码农 - 博客园</title>
+    <title>优雅的博客园Android客户端 - JoesWeek - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/mountainink/bundle-mountainink.min.css?v=oG79jFR4NfReV3u2dBQmP3fWN_7_R-qh8UbgFGHtkis" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/minyx2_lite/bundle-minyx2_lite.min.css?v=mxJZfspzqgmSFSdBbMH8zU83VuawcFZooz2hdrdyHlI" />
     
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/mountainink/bundle-mountainink-mobile.min.css?v=ADiCwO2hOTdd5yYidcx7eob7ix2VJI4o_TXjEycTHjs" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/minyx2_lite/bundle-minyx2_lite-mobile.min.css?v=ADiCwO2hOTdd5yYidcx7eob7ix2VJI4o_TXjEycTHjs" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/code-craftsman/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/code-craftsman/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/code-craftsman/wlwmanifest.xml" />
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/ourozts/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/ourozts/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/ourozts/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 544387;
-        var currentBlogApp = 'code-craftsman';
+        var currentBlogId = 349175;
+        var currentBlogApp = 'ourozts';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'MountainInk';
+        var skinName = 'Minyx2_Lite';
     </script>
     
     
-    
+    <script src="/skins/minyx2_lite/bundle-minyx2_lite.min.js?v=z_XLIOc5JYwRKqTPu9fAWp7D8tchhGxVWGYvlAiigUQ" type="text/javascript" language="javascript"></script>
 </head>
 <body>
     <a name="top"></a>
     
     
-<!--done-->
-<div id="home">
-<div id="header">
-	<div id="blogTitle">
-        <a id="lnkBlogLogo" href="https://www.cnblogs.com/code-craftsman/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
-		
-<!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/code-craftsman/">倚天码农</a>
-</h1>
-<h2>
+<div id="container">
+    <a class="minyx" href="https://www.cnblogs.com/">代码改变世界</a>
+    <ul id="topMnu">
+        <!-- 统计数据 -->
+        <li>
+            Posts - 
+5, 
+Articles - 
+0, 
+Comments - 
+28
+<!---->
 
+
+        </li>
+        <!-- 这边可以增加一些链接 -->
+        <!-- 博客园 -->
+        <li><a href="https://www.cnblogs.com/">Cnblogs</a></li>
+        <!-- 管理 -->
+        <li id="topMnu-dashboard">
+            <a id="lnkDashboard" href="https://i.cnblogs.com/">Dashboard</a>
+        </li>
+        <li>
+            
+    <a id="lnkLogin" href="https://account.cnblogs.com/signin?ReturnUrl=https://www.cnblogs.com/ourozts/">Login</a>
+
+
+        </li>
+    </ul>
+
+    <script type="text/javascript">
+        var m = window.__blog.topMenuRendered;
+        if (m) { m(__$("topMnu")); }
+    </script>
+
+    <div id="header">
+        <ul id="menu">
+            <!-- 首页，当前section加上current类 -->
+            <li id="menu-home" class="current">
+                <a id="lnkHome" href="https://www.cnblogs.com/ourozts/">Home</a></li>
+            <!-- 联系 -->
+            <li id="menu-contact">
+                <a id="lnkContact" href="https://msg.cnblogs.com/send/JoesWeek">Contact</a></li>
+            <!-- 相册 -->
+            <li id="menu-gallary">
+                <a id="lnkGallery" href="https://www.cnblogs.com/ourozts/gallery.html">Gallery</a></li>
+            <!-- Rss订阅 -->
+            <li id="rss">
+                <a id="lnkRss" href="https://www.cnblogs.com/ourozts/rss/">RSS</a></li>
+        </ul>
+        <div id="newmsg"></div>
+        <h1>
+            <!-- 主标题 -->
+            <a id="lnkBlogTitle" href="https://www.cnblogs.com/ourozts/">JoesWeek</a>
+            <!-- 子标题 -->
+            <small>
+                我有一个梦想.
+            </small>
+        </h1>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.headerRendered;
+        if (m) { m(__$("header")); }
+    </script>
+
+    <div id="wrapper">
+        <div id="content">
+            <script type="text/javascript">
+                var m = window.__blog.preRenderPosts;
+                if (m) { m(); }
+            </script>
+            <div id="post_detail">
+<div class="post" id="post">
+    <a name="top"></a>
+    <h2>
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/ourozts/p/7553945.html">优雅的博客园Android客户端</a>
 </h2>
-
-
-
-
-		
-	</div><!--end: blogTitle 博客的标题和副标题 -->
-	<div id="navigator">
-		
-<ul id="navList">
-<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
-博客园</a>
-</li>
-<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/code-craftsman/">
-首页</a>
-</li>
-<li>
-
-<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
-新随笔</a>
-</li>
-<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E5%80%9A%E5%A4%A9%E7%A0%81%E5%86%9C">
-联系</a></li>
-<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/code-craftsman/rss/">
-订阅</a>
-<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
-<li>
-<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
-管理</a>
-</li>
-</ul>
-
-
-		<div class="blogStats">
-			
-			<span id="stats_post_count">随笔 - 
-27&nbsp; </span>
-<span id="stats_article_count">文章 - 
-0&nbsp; </span>
-<span id="stats-comment_count">评论 - 
-20</span>
-
-			
-		</div><!--end: blogStats -->
-	</div><!--end: navigator 博客导航栏 -->
-</div><!--end: header 头部 -->
-
-<div id="main">
-	<div id="mainContent">
-	<div class="forFlow">
-		<div id="post_detail">
-    <!--done-->
-    <div id="topics">
-        <div class="post">
-            <h1 class = "postTitle">
-                
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/code-craftsman/p/12712922.html">事件驱动的微服务-事件驱动设计</a>
-
-            </h1>
-            <div class="clear"></div>
-            <div class="postBody">
-                
+    <small>
+<span id="post-date">2017-09-19 20:31</span>&nbsp;
+<a href="https://www.cnblogs.com/ourozts/">JoesWeek</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=7553945" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(7553945);return false;">收藏</a></small>
+    <div class="entry">
+        
 <div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <p>本篇是“事件驱动的微服务”系列的第二篇，主要讲述事件驱动设计。如果想要了解总体设计，请看第一篇<a href="https://blog.csdn.net/weixin_38748858/article/details/105528371">&quot;事件驱动的微服务-总体设计&quot;</a></p>
-<h3 id="程序流程">程序流程</h3>
-<p>我们通过一个具体的例子来讲解事件驱动设计。 本文中的程序有两个微服务，一个是订单服务（Order Service）， 另一个是支付服务（Payment Service）。用户调用订单服务的用例createOrder（）来创建订单，创建之后的订单暂时还没有支付信息，订单服务然后发布命令（Command）给支付服务，支付服务完成支付，发送支付完成（Payment Created）消息。订单服务收到消息（Event），在Order表里增加Payment_Id并修改订单状态为“已付款”。<br>
-下面就是组件图：<br>
-<img src="http://q8t9l757p.bkt.clouddn.com/FlKHQnnGs8338yLbSkyo4Iyq6Tuk" alt=""></p>
-<h3 id="事件处理">事件处理</h3>
-<p>事件分成内部事件和外部事件，内部事件是存在于一个微服务内部的事件，不与其他微服务共享。如果用DDD的语言来描述就是在有界上下文（Bounded Context）内的域事件（Domain Event）。外部事件是从一个微服务发布，而被其他微服务接收的事件。如果用DDD的语言来描述就是在不同有界上下文（Bounded Context）之间传送的域事件（Domain Event）。这两种事件的处理方式不同。</p>
-<h4 id="内部事件：">内部事件：</h4>
-<p>对于内部事件的处理早已有了成熟的方法，它的基本思路是创建一个事件总线（Event Bus），由它来监听事件。然后注册不同的事件处理器（Event Handler）来处理事件。这种思路被广泛地用于各种领域。</p>
-<p>下面就是事件总线（Event Bus）的接口，它有两个函数，一个是发布事件（Publish Event），另一个是添加事件处理器（Event Handler）。一个事件可以有一个或多个事件处理器。</p>
-<pre><code class="language-go">type EventBus interface {
-	PublishEvent(EventMessage)
-	AddHandler(EventHandler, ...interface{})
-}
-</code></pre>
-<p>事件总线的代码的关键部分是加载事件处理器。我们以订单服务为例，下面就是加载事件处理器（Event Handler）的代码，它是初始化容器代码的一部分。在这段代码中，它只注册了一个事件，支付完成事件（PaymentCreateEvent），和与之相对应的事件处理器-支付完成事件处理器（PaymentCreatedEventHandler）。</p>
-<pre><code class="language-go">func loadEventHandler(c servicecontainer.ServiceContainer) error {
-	var value interface{}
-	var found bool
-
-	rluf, err := containerhelper.BuildModifyOrderUseCase(&amp;c)
-	if err != nil {
-		return err
-	}
-	pceh := event.PaymentCreatedEventHandler{rluf}
-	if value, found = c.Get(container.EVENT_BUS); !found {
-		message := &quot;can't find key=&quot; + container.EVENT_BUS + &quot; in container &quot;
-		return errors.New(message)
-	}
-	eb := value.(ycq.EventBus)
-	eb.AddHandler(pceh,&amp;event.PaymentCreatedEvent{})
-	return nil
-}
-</code></pre>
-<p>由于在处理事件时要调用相应的用例，因此需要把用例注入到事件处理器中。在上段代码中，首先从容器中获得用例，然后创建事件处理器，最后把事件和与之对应的处理器加入到事件总线中。</p>
-<p>事件的发布是通过调用事件总线的PublishEvent（）来实现的。下面的例子就是在订单服务中通过消息中间件来监听来自外部的支付完成事件（PaymentCreatedEvent），收到后，把它转化成内部事件，然后发送到事件总线上，这样已经注册的事件处理器就能处理它了。</p>
-<pre><code class="language-go">eb := value.(ycq.EventBus)
-	subject := config.SUBJECT_PAYMENT_CREATED
-	_, err := ms.Subscribe(subject, func(pce event.PaymentCreatedEvent) {
-		cpm := pce.NewPaymentCreatedDescriptor()
-		logger.Log.Debug(&quot;payload:&quot;,pce)
-		eb.PublishEvent(cpm)
-	})
-</code></pre>
-<p>那么事件是怎样被处理的呢？关键就在PublishEvent函数。当一个事件发布时，事件总线会把所有注册到该事件的事件处理器的Handle（）函数依次调用一遍， 下面就是PublishEvent（）的代码。这样每个事件处理器只要实现Handle（）函数就可以了。</p>
-<pre><code class="language-go">func (b *InternalEventBus) PublishEvent(event EventMessage) {
-	if handlers, ok := b.eventHandlers[event.EventType()]; ok {
-		for handler := range handlers {
-			handler.Handle(event)
-		}
-	}
-}
-</code></pre>
-<p>下面就是PaymentCreatedEventHandler的代码。它的逻辑比较简单，就是从Event里获得需要的支付信息，然后调用相应的用例来完成UpdatePayment()功能。</p>
-<pre><code class="language-go">type PaymentCreatedEventHandler struct {
-	Mouc usecase.ModifyOrderUseCaseInterface
-}
-func(pc PaymentCreatedEventHandler) Handle (message ycq.EventMessage) {
-	switch event := message.Event().(type) {
-
-	case *PaymentCreatedEvent:
-		status := model.ORDER_STATUS_PAID
-		err := pc.Mouc.UpdatePayment(event.OrderNumber, event.Id,status)
-		if err != nil {
-			logger.Log.Errorf(&quot;error in PaymentCreatedEventHandler:&quot;, err)
-		}
-	default:
-		logger.Log.Errorf(&quot;event type mismatch in PaymentCreatedEventHandler:&quot;)
-	}
-}
-</code></pre>
-<p>我在这里用到了一个第三方库<a href="https://github.com/jetbasrawi/go.cqrs">&quot;jetbasrawi/go.cqrs&quot;</a>来处理Eventbus。Jetbasrawi是一个事件溯源（Event Sourcing）的库。事件溯源与事件驱动很容易搞混，它们看起来有点像，但实际上是完全不同的两个东西。事件驱动是微服务之间的一种调用方式，存在于微服务之间，与RPC的调用方式相对应；而事件溯源是一种编程模式，你可以在微服务内部使用它或不使用它。但我一时找不到事件驱动的库，就先找一个事件溯源的库来用。其实自己写一个也很简单，但我不觉得能写的比jetbasrawi更好，那就还是先用它把。不过事件溯源要比事件驱动复杂，因此用Jetbasrawi可能有点大材小用了。</p>
-<h4 id="外部事件：">外部事件：</h4>
-<p>外部事件的不同之处是它要在微服务之间进行传送，因此需要消息中间件。我定义了一个通用接口，这样可以支持不同的消息中间件。它的最重要的两个函数是publish（）和Subscribe（）。</p>
-<pre><code class="language-go">package gmessaging
-
-type MessagingInterface interface {
-	Publish(subject string, i interface{}) error
-	Subscribe(subject string, cb interface{} ) (interface{}, error)
-	Flush() error
-	// Close will close the decorated connection (For example, it could be the coded connection)
-	Close()
-	// CloseConnection will close the connection to the messaging server. If the connection is not decorated, then it is
-	// the same with Close(), otherwise, it is different
-	CloseConnection()
-}
-</code></pre>
-<p>由于定义了通用接口，它可以支持多种消息中间件，我这里选的是<a href="https://docs.nats.io/developing-with-nats/developer">&quot;NATS&quot;</a>消息中间件。当初选它是因为它是云原生计算基金会（<a href="https://www.cncf.io/services-for-projects/">&quot;CNCF&quot;</a>）的项目，而且功能强大，速度也快。如果想了解云原生概念，请参见<a href="https://blog.csdn.net/weixin_38748858/article/details/103514909">&quot;云原生的不同解释及正确含义&quot;</a></p>
-<p>下面的代码就是NATS的实现，如果你想换用别的消息中间件，可以参考下面的代码。</p>
-<pre><code class="language-go">type Nat struct {
-	Ec *nats.EncodedConn
-}
-
-func (n Nat) Publish(subject string, i interface{}) error {
-	return n.Ec.Publish(subject,i)
-}
-
-func (n Nat) Subscribe(subject string, i interface{} ) (interface{}, error) {
-	h := i.(nats.Handler)
-	subscription, err :=n.Ec.Subscribe(subject, h)
-	return subscription, err
-}
-
-func  (n Nat) Flush() error {
-	return n.Ec.Flush()
-}
-
-func  (n Nat) Close()  {
-	n.Ec.Close()
-}
-
-func  (n Nat) CloseConnection()  {
-	n.Ec.Conn.Close()
-}
-</code></pre>
-<p>“Publish(subject string, i interface{})”有两个参数，“subject”是消息中间件的队列（Queue）或者是主题（Topic）。第二个参数是要发送的信息，它一般是JSON格式。使用消息中间件时需要一个链接（Connection），这里用的是“*nats.EncodedConn”， 它是一个封装之后的链接，它里面含有一个JSON解码器，可以支持在结构（struct）和JSON之间进行转换。当你调用发布函数时，发送的是结构（struct），解码器自动把它转换成JSON文本再发送出去。“Subscribe(subject string, i interface{} )”也有两个参数，第一个与Publish（）的一样，第二个是事件驱动器。当接收到JSON文本后，解码器自动把它转换成结构（struct），然后调用事件处理器。</p>
-<p>我把与消息中间件有关的代码写成了一个单独的第三方库，这样不论你是否使用本框架都可以使用这个库。详细信息参见<a href="https://github.com/jfeng45/gmessaging">&quot;jfeng45/gmessaging&quot;</a></p>
-<h3 id="命令">命令</h3>
-<p>命令（Command）在代码实现上和事件（Event）非常相似，但他们在概念上完全不同。例如支付申请（Make Payment)是命令，是你主动要求第三方（支付服务）去做一件事情，而且你知道这个第三方是谁。支付完成（Payment Created）是事件，是你在汇报一件事情已经做完，而其他第三方程序可能会根据它的结果来决定是否要做下一步的动作，例如订单服务当收到支付完成这个事件时，就可以更改自己的订单状态为“已支付”。这里，事件的发送方并不知道谁会对这条消息感兴趣，因此这个发送是广播式发送。而且这个动作（支付）已经完成，而命令是尚未完成的动作，因此接收方可以选择拒绝执行一条命令。我们平常经常讲的事件驱动是松耦合，而RPC是紧耦合，这里指的是事件方式，而不是命令方式。采用命令方式时，由于你已经知道了要发给谁，因此是紧耦合的。</p>
-<p>在实际应用中，我们所看到的大部分的命令都是在一个微服务内部使用，很少有在微服务之间发送命令的，微服务之间传递的主要是事件。但由于事件和命令很容易混淆，有不少在微服务之间传递的“事件”实际上是“命令”。因此并不是使用事件驱动方式就能把程序变成松耦合的，而要进一步检查你是否将“命令”错用成了“事件”。在本程序中会严格区分它们。</p>
-<p>下面就是命令总线（Dispatcher）的接口，除了函数名字不一样外，其他与事件总线几乎一模一样。</p>
-<pre><code class="language-go">type Dispatcher interface {
-	Dispatch(CommandMessage) error
-	RegisterHandler(CommandHandler, ...interface{}) error
-}
-</code></pre>
-<p>我们完全可以把它定义成下面的样子，是不是就与事件总线很像了？下面的接口和上面的是等值的。</p>
-<pre><code class="language-go">type CommandBus interface {
-	PublishCommand(CommandMessage) error
-	AddHandler(CommandHandler, ...interface{}) error
-}
-</code></pre>
-<p>事件和命令的其他方面，例如定义方式，处理流程，实现方式，传送方式也几乎一模一样。详细的我就不讲了，你可以自己看代码进行比较。那我们可不可以只用一个事件总线同时处理时间和命令呢？理论上来讲是没有问题的。我开始的时候也是这么想的，但由于现在的接口(&quot;jetbasrawi/go.cqrs&quot;)不支持，如果要改的话需要重新定义接口，因此就暂时放弃了。另外，他们两个在概念上还是很不同的，所以在实现上定义不同的接口也是有必要的。</p>
-<h3 id="事件和命令设计">事件和命令设计</h3>
-<p>下面来讲解在设计事件驱动时应注意的问题。</p>
-<h4 id="结构设计">结构设计</h4>
-<p>事件驱动模式与RPC相比增加的部分是事件和命令。因此首先要考虑的是要对RPC的程序结构做哪些扩充和怎样扩充。“Event”和“command”从本质上来讲是业务逻辑的一部分，因此应属于领域层。因此在程序结构上也增加了两个目录“Event”和“command”分别用来存放事件和命令。结构如下图所示。<br>
-<img src="http://q8t9l757p.bkt.clouddn.com/FnwzRhME6OCLFDT-H2hKk-ebYgM3" alt=""></p>
-<h4 id="发送和接收的不同处理方式">发送和接收的不同处理方式</h4>
-<p>现在的代码在处理外部事件时，在发送端和接收端的方式是不一样的。</p>
-<p>下面就是发送端的代码（代码在支付服务项目里），整个代码功能是创建支付，完成之后再发布“支付完成”消息。它直接通过消息中间件接口把事件发送出去。</p>
-<pre><code class="language-go">type MakePaymentUseCase struct {
-	PaymentDataInterface dataservice.PaymentDataInterface
-	Mi                   gmessaging.MessagingInterface
-}
-func (mpu *MakePaymentUseCase) MakePayment(payment *model.Payment) (*model.Payment, error) {
-	payment, err := mpu.PaymentDataInterface.Insert(payment)
-	if err!= nil {
-		return nil, errors.Wrap(err, &quot;&quot;)
-	}
-	pce := event.NewPaymentCreatedEvent(*payment)
-	err = mpu.Mi.Publish(config.SUBJECT_PAYMENT_CREATED, pce)
-	if err != nil {
-		return nil, err
-	}
-	return payment, nil
-}
-</code></pre>
-<p>下面就是接收端的代码例子。是它是先用消息接口接收时间，再把外部事件转化为内部事件，然后调用事件总线的接口在微服务内部发布事件。</p>
-<pre><code class="language-go">eb := value.(ycq.EventBus)
-	subject := config.SUBJECT_PAYMENT_CREATED
-	_, err := ms.Subscribe(subject, func(pce event.PaymentCreatedEvent) {
-		cpm := pce.NewPaymentCreatedDescriptor()
-		logger.Log.Debug(&quot;payload:&quot;,pce)
-		eb.PublishEvent(cpm)
-	})
-</code></pre>
-<p>为什么会有这种不同？在接收时，可不可以不生成内部事件，而是直接调用用例来处理外部事件呢？在发送时，如果没有别的内部事件处理器，那么直接调用消息中间件来发送是最简单的方法（这个发送过程是轻量级的，耗时很短）。而接收时可能需要处理比较复杂的业务逻辑。因此你希望把这个过程分成接收和处理两个部分，让复杂的业务逻辑在另外一个过程里处理，这样可以尽量缩短接收时间，提高接收效率。</p>
-<h4 id="是否需每个事件都要单独的事件处理器？">是否需每个事件都要单独的事件处理器？</h4>
-<p>现在的设计是每个事件和事件驱动器都有一个单独的文件。我见过有些人只用一个文件例如PaymentEvent来存放所有与Payment相关的事件，事件驱动器也是一样。这两种办法都是可行的。现在看来，生成单独的文件比较清晰，但如果以后事件非常多，也许一个文件存放多个事件会比较容易管理，不过到那时再改也不迟。</p>
-<h4 id="事件处理逻辑放在哪？">事件处理逻辑放在哪？</h4>
-<p>对于一个好的设计来讲，所有的业务逻辑都应该集中在一起，这样便于管理。在现在的架构里，业务逻辑是放在用例（Use Case）里的，但事件处理器里也需要有业务逻辑，应该怎么办？支付事件处理器的主要功能是修改订单中的付款信息，这部分的业务逻辑已经体现在修改订单（Modify Order）用例里，因此支付事件处理器只要调用修改订单的MakePayment（）函数就可以了。实际上所有的事件处理器都应该这样设计，它们本身不应包含业务逻辑，而只是一个简单的封装，去调用用例里的业务逻辑。那么可不可以直接在用例里定义Handle（）函数，这样用例就变成了事件处理器？这样的设计确实可行，但我觉得把事件处理器做成一个单独的文件，这样逻辑上更清晰。因为修改订单付款功能你是一定要有的，但事件处理器只有在事件驱动模式下才有，它们是属于两个不同层面的东西，只有分开放置才层次清晰。</p>
-<h4 id="源程序"><strong>源程序:</strong></h4>
-<p>完整的源程序链接：</p>
+    <h1 id="介绍">介绍</h1>
+<p>一款优雅的博客园Android客户端，Xamarin App，Material Design风格。如有意见反馈或bug提交，请加QQ群(181050206)交流.</p>
+<h2 id="项目地址">项目地址</h2>
+<p>Github：<a href="https://github.com/JoesWeek/Cnblogs">Cnblogs</a></p>
+<p>欢迎Fork，欢迎Star。</p>
+<h2 id="支持功能">支持功能</h2>
 <ul>
-<li><a href="https://github.com/jfeng45/order">&quot;订单服务（Order Service)&quot;</a></li>
-<li><a href="https://github.com/jfeng45/payment">&quot;支付服务（Payment Service)&quot;</a></li>
+<li>登录博客园</li>
+<li>查看已发布的博客</li>
+<li>查看博文，新闻，知识库，添加评论</li>
+<li>添加收藏，编辑收藏，删除收藏</li>
+<li>发布闪存，评论闪存</li>
+<li>支持查看，发布博问，发表回答和评论</li>
+<li>支持分享博文，新闻，知识库，博问到微信和新浪微博</li>
+<li>支持搜索功能</li>
 </ul>
-<h4 id="索引"><strong>索引:</strong></h4>
-<p>1 <a href="https://blog.csdn.net/weixin_38748858/article/details/105528371">&quot;事件驱动的微服务-总体设计&quot;</a></p>
-<p>2 <a href="https://github.com/jetbasrawi/go.cqrs">&quot;jetbasrawi/go.cqrs&quot;</a></p>
-<p>3 <a href="https://www.cncf.io/services-for-projects/">&quot;CNCF&quot;</a></p>
-<p>4 <a href="https://blog.csdn.net/weixin_38748858/article/details/103514909">&quot;云原生的不同解释及正确含义&quot;</a></p>
-<p>5 <a href="https://docs.nats.io/developing-with-nats/developer">&quot;NATS&quot;</a></p>
-<p>6 <a href="https://github.com/jfeng45/gmessaging">&quot;jfeng45/gmessaging&quot;</a></p>
+<h2 id="下载地址">下载地址</h2>
+<p><a href="http://downloads.cnblogs.com/tim/App/android.cnblogs1.0.9.apk">点击下载</a></p>
+<h2 id="截图">截图</h2>
+<p><img src="https://images2017.cnblogs.com/blog/1084163/201709/1084163-20170919173713665-792197270.png" alt="">  <img src="https://images2015.cnblogs.com/blog/1084163/201705/1084163-20170503180323648-244946657.png" alt="">  <img src="https://images2015.cnblogs.com/blog/1084163/201705/1084163-20170503180347273-3045272.png" alt="">  <img src="https://images2015.cnblogs.com/blog/1084163/201705/1084163-20170503180354898-792824176.png" alt="">  <img src="https://images2015.cnblogs.com/blog/1084163/201705/1084163-20170503180400742-1799050276.png" alt=""></p>
 
 </div>
 <div id="MySignature"></div>
@@ -306,24 +152,37 @@ func (mpu *MakePaymentUseCase) MakePayment(payment *model.Payment) (*model.Payme
     <div class="clear"></div>
     <div id="post_next_prev"></div>
 </div>
-            </div>
-            <div class="postDesc">posted @ 
-<span id="post-date">2020-04-16 14:56</span>&nbsp;
-<a href="https://www.cnblogs.com/code-craftsman/">倚天码农</a>&nbsp;
-阅读(<span id="post_view_count">...</span>)&nbsp;
-评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12712922" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12712922);return false;">收藏</a></div>
+        <div class="clear"></div>
+        <div id="blog_post_info_block">
+        <div id="blog_post_info">
         </div>
-	    
-	    
-    </div><!--end: topics 文章、评论容器-->
+        <div class="clear"></div>
+        <div id="post_next_prev"></div>
+    </div>
 </div>
+    <ul class="postmetadata">
+        
+<li class="icon_cat" id="BlogPostCategory">
+分类            <a href="https://www.cnblogs.com/ourozts/category/992524.html" target="_blank">Xamarin.Android</a>
+</li>
+<li class="icon_bullet" id="EntryTag">
+标签            <a href="https://www.cnblogs.com/ourozts/tag/Xamarin/">Xamarin</a>
+</li>
+    </ul>
+</div>
+<script type="text/javascript">
+    var m = window.__blog.postRendered;
+    if (m) { m(__$("post")); }
+</script>
+<script type="text/javascript">
+    var m = window.__blog.postRenderPosts;
+    if (m) { m(); }
+</script>
 <script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
 <script>markdown_highlight();</script>
 <script>
-    var allowComments = true, cb_blogId = 544387, cb_blogApp = 'code-craftsman', cb_blogUserGuid = '014f7419-e66b-4460-0e69-08d738548dbb';
-    var cb_entryId = 12712922, cb_entryCreatedDate = '2020-04-16 14:56', cb_postType = 1; 
+    var allowComments = true, cb_blogId = 349175, cb_blogApp = 'ourozts', cb_blogUserGuid = '3042ba5d-31c7-e611-845c-ac853d9f53ac';
+    var cb_entryId = 7553945, cb_entryCreatedDate = '2017-09-19 20:31', cb_postType = 1; 
     loadViewCount(cb_entryId);
 </script><a name="!comments"></a>
 <div id="blog-comments-placeholder"></div>
@@ -376,43 +235,117 @@ setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAd
         deliverAdC2();
         loadNewsAndKb();
         loadBlogSignature();
-LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
         GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
         loadOptUnderPost();
         GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
     </script>
-</div>
-	</div><!--end: forFlow -->
-	</div><!--end: mainContent 主体内容容器-->
+</div></div>
 
-	<div id="sideBar">
-		<div id="sideBarMain">
-			
-<div id="sidebar_news" class="newsItem">
-            <script>loadBlogNews();</script>
-</div>
 
-			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
-			
-			<div id="leftcontentcontainer">
-				<div id="blog-sidecolumn"></div>
-                    <script>loadBlogSideColumn();</script>
-			</div>
-			
-		</div><!--end: sideBarMain -->
-	</div><!--end: sideBar 侧边栏容器 -->
-	<div class="clear"></div>
-	</div><!--end: main -->
-	<div class="clear"></div>
-	<div id="footer">
-		<!--done-->
-Copyright &copy; 2020 倚天码农
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.contentRendered;
+            if (m) { m(__$("content")); }
+        </script>
+
+        <div id="sidebar">
+            <div id="about">
+                <div>
+                    <h2 id="about_title">About</h2>
+                    <div id="about_body">
+                        <div id="sidebar_news"></div>
+                        <script type="text/javascript">loadBlogNews();</script>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                var m = window.__blog.aboutRendered;
+                if (m) { m(__$("about")); }
+            </script>
+            <div id="mySearchWrapper">
+                <div id="mySearch">
+                    <input type="image" src="/skins/minyx2_lite/images/btnsearch.gif" id="btnZzk"  class="submit" onclick="zzk_go();return false;"/>
+                    <label class="lb_search"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="keyword" /></label>
+                </div>
+            </div>
+            <script type="text/javascript">
+                var m = window.__blog.searchFormRendered;
+                if (m) { m(__$("searchform")); }
+            </script>
+            <div id="sideMain">
+            </div>
+            <div id="sideRight">
+            </div>
+            <div id="sideLeft">
+            </div>            
+                <div id="sideContainer">
+                </div>
+                <script type="text/javascript">
+                    $.ajax({
+                        url: '/' + currentBlogApp + '/ajax/Minyx2_Lite_SideColumn.aspx',
+                        data: '{}',
+                        type: 'post',
+                        dataType: 'text',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data) {
+                                $("#sideContainer").html(data);
+                                $.ajax({
+                                    url: getAjaxBaseUrl() + 'TopLists.aspx',
+                                    type: 'get',
+                                    dataType: 'text',
+                                    success: function (topLists) {
+                                        if (topLists) {
+                                            $("#sideContainer").append(topLists);
+                                        }
+                                        var m = window.__blog.sideContainerRendered;
+                                        if (m) { m(__$("sideContainer")); }
+                                        window.__blog.sidebar.__layout();
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                </script>
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.sidebarRendered;
+            if (m) { m(__$("sidebar")); }
+        </script>
+
+        <div id="footer">
+            <p id="logoFoot">
+    <a href="http://www.spiga.com.mx/" title="Agencia Interactiva Spiga">www.spiga.com.mx</a>
+</p>
+<div class="footText">
+<p>
+Copyright &copy; 2020 JoesWeek
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
+</p>
+<p>
+<a href="http://www.cnblogs.com">博客园</a>
+</p>
+</div>
 
 
-	</div><!--end: footer -->
-</div><!--end: home 自定义的最大容器 -->
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.wrapperRendered;
+        if (m) { m(__$("wrapper")); }
+    </script>
+
+</div>
+<script type="text/javascript">
+    var m = window.__blog.containerRendered;
+    if (m) { m(__$("container")); }
+</script>
 
 
     

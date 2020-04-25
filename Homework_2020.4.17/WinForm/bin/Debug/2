@@ -4,28 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin" />
-    <meta property="og:description" content="SciSharp Stack SciSharp STACK: &amp;quot;https://scisharp.github.io/SciSharp/&amp;quot; 基于 的开源生态系统，用于数据科学、机器" />
+    <meta property="og:description" content="xml与json在javascript中解析并使用，速度大约相差4倍。（在IE中测试的结果）。其中主要不在于eval,与xml parse的时间差别，主要在于属性访问上的差别：xml中使用这样的方式 " />
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>谁说.NET不适合搞大数据，机器学习、人工智能 - 芝麻麻雀 - 博客园</title>
+    <title>实测:xml与json速度约差4倍 - 拓荒者 - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/codinglife/bundle-codinglife.min.css?v=hlpQ1CJDwwJXDxv2HNauUmW3NjyWzoMaw1uER19SLT0" />
-    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/sesametech-netcore/custom.css?v=SVGv436/oUjUJTyvRqT8JMX7nWY=" />
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/codinglife/bundle-codinglife-mobile.min.css?v=XjHfryC9ctsatIZz1dHn7TsRIqmwz9c3aj_6SCfHSDM" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001.min.css?v=vmUk-3Bh8LDsKXwjNHs2GDiFna-ZMTUgOJzjUaXTlPA" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/sesametech-netcore/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/sesametech-netcore/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/sesametech-netcore/wlwmanifest.xml" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/anothereon001/bundle-anothereon001-mobile.min.css?v=cJiDsI1JAuHHd-OAUWJeyE5JMXXsG4mmuUi2rVmEK1c" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/dstang2000/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/dstang2000/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/dstang2000/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 528580;
-        var currentBlogApp = 'sesametech-netcore';
+        var currentBlogId = 9986;
+        var currentBlogApp = 'dstang2000';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'CodingLife';
+        var skinName = 'AnotherEon001';
     </script>
     
     
@@ -33,237 +33,54 @@
 </head>
 <body>
     <a name="top"></a>
-    <div id="page_begin_html">
-        <a href="https://github.com/mzy666888"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full"  style="position: absolute; top: 0; right:0px; border: 0;" alt="Fork me on GitHub" data-recalc-dims="1"></a>
-    </div>
     
-<!--done-->
-<div id="home">
+    <div id="wrapper">
 <div id="header">
-	<div id="blogTitle">
-        <a id="lnkBlogLogo" href="https://www.cnblogs.com/sesametech-netcore/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
-		
-<!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/sesametech-netcore/">芝麻麻雀</a>
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/dstang2000/">拓荒者 dstang2000 <a href="http://www.dstang.com"><font size=-1 color=red>http://www.dstang.com</font></a>
 </h1>
-<h2>
-专注于 .NET Core 技术开发、推广。建设 .NET Core生态圈
-</h2>
+<div id="subtitle">
+KISS：Keeping things that work，Improve systems procedures styles，Start things of value，Stop things of no value 
+</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 
+4, 文章 - 
+1, 评论 - 
+17, 引用 - 
+0</div>
+
+</div>
 
 
 
 
-		
-	</div><!--end: blogTitle 博客的标题和副标题 -->
-	<div id="navigator">
-		
-<ul id="navList">
-<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
-博客园</a>
-</li>
-<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/sesametech-netcore/">
-首页</a>
-</li>
-<li>
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	<div id="post_detail">
+    <div class="post">
+        <h2>
+            
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/dstang2000/archive/2010/11/02/1867406.html">实测:xml与json速度约差4倍</a>
 
-<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
-新随笔</a>
-</li>
-<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E8%8A%9D%E9%BA%BB%E9%BA%BB%E9%9B%80">
-联系</a></li>
-<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/sesametech-netcore/rss/">
-订阅</a>
-<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
-<li>
-<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
-管理</a>
-</li>
-</ul>
-
-
-		<div class="blogStats">
-			
-			<span id="stats_post_count">随笔 - 
-22&nbsp; </span>
-<span id="stats_article_count">文章 - 
-0&nbsp; </span>
-<span id="stats-comment_count">评论 - 
-59</span>
-
-			
-		</div><!--end: blogStats -->
-	</div><!--end: navigator 博客导航栏 -->
-</div><!--end: header 头部 -->
-
-<div id="main">
-	<div id="mainContent">
-	<div class="forFlow">
-		<div id="post_detail">
-    <!--done-->
-    <div id="topics">
-        <div class="post">
-            <h1 class = "postTitle">
-                
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/sesametech-netcore/p/12725914.html">谁说.NET不适合搞大数据，机器学习、人工智能</a>
-
-            </h1>
-            <div class="clear"></div>
-            <div class="postBody">
-                
-<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <h2 id="scisharp-stack">SciSharp Stack</h2>
-<p>SciSharp STACK: <a href="https://scisharp.github.io/SciSharp/">https://scisharp.github.io/SciSharp/</a><br>
-基于<code>.NET</code>的开源生态系统，用于数据科学、机器学习和AI。<br>
-<code>SciSharp</code>将所有主要的ML/AI框架从<code>Python</code>引入<code>.NET</code>.</p>
-<h2 id="特点">特点</h2>
-<h3 id="为net开发者">为.NET开发者</h3>
-<p><code>.NET</code>开发者使用他们所了解和喜爱的工具可以最高效的工作。我们的使命是确保在获取数据科学、机器学习和AI的机会时，他们不必将其遗忘。完善的基于<code>Python</code>的机器学习生态系统对于数百万.NET开发者而言并不十分可取。我们正在有效的改变这种状况。</p>
-<h3 id="前沿">前沿</h3>
-<p><code>SciSharp</code>在<code>.NET Core</code>中为<code>TensorFlow</code>,<code>Keras</code>,<code>PyTorch</code>,<code>Numpy</code>等最先进的机器学习框架提供了端口和绑定。由于移植库的API与原始库非常相似，因此你可以轻松的重用现有资源，文章和社区解决方案来解决C#和F#中的常见问题</p>
-<h3 id="跨平台">跨平台</h3>
-<p><code>SciSharp</code> STACK的所有库都针对跨平台的<code>.NET Standard Framework</code>，这使它们可以在支持<code>.NET Core</code>的任何主要平台上使用。我们为<code>Juptyer Notebook</code>提供了现成的<code>Docker</code>镜像，它能够执行C#表达式，并使您能够立即开始使用我们的库。</p>
-<h3 id="开源">开源</h3>
-<p><code>SciSharp</code>库是根据宽松的许可协议（如Apache 2.0许可协议）许可的，只要你保留作者的版权，就可以将它们用于包括商业应用在内的任何项目。<code>SciSharp STACK</code>的开源性质吸引了许多贡献者，他们进一步对其进行了扩展和改进。</p>
-<h2 id="相关项目">相关项目</h2>
-<h3 id="tensorflownet">TensorFlow.NET</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418144839292-657871525.png" alt=""></p>
-<p><code>TensorFlow</code>的<code>.NET Standard</code>绑定</p>
-<p>使用C#或F#创建、训练和部署机器学习模型</p>
-<p>GitHub：<a href="https://github.com/SciSharp/TensorFlow.NET">https://github.com/SciSharp/TensorFlow.NET</a></p>
-<p><strong>介绍</strong>：Google的<code>TensorFlow</code>的<code>.NET Standard</code>绑定，用于在C#中开发、训练和部署机器学习模型。</p>
-<p><strong>Watch</strong> 85  <strong>Star</strong> 1.2k <strong>Fork</strong> 226</p>
-<h3 id="numsharp">NumSharp</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418144908787-1297839158.png" alt=""></p>
-<p>高度优化的纯C#的<code>NumPy</code></p>
-<p>用于数据科学、机器学习和AI的N-D张量计算库</p>
-<p>GitHub：<a href="https://github.com/SciSharp/NumSharp">https://github.com/SciSharp/NumSharp</a></p>
-<p><strong>介绍</strong>：N-D张量的高性能计算库，与<code>NumPy</code>相似的API。</p>
-<p><strong>Used By</strong> 122  <strong>Watch</strong> 68  <strong>Star</strong> 659  <strong>Fork</strong> 126</p>
-<h3 id="kerasnet">Keras.NET</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418144926981-1656667057.png" alt=""></p>
-<p>用于<code>Keras</code>的<code>.NET</code>绑定，用于<code>TensorFlow</code>、<code>CNTK</code>和<code>Theano</code>的高级神经网络API</p>
-<p>易于使用的深度学习工具</p>
-<p>GitHub：<a href="https://github.com/SciSharp/Keras.NET">https://github.com/SciSharp/Keras.NET</a></p>
-<p><strong>介绍</strong>：<code>Keras.NET</code>是一个高级神经网络API，使用带有<code>Python</code>绑定的C＃编写，并且能够在<code>TensorFlow</code>，<code>CNTK</code>或<code>Theano</code>之上运行。</p>
-<p><strong>Watch</strong> 22  <strong>Star</strong> 240 <strong>Fork</strong> 70</p>
-<h3 id="numpynet">NumPy.NET</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418144948234-1607997772.png" alt=""></p>
-<p><code>NumPy</code>的最完整的<code>.NET</code>绑定</p>
-<p>用于科学计算、机器学习和AI的基础库</p>
-<p>GitHub：<a href="https://github.com/SciSharp/Numpy.NET">https://github.com/SciSharp/Numpy.NET</a></p>
-<p><strong>介绍</strong>：<code>NumPy</code>的最完整的<code>.NET</code>实现库 - 用于科学计算、机器学习和AI的基础库</p>
-<p><strong>Watch</strong> 15  <strong>Star</strong> 135 <strong>Fork</strong> 38</p>
-<h3 id="catalyst-nlp">catalyst nlp</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418145009649-678179505.png" alt=""></p>
-<p>为提高速度而构建的C#自然语言处理库</p>
-<p>受<code>spaCy</code>设计的启发，它提供了预训练模型，对训练单词和文档嵌入的开箱即用支持以及灵活的实体识别模型</p>
-<p>GitHub：<a href="https://github.com/curiosity-ai/catalyst">https://github.com/curiosity-ai/catalyst</a></p>
-<p><strong>介绍</strong>：为提高速度而构建的C#自然语言处理库。受<code>spaCy</code>设计的启发，它提供了预训练模型，对训练单词和文档嵌入的开箱即用支持以及灵活的实体识别模型</p>
-<p><strong>Watch</strong> 15  <strong>Star</strong> 110 <strong>Fork</strong> 12</p>
-<h3 id="neuralnetworknet">NeuralNetwork.NET</h3>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418145044388-1286230142.png" alt=""></p>
-<p>由<code>Scratch</code>构建的，受<code>TensorFlow</code>启发的神经网络库</p>
-<p>使用<code>C# 7.3</code>语法编写的<code>.NET Standard 2.0</code>的库，并通过cuDNN支持GPU</p>
-<p>GitHub：<a href="https://github.com/Sergio0694/NeuralNetwork.NET">https://github.com/Sergio0694/NeuralNetwork.NET</a></p>
-<p><strong>介绍</strong>：由<code>Scratch</code>构建的，受<code>TensorFlow</code>启发的神经网络库。使用<code>C# 7.3</code>语法编写的<code>.NET Standard 2.0</code>的库，并通过cuDNN支持GPU</p>
-<p><strong>Watch</strong> 25  <strong>Star</strong> 316 <strong>Fork</strong> 53</p>
-<h2 id="scisharp-cube">SciSharp Cube</h2>
-<p><img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418145058766-806548140.png" alt=""></p>
-<p>在<code>Docker</code>容器中体验<code>SciSharp</code>机器学习工具的所有最新功能</p>
-<p>配备<code>Juptyer Notebook</code>，展示<code>SciSharp</code>库的演示</p>
-<p>GitHub：<a href="https://github.com/SciSharp/SciSharpCube">https://github.com/SciSharp/SciSharpCube</a></p>
-<p><strong>介绍</strong>：在<code>Docker</code>容器中快速体验<code>SciSharp</code>机器学习工具的所有最新功能。</p>
-<p><strong>Watch</strong> 9  <strong>Star</strong> 46 <strong>Fork</strong> 13</p>
-<p>Docker Hub：<a href="https://hub.docker.com/r/scisharpstack/scisharpcube">https://hub.docker.com/r/scisharpstack/scisharpcube</a></p>
-<p><strong>Pulls</strong> 10K+</p>
-<h2 id="使用scisharp-stack的公司">使用SciSharp STACK的公司</h2>
-<ul>
-<li><strong>Microsoft</strong> <a href="https://www.microsoft.com/zh-cn/">https://www.microsoft.com/zh-cn/</a></li>
-<li><strong>curiosity.ai</strong> <a href="https://curiosity.ai/">https://curiosity.ai/</a></li>
-<li><strong>LOCAD</strong> <a href="https://www.lokad.com/">https://www.lokad.com/</a></li>
-<li><strong>EVERSPRY</strong> <a href="http://www.footprintmatcher.com/">http://www.footprintmatcher.com/</a></li>
-</ul>
-<h2 id="孵化器">孵化器</h2>
-<p>还有什么呢？</p>
-<p>Alpha或进行的项目</p>
-<hr>
-<h5 id="torchnet">Torch.NET</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Torch.NET">https://github.com/SciSharp/Torch.NET</a></p>
-<p><strong>介绍</strong>：<code>PyTorch</code>的<code>.NET</code>绑定库。使用C#/F#的机器学习，支持GPU/CPU</p>
-<p><strong>Description</strong>：.NET bindings for PyTorch. Machine Learning with C# / F# with Multi-GPU/CPU support</p>
-<p><strong>Watch</strong>14  <strong>Star</strong>82 <strong>Fork</strong>18</p>
-<hr>
-<h5 id="botsharp">BotSharp</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/BotSharp">https://github.com/SciSharp/BotSharp</a></p>
-<p><strong>介绍</strong>：在<code>.NET Core</code>中使用机器学习算法运行的100％ C＃中的开源AI Chatbot平台生成器。</p>
-<p><strong>Description</strong>：The Open Source AI Chatbot Platform Builder in 100% C# Running in .NET Core with Machine Learning algorithm.</p>
-<p><strong>Watch</strong>110  <strong>Star</strong>887 <strong>Fork</strong>230</p>
-<hr>
-<h5 id="gymnet">Gym.NET</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Gym.NET">https://github.com/SciSharp/Gym.NET</a></p>
-<p><strong>介绍</strong>：<code>openai</code>/<code>gym</code>的流行工具包，用于开发和比较强化学习算法，使用C#</p>
-<p><strong>Description</strong>：openai/gym's popular toolkit for developing and comparing reinforcement learning algorithms port to C#.</p>
-<p><strong>Used by</strong>3 <strong>Watch</strong>10  <strong>Star</strong>33 <strong>Fork</strong>7</p>
-<hr>
-<h5 id="openaigymnet">OpenAIGym.NET</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/OpenAIGym.NET">https://github.com/SciSharp/OpenAIGym.NET</a></p>
-<p><strong>介绍</strong>：开发和比较强化学习算法的工具包</p>
-<p><strong>Description</strong>：A toolkit for developing and comparing reinforcement learning algorithms.</p>
-<p><strong>Watch</strong>6  <strong>Star</strong>12 <strong>Fork</strong>0</p>
-<hr>
-<h5 id="pandasnet">Pandas.NET</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Pandas.NET">https://github.com/SciSharp/Pandas.NET</a></p>
-<p><strong>介绍</strong>：C#中的<code>Pandas</code>库，数据分析工具，在<code>DataFrame</code>中处理多维度数组。</p>
-<p><strong>Description</strong>：Pandas port in C#, data analysis tool, process multi-dim array in DataFrame.</p>
-<p><strong>Watch</strong>28  <strong>Star</strong>192 <strong>Fork</strong>26</p>
-<hr>
-<h5 id="mxnetlib">MxNetLib</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/MxNet.Sharp">https://github.com/SciSharp/MxNet.Sharp</a></p>
-<p><strong>介绍</strong>：带有命令，符号和<code>Gluon</code>接口的Apache <code>MxNet</code>的<code>.NET Standard</code>实现，用于在C#中开发，训练和部署机器学习模型。</p>
-<p><strong>Description</strong>：.NET Standard bindings for Apache MxNet with Imperative, Symbolic and Gluon Interface for developing, training and deploying Machine Learning models in C#.</p>
-<p><strong>Watch</strong>7  <strong>Star</strong>18 <strong>Fork</strong>4</p>
-<hr>
-<h5 id="matplotlibnet">Matplotlib.Net</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Matplotlib.Net">https://github.com/SciSharp/Matplotlib.Net</a></p>
-<p><strong>介绍</strong>：<code>Python</code>绘图库<code>Matplotlib</code>的.NET包装器</p>
-<p><strong>Description</strong>：.NET wrapper for the Python plotting library Matplotlib</p>
-<p><strong>Watch</strong>7  <strong>Star</strong>20 <strong>Fork</strong>3</p>
-<hr>
-<h5 id="ludwignet">Ludwig.NET</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Ludwig.NET">https://github.com/SciSharp/Ludwig.NET</a></p>
-<p><strong>介绍</strong>：<code>Ludwig</code>的一个工具箱，无需编写代码即可训练和测试深度学习模型。</p>
-<p><strong>Description</strong>：Ludwig is a toolbox that allows to train and test deep learning models without the need to write code.</p>
-<p><strong>Watch</strong>6  <strong>Star</strong>20 <strong>Fork</strong>4</p>
-<hr>
-<h5 id="cherubnlp">CherubNLP</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/CherubNLP">https://github.com/SciSharp/CherubNLP</a></p>
-<p><strong>介绍</strong>：<code>.NET Core</code>中的自然语言处理</p>
-<p><strong>Description</strong>：Natural Language Processing in .NET Core</p>
-<p><strong>Watch</strong>10  <strong>Star</strong>39 <strong>Fork</strong>17</p>
-<hr>
-<h5 id="microchartsmatplotlib">Microcharts.Matplotlib</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/Microcharts.Matplotlib">https://github.com/SciSharp/Microcharts.Matplotlib</a></p>
-<p><strong>介绍</strong>：<code>Microcharts.Matplotlib</code>是用于数据科学和机器学习的<code>Microcharts</code>的包装库。</p>
-<p><strong>Description</strong>：Microcharts.Matplotlib is a wrapper of Microcharts for Data Science and Machine Learning</p>
-<p><strong>Watch</strong>1  <strong>Star</strong>10 <strong>Fork</strong>2</p>
-<hr>
-<h5 id="scikit-learnnet">scikit-learn.net</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/scikit-learn.net">https://github.com/SciSharp/scikit-learn.net</a></p>
-<p><strong>介绍</strong>：<code>.NET Core</code>中的机器学习。</p>
-<p><strong>Description</strong>：Machine Learning in .NET Core.</p>
-<p><strong>Watch</strong>3  <strong>Star</strong>20 <strong>Fork</strong>7</p>
-<hr>
-<h5 id="sianet-archived">SiaNet [Archived]</h5>
-<p>GitHub：<a href="https://github.com/SciSharp/SiaNet">https://github.com/SciSharp/SiaNet</a></p>
-<p><strong>介绍</strong>：具有<code>CUDA</code>/<code>OpenCL</code>支持的易于使用C#深度学习库</p>
-<p><strong>Description</strong>：An easy to use C# deep learning library with CUDA/OpenCL support</p>
-<p><strong>Watch</strong>47  <strong>Star</strong>343 <strong>Fork</strong>89</p>
-<p>如果你感觉好的话，请给个关注<br>
-<img src="https://img2020.cnblogs.com/blog/1746998/202004/1746998-20200418145324815-1114313426.jpg" alt=""></p>
-
+        </h2>
+        <div class="postbody">
+            
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>xml与json在javascript中解析并使用，速度大约相差4倍。（在IE中测试的结果）。</p>
+<p>其中主要不在于eval,与xml parse的时间差别，主要在于属性访问上的差别：</p>
+<p>xml中使用这样的方式 markers[i].getAttribute("info") </p>
+<p>与json中使用这样的方式 var info = markers[i].info;</p>
+<p>相比， xml要慢不少。</p>
+<p>以下为测试的详情：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ee8d98db-5eac-4091-98e1-d524bfaeae80')"><img class="code_img_closed" id="code_img_closed_ee8d98db-5eac-4091-98e1-d524bfaeae80" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"  alt="" /><img class="code_img_opened" id="code_img_opened_ee8d98db-5eac-4091-98e1-d524bfaeae80" style="display: none" onclick="cnblogs_code_hide('ee8d98db-5eac-4091-98e1-d524bfaeae80',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span class="cnblogs_code_collapse">代码</span>
+<div class="cnblogs_code_hide" id="cnblogs_code_open_ee8d98db-5eac-4091-98e1-d524bfaeae80">
+<div><!--<br/ /><br/ />Code highlighting produced by Actipro CodeHighlighter (freeware)<br/ />http://www.CodeHighlighter.com/<br/ /><br/ />--><span style="color: #0000ff">&lt;!</span><span style="color: #ff00ff">DOCTYPE&nbsp;html&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN"<br />&nbsp;&nbsp;&nbsp;&nbsp;"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br /></span><span style="color: #0000ff">&lt;</span><span style="color: #800000">html&nbsp;</span><span style="color: #ff0000">xmlns</span><span style="color: #0000ff">="http://www.w3.org/1999/xhtml"</span><span style="color: #ff0000">&nbsp;xmlns:v</span><span style="color: #0000ff">="urn:schemas-microsoft-com:vml"</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">head</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">meta&nbsp;</span><span style="color: #ff0000">http-equiv</span><span style="color: #0000ff">="content-type"</span><span style="color: #ff0000">&nbsp;content</span><span style="color: #0000ff">="text/html;&nbsp;charset=utf-8"</span><span style="color: #0000ff">/&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">title</span><span style="color: #0000ff">&gt;</span><span style="color: #000000">Google&nbsp;Maps&nbsp;JavaScript&nbsp;API&nbsp;Example:&nbsp;Simple&nbsp;Map</span><span style="color: #0000ff">&lt;/</span><span style="color: #800000">title</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">script&nbsp;</span><span style="color: #ff0000">src</span><span style="color: #0000ff">="http://maps.google.com/maps?file=api&amp;amp;v=2&amp;amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"</span><span style="color: #ff0000"><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type</span><span style="color: #0000ff">="text/javascript"</span><span style="color: #0000ff">&gt;&lt;/</span><span style="color: #800000">script</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">script&nbsp;</span><span style="color: #ff0000">type</span><span style="color: #0000ff">="text/javascript"</span><span style="color: #0000ff">&gt;</span><span style="color: #000000; background-color: #f5f5f5"><br /><br /></span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">全局变量</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;map&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">null</span><span style="color: #000000; background-color: #f5f5f5">;<br /><br /></span><span style="color: #0000ff; background-color: #f5f5f5">function</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;initialize()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">if</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(</span><span style="color: #000000; background-color: #f5f5f5">!</span><span style="color: #000000; background-color: #f5f5f5">GBrowserIsCompatible())&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">return</span><span style="color: #000000; background-color: #f5f5f5">;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GMap2(document.getElementById(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">map_canvas</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">));<br />&nbsp;&nbsp;&nbsp;&nbsp;map.addMapType(&nbsp;G_PHYSICAL_MAP&nbsp;);<br />&nbsp;&nbsp;&nbsp;&nbsp;map.addMapType(G_SATELLITE_3D_MAP);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;map.setCenter(</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GLatLng(</span><span style="color: #000000; background-color: #f5f5f5">39.9</span><span style="color: #000000; background-color: #f5f5f5">,&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">116.00</span><span style="color: #000000; background-color: #f5f5f5">),&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">6</span><span style="color: #000000; background-color: #f5f5f5">);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;map.addControl(&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GMapTypeControl()&nbsp;);<br />&nbsp;&nbsp;&nbsp;&nbsp;map.addControl(&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GLargeMapControl()&nbsp;);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;map.enableContinuousZoom();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;GEvent.addListener(map,&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">mousemove</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">,&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">function</span><span style="color: #000000; background-color: #f5f5f5">(p){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">if</span><span style="color: #000000; background-color: #f5f5f5">(</span><span style="color: #000000; background-color: #f5f5f5">!</span><span style="color: #000000; background-color: #f5f5f5">p)</span><span style="color: #0000ff; background-color: #f5f5f5">return</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;window.status&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">经纬度&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(Math.round(p.lng()</span><span style="color: #000000; background-color: #f5f5f5">*</span><span style="color: #000000; background-color: #f5f5f5">100000</span><span style="color: #000000; background-color: #f5f5f5">)</span><span style="color: #000000; background-color: #f5f5f5">/</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">100000</span><span style="color: #000000; background-color: #f5f5f5">)</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">,&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(Math.round(p.lat()</span><span style="color: #000000; background-color: #f5f5f5">*</span><span style="color: #000000; background-color: #f5f5f5">100000</span><span style="color: #000000; background-color: #f5f5f5">)</span><span style="color: #000000; background-color: #f5f5f5">/</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">100000</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;});<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t0&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">100</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;home_point&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GLatLng(</span><span style="color: #000000; background-color: #f5f5f5">37.056136</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">i</span><span style="color: #000000; background-color: #f5f5f5">/</span><span style="color: #000000; background-color: #f5f5f5">1e4,114.457626+i</span><span style="color: #000000; background-color: #f5f5f5">/</span><span style="color: #000000; background-color: #f5f5f5">1e4</span><span style="color: #000000; background-color: #f5f5f5">);&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map.addOverlay(</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GMarker(home_point));&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t1&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;alert(t1</span><span style="color: #000000; background-color: #f5f5f5">-</span><span style="color: #000000; background-color: #f5f5f5">t0);&nbsp;</span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">1000用时6.3秒</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5"><br />&nbsp;&nbsp;&nbsp;&nbsp;testSpeed();<br />}<br /><br /></span><span style="color: #0000ff; background-color: #f5f5f5">function</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;testSpeed()<br />{<br /><br /></span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">-----------------------------------</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">[];<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">10000</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ary.push(</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">&lt;marker&nbsp;msid="13615532361"&nbsp;lng="104.0447"&nbsp;lat="30.684"&nbsp;status="0"&nbsp;info="川A7G222.&nbsp;&amp;lt;br&amp;gt;&nbsp;力帆体育场店&amp;lt;br&amp;gt;&nbsp;2010-10-27&nbsp;12:54:39&nbsp;"&nbsp;/&gt;</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;doc&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&lt;current&gt;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary.join(</span><span style="color: #000000; background-color: #f5f5f5">""</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&lt;/current&gt;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t0&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;xmlDoc&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;GXml.parse(doc);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">if</span><span style="color: #000000; background-color: #f5f5f5">(&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">!</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;xmlDoc&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">||</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">!</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;xmlDoc.documentElement)&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">return</span><span style="color: #000000; background-color: #f5f5f5">;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;xmlDoc.documentElement.getElementsByTagName(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">marker</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers.length;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lat&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i].getAttribute(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">lat</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lng&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i].getAttribute(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">lng</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;msid&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].getAttribute(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">msid</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;status&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].getAttribute(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">status</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;info&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].getAttribute(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">info</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t1&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;alert(t1</span><span style="color: #000000; background-color: #f5f5f5">-</span><span style="color: #000000; background-color: #f5f5f5">t0);&nbsp;</span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">0.57秒</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5"><br /></span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">-----------------------------------</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">[];<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">10000</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ary.push(</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">["13615532361",104.0447,30.684,0,"川A7G222.&nbsp;&amp;lt;br&amp;gt;&nbsp;力帆体育场店&amp;lt;br&amp;gt;&nbsp;2010-10-27&nbsp;12:54:39"]</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;doc&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">[</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary.join(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">,</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">]</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t0&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;eval(doc);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers.length;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lat&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i][</span><span style="color: #000000; background-color: #f5f5f5">1</span><span style="color: #000000; background-color: #f5f5f5">]);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lng&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i][</span><span style="color: #000000; background-color: #f5f5f5">2</span><span style="color: #000000; background-color: #f5f5f5">]);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;msid&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i][</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;status&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i][</span><span style="color: #000000; background-color: #f5f5f5">3</span><span style="color: #000000; background-color: #f5f5f5">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;info&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i][</span><span style="color: #000000; background-color: #f5f5f5">4</span><span style="color: #000000; background-color: #f5f5f5">];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t1&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;alert(t1</span><span style="color: #000000; background-color: #f5f5f5">-</span><span style="color: #000000; background-color: #f5f5f5">t0);&nbsp;</span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">0.15秒</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5"><br /></span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">-----------------------------------</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">[];<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">10000</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;){<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ary.push(</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">{msid:"13615532361",lng:104.0447,lat:30.684,status:0,info:"川A7G222.&nbsp;&amp;lt;br&amp;gt;&nbsp;力帆体育场店&amp;lt;br&amp;gt;&nbsp;2010-10-27&nbsp;12:54:39"}</span><span style="color: #000000; background-color: #f5f5f5">'</span><span style="color: #000000; background-color: #f5f5f5">);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;doc&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">[</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;ary.join(</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">,</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">+</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">]</span><span style="color: #000000; background-color: #f5f5f5">"</span><span style="color: #000000; background-color: #f5f5f5">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t0&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;eval(doc);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">for</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;(</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">0</span><span style="color: #000000; background-color: #f5f5f5">;&nbsp;i&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">&lt;</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers.length;&nbsp;i</span><span style="color: #000000; background-color: #f5f5f5">++</span><span style="color: #000000; background-color: #f5f5f5">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">&nbsp;obtain&nbsp;the&nbsp;attribues&nbsp;of&nbsp;each&nbsp;marker</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lat&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i].lat);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;lng&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;parseFloat(markers[i].lng);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;msid&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].msid;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;status&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].status;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;info&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;markers[i].info;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">var</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;t1&nbsp;</span><span style="color: #000000; background-color: #f5f5f5">=</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;</span><span style="color: #0000ff; background-color: #f5f5f5">new</span><span style="color: #000000; background-color: #f5f5f5">&nbsp;Date();<br />&nbsp;&nbsp;&nbsp;&nbsp;alert(t1</span><span style="color: #000000; background-color: #f5f5f5">-</span><span style="color: #000000; background-color: #f5f5f5">t0);&nbsp;</span><span style="color: #008000; background-color: #f5f5f5">//</span><span style="color: #008000; background-color: #f5f5f5">0.15秒</span><span style="color: #008000; background-color: #f5f5f5"><br /></span><span style="color: #000000; background-color: #f5f5f5"><br />}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;/</span><span style="color: #800000">script</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;/</span><span style="color: #800000">head</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">body&nbsp;</span><span style="color: #ff0000">onload</span><span style="color: #0000ff">="initialize()"</span><span style="color: #ff0000">&nbsp;onunload</span><span style="color: #0000ff">="GUnload()"</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">div&nbsp;</span><span style="color: #ff0000">id</span><span style="color: #0000ff">="map_canvas"</span><span style="color: #ff0000">&nbsp;style</span><span style="color: #0000ff">="width:&nbsp;800px;&nbsp;height:&nbsp;600px"</span><span style="color: #0000ff">&gt;&lt;/</span><span style="color: #800000">div</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br /><br /><br />&nbsp;&nbsp;</span><span style="color: #0000ff">&lt;/</span><span style="color: #800000">body</span><span style="color: #0000ff">&gt;</span><span style="color: #000000"><br /></span><span style="color: #0000ff">&lt;/</span><span style="color: #800000">html</span><span style="color: #0000ff">&gt;</span></div></div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 </div>
 <div id="MySignature"></div>
 <div class="clear"></div>
@@ -272,24 +89,24 @@
     <div class="clear"></div>
     <div id="post_next_prev"></div>
 </div>
-            </div>
-            <div class="postDesc">posted @ 
-<span id="post-date">2020-04-18 14:54</span>&nbsp;
-<a href="https://www.cnblogs.com/sesametech-netcore/">芝麻麻雀</a>&nbsp;
+        </div>
+        <p class="postfoot">
+            posted on 
+<span id="post-date">2010-11-02 17:43</span>&nbsp;
+<a href="https://www.cnblogs.com/dstang2000/">拓荒者</a>&nbsp;
 阅读(<span id="post_view_count">...</span>)&nbsp;
 评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12725914" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12725914);return false;">收藏</a></div>
-        </div>
-	    
-	    
-    </div><!--end: topics 文章、评论容器-->
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1867406" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(1867406);return false;">收藏</a>
+        </p>
+    </div>
 </div>
+
 <script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
 <script>markdown_highlight();</script>
 <script>
-    var allowComments = true, cb_blogId = 528580, cb_blogApp = 'sesametech-netcore', cb_blogUserGuid = '244d6a44-cf35-495d-2f12-08d70b1ff0f7';
-    var cb_entryId = 12725914, cb_entryCreatedDate = '2020-04-18 14:54', cb_postType = 1; 
+    var allowComments = true, cb_blogId = 9986, cb_blogApp = 'dstang2000', cb_blogUserGuid = 'd796310b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 1867406, cb_entryCreatedDate = '2010-11-02 17:43', cb_postType = 1; 
     loadViewCount(cb_entryId);
 </script><a name="!comments"></a>
 <div id="blog-comments-placeholder"></div>
@@ -348,43 +165,85 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
         GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
     </script>
 </div>
-	</div><!--end: forFlow -->
-	</div><!--end: mainContent 主体内容容器-->
 
-	<div id="sideBar">
-		<div id="sideBarMain">
-			
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/dstang2000/">
+首页</a>
+
+    </li>
+    <li>
+        
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%8B%93%E8%8D%92%E8%80%85">
+联系</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/dstang2000/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/dstang2000/rss/">
+    <img src="/skins/anothereon001/images/xml.gif" alt="订阅" />
+</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+
+    </li>
+</ul>
+
+
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+
 <div id="sidebar_news" class="newsItem">
             <script>loadBlogNews();</script>
 </div>
 
-			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
-			
-			<div id="leftcontentcontainer">
-				<div id="blog-sidecolumn"></div>
+<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-			</div>
-			
-		</div><!--end: sideBarMain -->
-	</div><!--end: sideBar 侧边栏容器 -->
-	<div class="clear"></div>
-	</div><!--end: main -->
-	<div class="clear"></div>
-	<div id="footer">
-		<!--done-->
-Copyright &copy; 2020 芝麻麻雀
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br />
+	
+	
+<a href="https://www.cnblogs.com/" id="Footer1_Hyperlink3" style="font-size: 12px; font-family: Verdana">博客园</a>
+	<br />
+	Copyright &copy; 2020 拓荒者
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
+</p>
 
 
-	</div><!--end: footer -->
-</div><!--end: home 自定义的最大容器 -->
-
-
-    <div id="page_end_html">
-        <div>
-SesameTech
 </div>
-    </div>
+</div>
+
+
+    
 </body>
 </html>

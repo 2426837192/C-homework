@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇博文中，我们介绍了做互联网级监控系统的必备-Influxdb的关键特性、数据读写、应用场景： 互联网级监控系统必备-时序数据库之Influxdb 本文中，我们介绍Influxdb数据库集群的搭建，" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>互联网级监控系统必备-时序数据库之Influxdb集群及踩过的坑 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/7153023.html">互联网级监控系统必备-时序数据库之Influxdb集群及踩过的坑</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇博文中，我们介绍了做互联网级监控系统的必备-Influxdb的关键特性、数据读写、应用场景：</p>
+<p><a class="titlelnk" href="http://www.cnblogs.com/tianqing/p/7152940.html" target="_blank">互联网级监控系统必备-时序数据库之Influxdb</a></p>
+<p>本文中，我们介绍Influxdb数据库集群的搭建，同时分享一下我们使用集群遇到的坑！</p>
+<p><span style="font-size: 16px;">一、环境准备</span></p>
+<ol>
+<li>同一网段内，3个CentOS 节点，相互可以ping通</li>
+<li>3个节点CentOS配置Hosts文件，相互可以解析主机名</li>
+<li>Azure 虚拟机启用root用户</li>
+<li>influxdb-0.10.3-1.x86_64.rpm</li>
+<li>设置端口8083 8086 8088 8091例外</li>
+</ol>
+<p><span style="font-size: 16px;"><strong>二、一步一步搭建Influxdb集群</strong></span></p>
+<p>1. <strong>在各个节点的主机上配置Hosts文件</strong>，这样可以保证每个节点直接的互相通讯</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711223859431-2008227824.png" alt="" /></p>
+<p>2. <strong>各个节点主机安装InfluxDB rpm，只是安装不启动Influxdb</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711223957525-340162692.png" alt="" /></p>
+<p>3. <strong>三个节点主机上依次 编辑Influxdb.conf文件（.etc/influxdb/influxdb.conf）</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711224026040-258136677.png" alt="" /></p>
+<p>主要修改HostName、bind-address、http-bind-address三个选项</p>
+<p>依次修改三个主机节点的配置文件</p>
+<p>4. <strong>InfluxDB01机器上启动Influxdb</strong></p>
+<div>[root@influxdb01 influxdb]# sudo service influxdb start</div>
+<div>&nbsp;</div>
+<div>5. <strong>InfluxDB02上配置/etc/default/influxdb文件</strong>
+<div>&nbsp; 加入influxdb01节点</div>
+<div>&nbsp; INFLUXD_OPTS="-join influxdb01:8091"</div>
+<div><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711224235290-238419089.png" alt="" /></div>
+<div>&nbsp;</div>
+<div>6. <strong>InfluxDB02机器启动InfluxDB</strong>
+<div>&nbsp;[root@influxdb02 default]# sudo service influxdb start</div>
+<div>&nbsp;</div>
+<div>7.&nbsp;<strong>InfluxDB03上配置/etc/default/influxdb文件</strong>
+<div>&nbsp;加入influxdb01节点</div>
+<div>&nbsp;INFLUXD_OPTS="-join influxdb01:8091"</div>
+<div>&nbsp;<img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711224350556-349922912.png" alt="" /></div>
+<div>
+<div>&nbsp;</div>
+<div>8. <strong>InfluxDB03机器启动InfluxDB</strong></div>
+<div>[root@influxdb03 default]# sudo service influxdb start</div>
+<div>&nbsp;</div>
+<div>9.<strong>InfluxDB01上启动InfluxDB</strong></div>
+<div>Influx -host influxdb01</div>
+<div><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711224429353-369001544.png" alt="" /></div>
+<div>&nbsp;</div>
+<div>10. <strong>查看Influxdb集群</strong></div>
+<div><strong><img src="https://images2015.cnblogs.com/blog/23525/201707/23525-20170711224628322-655381422.png" alt="" /></strong></div>
+<div>&nbsp;</div>
+<div><span style="font-size: 16px;"><strong>三、Influxdb集群，我们遇到的坑</strong></span></div>
+<div>&nbsp;</div>
+<div>Influxdb集群模式下，数据在各个节点之间是同步的，即，我们可以选择任何一个节点写入，数据都可以再其他节点查询到。</div>
+<div>搭建集群后，我们遇到的第一个问题就是<strong>数据不同步问题。其实，数据写入压力并不大！</strong></div>
+<div>数据不同步后重启集群，依然数据不同步。</div>
+<div>&nbsp;</div>
+<div>数据写入时，必须是UTC时间，并且是Unix下的UTC时间格式。</div>
+<div>批量写入的数据，有时候会很慢，原因是数据必须按时间降序排序好，再批量插入。</div>
+<div>&nbsp;</div>
+<div>单机模式比集群模式稳定，同时最新的集群不开源了，商业版本支持。</div>
+<div>多条批量写入的性能好，但是并发数有限制，批量数据的个数在1000以内最佳。</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>周国庆</div>
+<div>2017/7/12</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-07-12 08:40</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=7153023" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(7153023);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 7153023, cb_entryCreatedDate = '2017-07-12 08:40', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="一、导语 随着大型分布式系统架构的演进和广泛应用，软件工程的最佳实践也随之改变。我们通过分布式、服务化、DevOps、敏捷开发，快速响应业务的需求变化，支持大规模分布式应用。但这些做法带来效益的同时，" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>特来电混沌工程实践 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10499611.html">特来电混沌工程实践</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p><span style="font-size: 18px;"><strong>一、导语</strong></span></p>
+<p>随着大型分布式系统架构的演进和广泛应用，软件工程的最佳实践也随之改变。<br />我们通过分布式、服务化、DevOps、敏捷开发，快速响应业务的需求变化，支持大规模分布式应用。但这些做法带来效益的同时，也带来了另一个紧迫问题：我们到底有多少把握来确保线上复杂的系统能够正常工作呢？<br />    即便是分布式系统中每个独立的服务都正常工作，服务之间的相互调用也仍然可能造成不可预期的结果。这些结果在现实中可能很少发生，但是一旦发生就会影响整个生产环境，使得整个分布式系统变得混乱不堪，甚至出现服务雪崩、系统全面宕机。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">不是由你来选择那一刻，而是那一刻来选择你！
+你只能选择为之做好准备。
+　　　　　　　　　　 &mdash;消防队长 Mike Burtch</span></pre>
+</div>
+<p>因此，我们有必要在线上事故出现之前，提前识别出系统的有哪些<span style="color: #ff0000;"><strong>弱</strong></span>点、这些弱点的影响范围。我们需要一种方式来管控这些系统的固有混沌，在保证快速响应业务需求变化的同时，做到最后不管系统有多复杂，我们的线上应用经得住各种<span style="color: #ff0000;">&ldquo;<strong>戳</strong>&rdquo;</span>。</p>
+<p><strong>通过应用一些经验探索的原则，来观察系统是如何反应的。这就跟科学家做实验去学习物理定律一样，通过做实验去了解整个系统。我们从受控的试验中掌握分布式系统运行行为的过程，称为混沌工程。</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">混沌工程不是制造问题，而是揭示问题。
+              &mdash;Nora Jones，Netflix 高级混沌工程师</span></pre>
+</div>
+<p>混沌工程的典型实践-Chaos Monkey，捣乱的猴子；拜 Netflix 所赐，现在大部分的混沌工程项目都叫做 Monkey，也就是一只捣乱的猴子，在你的系统里面上蹦下窜，不停捣乱，直到搞挂你的系统。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309095250140-487012528.png" alt="" /></p>
+<p>为什么需要混沌工程：</p>
+<p>应用混沌工程可以提升整个系统的弹性。通过设计并且进行混沌实验，我们可以了解到系统脆弱的一面，在还没出现线上事故之前，我们就能主动发现这些问题，并尽可能的解决这些问题。</p>
+<p>混沌工程和测试有什么区别：</p>
+<p>虽然混沌工程跟传统测试通常都会共用很多测试工具的，譬如都会使用错误注入工具，但：<br />混沌工程是通过实践对系统有更新的认知，而传统测试则是使用特定方式对某一块进行特定测试。<br />譬如在传统测试里面，我们可以写一个断言，我们给定特定的条件，产生一个特定的输出，如果不满足断言条件，测试就出错了，这个其实是具有很明确的特性。但混沌工程是试验，而试验会有怎样的结果，我们是不确定的。<br />    譬如我们可以进行下面的这些试验：</p>
+<ul>
+<li>模拟整个 IDC 宕机</li>
+<li>选择一部分网络连连接注入特定时间的延迟</li>
+<li>随机让一些函数抛出</li>
+<li>异常强制 NTP 时间不同步</li>
+<li>生成 IO 错误</li>
+<li>榨干 CPU</li>
+
+
+</ul>
+<p><br />这些混沌试验到底会有什么样的结果，有些我们可以预料，但有些可能我们就不会预先知道，只有发生了，才会惊讶，<br />  <span style="color: #ff0000;"><strong>&ldquo;啊，怎么会这样！&rdquo;</strong></span></p>
+<p><span style="color: #000000; font-size: 18px;"><strong>二、混沌工程的方法论</strong></span></p>
+<p>既然是工程，那么就会有方法论，也就能详细的归纳总结出来实施的步骤<br /><strong>1. 混沌工程的一般实施步骤</strong></p>
+<ul>
+<li>寻找一些系统正常运行状态下的可度量指标，作为基准的&ldquo;稳定状态&rdquo;</li>
+<li>假设实验组和对照组都能继续保持这个&ldquo;稳定状态&rdquo;</li>
+<li>对实验组进行事件注入，如服务器崩溃、硬盘故障、网络连接断开等等</li>
+<li>比较实验组和对照组&ldquo;稳定状态&rdquo;的差异，推翻上述第2条的假设</li>
+
+
+</ul>
+<p>如果混沌实验前后保持的&ldquo;稳定状态&rdquo;一致，则可以认为系统应对这种故障是弹性的，从而对系统建立更多信心。相反的，如果两者的稳定状态不一致，那我们就找到了一个系统弱点，从而可以修复它，提高系统可靠性。</p>
+<p><strong>2. 实施混沌工程的推荐原则</strong><br />&nbsp;2.1. <strong>根据&ldquo;稳定状态下系统的特征&rdquo;做一个假设</strong><br />&nbsp;以充电为例，充电服务可能包含了订单服务，开启充电、结束充电、电量更新服务，账户服务、计费策略服务，&ldquo;假设&rdquo;不是着眼于各个&ldquo;螺丝钉&rdquo;服务的具体状态，而是着眼于整个充电系统正常运作下的外部表现(状态)，如开启充电TPS、正在充电中订单数、电量更新 TPS、结束充电TPS、充电服务异常等等，这些监控指标曲线一般不会大起大落，其变化趋势是可以预期的。<br />&nbsp;但是有一点需要特别注意，某些问题虽然不会怎么影响整体监控指标，<br />&nbsp;但是仍然需要监控系统中各个节点的微观指标（如CPU、IO等）。</p>
+<p>&nbsp;<strong>2.2 事件是现实世界真的可能发生的</strong><br />任何可能影响系统稳定状态的都可以作为事件，常见的，如<br />故障类：像服务器宕机、重启、断网等硬件故障、服务超时、Nginx不可用、核心应用未重启等应用故障；<br />非故障事件：像流量激增<br />同时，还可以分析曾经引起系统故障的事件的种类和频次，针对性的排列优先级，并复现这些事件，避免系统再次出现这种故障。</p>
+<p>&nbsp;<strong>2.3. 在生产环境跑</strong><br />根据第1条，一般只有生产环境的指标是可预测的，如每日充电订单量、开启充电量、电量更新TPS等。而且，由于测试环境和生产环境不可能一模一样，为了真实反映系统的可靠性，一般推荐在生产环境实施混沌工程。</p>
+<p><strong>&nbsp;2.4. 持续集成</strong><br />线上应用每天都在更新，所以像跑持续集成一样实施混沌工程，持续发现问题、解决问题。</p>
+<p>&nbsp;<strong>2.5. 最小化影响范围</strong><br />&nbsp;混沌工程可能导致线上功能不可用，甚至造成宕机事故，所以在以找出系统弱点为目的的前提下，需要最小化故障影响范围，并且当出现严重问题时可以迅速恢复，即故障是可控的。鉴于此，需要控制最小化影响范围。</p>
+<p>上面是最理想情况下的混沌工程，现实中我们需要根据现有软件成熟度有阶段的实施混沌：</p>
+<p><strong>阶段一：分布式系统弹性化一般</strong><br />以京东为例，他们会在双十一大促之前进行故障演练，将团队分为两组，一组作为故障的制造者，另外一组作为故障的解决者和响应者，来考察故障发生的时候，团队对故障的检测、响应、处理还有恢复能力。达到小的故障不需要人介入，大故障人工介入可以快速处理的目的。通过在大促之前的两个月期间密集的开展混沌工程，提高团队对大规模故障的容错能力。</p>
+<p><strong>阶段二：分布式系统弹性化成熟</strong><br />以Netflix为例，他们基本上已经在按照上述理想的步骤和原则实施混沌工程，工作日持续、自动的实施混沌工程，系统具备高度的可靠性，弹性伸缩。</p>
+<p><span style="font-size: 18px;"><strong>三、混沌工程的成熟度模型</strong></span></p>
+<p>混沌工程成熟度模型，Netflix （网飞）总结了两个维度，<strong>一个是复杂度，一个就是接受度</strong>。<br />前者表示的是混沌工程能有多复杂，而后者则表示的是混沌工程被团队的接受程度。<br />复杂度分为哪几个阶段：</p>
+<p>&nbsp;</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309095823970-624389616.png" alt="" /></p>
+<p>接受度分为哪几个阶段：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309095859001-1284342726.png" alt="" /></p>
+<p>我们目前处于起步发展阶段，<span style="color: #ff0000;"><strong>线上生产环境实施混沌工程，风险很大，也不可控</strong></span>，因此：</p>
+<p>我们在<span style="color: #339966;"><strong>压测模拟环境实施混沌工程</strong></span>，搭建类似生产的小型模拟环境，以正常、合理的测试结果，作为基准&ldquo;稳定状态&rdquo;。在模拟测试的过程中，对系统实施各类混沌实验后，通过观察测试结果来评估系统的可靠性，从而寻找系统弱点，<br />登记Bug，进行修复。 </p>
+<p>同时，通过自动化运维平台，实现混沌实验异常注入和持续执行。</p>
+<p><span style="font-size: 18px;"><strong>四、混沌工程的执行</strong></span></p>
+<p><span style="font-size: 15px;"><strong>1. 混沌工程的整体实施流程</strong></span></p>
+<p><span style="font-size: 18px;"><strong><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100103093-2053633006.png" alt="" /></strong></span></p>
+<p><strong>2. 混沌事件注入</strong></p>
+<p><strong>应用层的混沌事件</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100437340-1885901861.png" alt="" /></strong></p>
+<p>&nbsp;</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100516083-1034096869.png" alt="" /></p>
+<p><strong>中间件层混沌事件</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100620284-88301013.png" alt="" /></p>
+<p><strong>数据库层和基础实施层混沌事件</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100657749-1701802827.png" alt="" /></p>
+<p><strong>3. 混沌实验闭环</strong></p>
+<p>所有的混沌实验必须实现闭环，发现问题，分析问题，解决问题</p>
+<p>因此我们增加了一类单据统一管理混沌实验，便于总结、分析、跟踪</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201903/23525-20190309100911365-1109728361.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>以上是我们今年搞混沌工程，提升系统可用性的一些实践，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/3/9</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-03-09 10:10</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10499611" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10499611);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10499611, cb_entryCreatedDate = '2019-03-09 10:10', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

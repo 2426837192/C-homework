@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="最近做研发质量分析，大家共同提到了一个改进措施：加强开发自测！ 但是如何加强开发自测、怎么做好开发自测？带着这个问题，进入我们今天的分享： 一、开发测试小记 开发同学功能开发完成后，简单自测通过后，填" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>如何做好开发自测 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11680091.html">如何做好开发自测</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>&nbsp; 最近做研发质量分析，大家共同提到了一个改进措施：<span style="color: #008000; font-size: 13px;"><strong>加强开发自测！</strong></span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 但是如何加强开发自测、怎么做好开发自测？带着这个问题，进入我们今天的分享：</span></p>
+<p><span style="font-size: 15px;"><strong><span style="color: #000000;">一、开发测试小记</span></strong></span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 开发同学功能开发完成后，简单自测通过后，填写提交单提交测试，然后：</span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 制作的补丁，打到测试环境，发现丢了一些SQL、Dll、配置，然后提交单被测试无情地打回。&nbsp; &nbsp;</span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 即便补丁更新成功，扛不住测试用例的第一轮饱和测试，出现影响测试进展的Bug，或者Bug太多，满足打回标准，提交单继续被无情打回。</span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 提交单打回后，开发同学集中修复了Bug，再次提交测试。正常情况下，第二轮功能测试发现的Bug会大幅减少，如果重新提交的补丁质量不佳，修复Bug的同时，带来了更多新的Bug，提交单还是有可能继续被打回。</span></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 功能测试通过后，进行性能测试，并发压力上来后，功能被打爆、数据库被打爆、MQ被打爆，提交单再次被打回。&nbsp;</span></p>
+<p><strong><span style="color: #000000; font-size: 13px;">&nbsp; &nbsp; &nbsp;&hellip;&hellip;</span></strong></p>
+<p><span style="color: #000000; font-size: 13px;">&nbsp; 上面的场景，大家都很熟悉，很多开发、测试同学通过都经历过。我们如何用真正的行动来加强开发自测，提升交付质量？</span><strong><span style="color: #000000; font-size: 13px;">我们需要有一套开发自测方法论：</span></strong></p>
+<p><span style="font-size: 15px;"><strong><span style="color: #000000;">二、开发自测方法论</span></strong></span></p>
+<p style="margin-left: 30px;"><strong><span style="color: #000000; font-size: 13px;"><img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191015202143556-829112123.png" alt="" width="398" height="51" /></span></strong></p>
+<p>&nbsp;</p>
+<p style="margin-left: 30px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191015202201200-1668814412.png" alt="" width="580" height="406" /></p>
+<p style="margin-left: 30px;">&nbsp;我们详细展开讲一下：</p>
+<p>&nbsp; &nbsp;<strong>1. 思想意识上，提升对自测的重视程度</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>开发阶段不仅是代码开发完成，编译通过，更重要的是自测通过。</li>
+<li>自测工作投入应该占开发阶段整体投入的30%，如果保证不了资源投入，自测只是一个形式；</li>
+<li>自测工作必须覆盖全面的自测场景：正向、逆向、正常、异常、并发性能等等；</li>
+<li>自测是开发阶段最重要的一环，如果不重视自测，测试阶段可能会产生大量的Bug、提交单被打回、直接影响研发进度。</li>
+<li>自测直接决定了<span style="background-color: #00ff00;"><strong>产品的质量</strong></span>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>&nbsp; &nbsp;2.&nbsp;自测的PDCA之-<span style="background-color: #00ff00;">Plan计划</span></strong></p>
+<p>&nbsp; &nbsp;开发阶段，要加强自测工作的详细规划和资源投入：</p>
+<p>&nbsp; &nbsp;这里我们用的Scrum 迭代研发，以下是自测任务计划情况：</p>
+<p>&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191015202545392-1302351353.png" alt="" width="816" height="324" /></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;自测工作在迭代拆分计划时，要尽可能的覆盖环境搭建、单元测试、联调测试等工作，并合理估计投入时间。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;同时具备完整的<span style="background-color: #00ff00;">自测表</span>，功能覆盖度尽可能全。</p>
+<p>&nbsp; <span style="font-size: 14px;"><strong>&nbsp;3.&nbsp;自测的PDCA之-<span style="background-color: #00ff00;">Do执行</span></strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;<strong>&nbsp;自测环境搭建：</strong>本机自测环境、Docker联调环境</p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<strong>单元测试：</strong>保证核心方法、接口、场景都能覆盖到，必须有完整的断言。主要包含：</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>测试数据准备、准备Mock方法</li>
+<li>主流程正向测试</li>
+<li>主流程逆向测试</li>
+<li>详细功能-正常场景测试</li>
+<li>详细功能-异常场景测试</li>
+<li>并发性能测试</li>
+<li>测试数据清理</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<strong>接口自动化测试：</strong>基于接口自动化测试工具，实现接口的自动化测试</p>
+<p>&nbsp; &nbsp; &nbsp; <strong>集成测试：</strong>补丁更新后全面功能测试，前后端联调，保证自测功能表上所有功能都能自测通过。</p>
+<p>&nbsp; &nbsp; &nbsp; 同时，自测尽可能的保证<span style="background-color: #00ff00;"><strong>自动化、可重复执行</strong></span>！</p>
+<p>&nbsp; <span style="font-size: 14px;">&nbsp;<strong> 3. 自测的PDCA之-<span style="background-color: #00ff00;">Check评估</span></strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;如何评估、衡量自测的质量：<span style="background-color: #00ff00;"><strong>以关键结果为导向！</strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<strong>测试Bug检出率：</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>通过测试发现的Bug，要低于自测发现的Bug</li>
+<li>如果测试检出率过高，需要详细做5why分析，为什么自测未发现</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<strong>单元测试代码覆盖度</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>核心方法是否都通过了单元测试</li>
+<li>单元测试代码覆盖度</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp;<strong>&nbsp;单元测试通过率</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>所有单元测试必须包含完整的断言</li>
+<li>所有单元测试必须全部测试通过</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<strong>自测功能覆盖度</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>自测表是否覆盖所有的功能点</li>
+<li>自测表功能测试全部通过</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp;<span style="font-size: 14px;"><strong>4. 自测的PDCA之-<span style="background-color: #00ff00;">Act处理、完善</span></strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201910/23525-20191015203538137-25711589.png" alt="" width="1138" height="88" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>完善单元测试：增加核心方法测试覆盖、测试数据覆盖、单元测试场景覆盖</li>
+<li>增加自测功能覆盖度：覆盖更多自测功能，很多没想到的测试点，增加到自测功能点中</li>
+<li>增加资源投入和工作规划：通过实际评估，合理加大自测资源投入和工作规划</li>
+<li>结对测试：自己开发的功能很多Bug可能测试不出来，结对测试，可以发现更多的Bug</li>
+<li>功能演示&amp;Review：以用户的视角、需求的视角，Review已实现的功能，发现更多的Bug，完善到自测场景中。</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; 其实还有很多其他的方法和讨论来提升开发自测，同时提升自测的质量是一个不断完善和改进的过程！</p>
+<p>&nbsp; &nbsp; 以上是近期做开发自测的总结，欢迎大家继续补充。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/10/15</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-10-15 20:38</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11680091" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11680091);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11680091, cb_entryCreatedDate = '2019-10-15 20:38', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

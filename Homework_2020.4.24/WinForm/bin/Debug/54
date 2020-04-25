@@ -1,0 +1,967 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="先前有一篇博文，梳理了流控服务的场景、业界做法和常用算法 统一流控服务开源-1：场景&amp;amp;业界做法&amp;amp;算法篇 最近完成了流控服务的开发，并在生产系统进行了大半年的验证，稳定可靠。今天整理一下" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>统一流控服务开源：基于.Net Core的流控服务 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11328969.html">统一流控服务开源：基于.Net Core的流控服务</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>先前有一篇博文，梳理了流控服务的场景、业界做法和常用算法</p>
+<p><a class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9044155.html">统一流控服务开源-1：场景&amp;业界做法&amp;算法篇</a></p>
+<p>最近完成了流控服务的开发，并在生产系统进行了大半年的验证，稳定可靠。今天整理一下核心设计和实现思路，开源到Github上，分享给大家</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809234952134-1303031823.png" alt="" /></p>
+<p>&nbsp; &nbsp; &nbsp;<a href="https://github.com/zhouguoqing/FlowControl">https://github.com/zhouguoqing/FlowControl</a></p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809182053537-1317524168.png" alt="" width="576" height="518" /></p>
+<p><span style="font-size: 15px;"><strong>&nbsp;一、令牌桶算法实现</strong></span></p>
+<p><span style="font-size: 15px;">&nbsp; 先回顾一下令牌桶算法示意图</span></p>
+<p><span style="font-size: 15px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809224350329-683331452.png" alt="" /></span></p>
+<p><span style="font-size: 15px;">&nbsp;&nbsp;</span></p>
+<p>&nbsp; 随着时间流逝,系统会按恒定1/QPS时间间隔(如果QPS=100,则间隔是10ms)&nbsp;往桶里加入Token(想象和漏洞漏水相反,有个水龙头在不断的加水),</p>
+<p>&nbsp;</p>
+<p>&nbsp; 如果桶已经满了就不再加了. 新请求来临时,&nbsp;会各自拿走一个Token,如果没有Token可拿了就阻塞或者拒绝服务.</p>
+<p>&nbsp;</p>
+<p>&nbsp; 令牌添加速度支持动态变化，实时控制处理的速率.</p>
+<p>&nbsp; 令牌桶有两个关键的属性：<strong>令牌桶容量（大小）和时间间隔，</strong></p>
+<p>&nbsp; 有两个关键操作，<strong>从令牌桶中取Token；令牌桶定时的Reset重置。</strong></p>
+<p><strong>&nbsp; 我们看TokenBucket类：</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> CZ.FlowControl.Spi;
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 令牌桶
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">abstract</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> TokenBucket : IThrottleStrategy
+    {
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> bucketTokenCapacity;
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">object</span> syncRoot = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> ticksRefillInterval;
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> nextRefillTime;
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">number of tokens in the bucket</span>
+        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> tokens;
+
+        </span><span style="color: #0000ff;">protected</span> TokenBucket(<span style="color: #0000ff;">long</span> bucketTokenCapacity, <span style="color: #0000ff;">long</span> refillInterval, <span style="color: #0000ff;">long</span><span style="color: #000000;"> refillIntervalInMilliSeconds)
+        {
+            </span><span style="color: #0000ff;">if</span> (bucketTokenCapacity &lt;= <span style="color: #800080;">0</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">bucketTokenCapacity</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">bucket token capacity can not be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (refillInterval &lt; <span style="color: #800080;">0</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">refillInterval</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Refill interval cannot be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (refillIntervalInMilliSeconds &lt;= <span style="color: #800080;">0</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">refillIntervalInMilliSeconds</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Refill interval in milliseconds cannot be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            </span><span style="color: #0000ff;">this</span>.bucketTokenCapacity =<span style="color: #000000;"> bucketTokenCapacity;
+            ticksRefillInterval </span>= TimeSpan.FromMilliseconds(refillInterval *<span style="color: #000000;"> refillIntervalInMilliSeconds).Ticks;
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 是否流控
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="n"&gt;&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n = <span style="color: #800080;">1</span><span style="color: #000000;">)
+        {
+            TimeSpan waitTime;
+            </span><span style="color: #0000ff;">return</span> ShouldThrottle(n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+        }
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> <strong>ShouldThrottle</strong>(<span style="color: #0000ff;">long</span> n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime)
+        {
+            </span><span style="color: #0000ff;">if</span> (n &lt;= <span style="color: #800080;">0</span>) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">n</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Should be positive integer</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncRoot)
+            {
+                UpdateTokens();
+                </span><span style="color: #0000ff;">if</span> (tokens &lt;<span style="color: #000000;"> n)
+                {
+                    </span><span style="color: #0000ff;">var</span> timeToIntervalEnd = nextRefillTime -<span style="color: #000000;"> SystemTime.UtcNow.Ticks;
+                    </span><span style="color: #0000ff;">if</span> (timeToIntervalEnd &lt; <span style="color: #800080;">0</span>) <span style="color: #0000ff;">return</span> ShouldThrottle(n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+
+                    waitTime </span>=<span style="color: #000000;"> TimeSpan.FromTicks(timeToIntervalEnd);
+                    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+                }
+               <strong> tokens </strong></span><strong>-=</strong><span style="color: #000000;"><strong> n;</strong>
+
+                waitTime </span>=<span style="color: #000000;"> TimeSpan.Zero;
+                </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+            }
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 更新令牌
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">abstract</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> UpdateTokens();
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime)
+        {
+            </span><span style="color: #0000ff;">return</span> ShouldThrottle(<span style="color: #800080;">1</span>, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> CurrentTokenCount
+        {
+            </span><span style="color: #0000ff;">get</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncRoot)
+                {
+                    UpdateTokens();
+                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> tokens;
+                }
+            }
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp;这个抽象类中，将UpdateToken作为抽象方法暴露出来，给实现类更多的灵活去控制令牌桶重置操作。基于此实现了&ldquo;固定令牌桶&rdquo;<strong>FixedTokenBucket</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #808080;">    ///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 固定令牌桶
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> FixedTokenBucket : TokenBucket
+    {
+        </span><span style="color: #0000ff;">public</span> FixedTokenBucket(<span style="color: #0000ff;">long</span> maxTokens, <span style="color: #0000ff;">long</span> refillInterval, <span style="color: #0000ff;">long</span><span style="color: #000000;"> refillIntervalInMilliSeconds)
+            : </span><span style="color: #0000ff;">base</span><span style="color: #000000;">(maxTokens, refillInterval, refillIntervalInMilliSeconds)
+        {
+        }
+
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> UpdateTokens()
+        {
+            </span><span style="color: #0000ff;">var</span> currentTime =<span style="color: #000000;"> SystemTime.UtcNow.Ticks;
+
+            </span><span style="color: #0000ff;">if</span> (currentTime &lt;<span style="color: #000000;"> nextRefillTime)
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+            tokens </span>=<span style="color: #000000;"> bucketTokenCapacity;
+            nextRefillTime </span>= currentTime +<span style="color: #000000;"> ticksRefillInterval;
+        }
+    }</span></pre>
+</div>
+<p>&nbsp; &nbsp;固定令牌桶在每次取Token时，都要执行方法ShouldThrottle。这个方法中：</p>
+<p>&nbsp; &nbsp;并发取Token是线程安全的，这个地方用了Lock控制，损失了一部分性能。同时每次获取可用Token的时候，都会实时Check一下是否需要到达Reset令牌桶的时间。</p>
+<p>&nbsp; &nbsp;获取到可用令牌后，令牌桶中令牌的数量-1。如果没有足够的可用令牌，则返回等待到下次Reset令牌桶的时间。如下代码：</p>
+<div class="cnblogs_code">
+<pre>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime)
+        {
+            </span><span style="color: #0000ff;">if</span> (n &lt;= <span style="color: #800080;">0</span>) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">n</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Should be positive integer</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            </span><strong><span style="color: #0000ff;">lock</span></strong><span style="color: #000000;"> (syncRoot)
+            {
+                <strong>UpdateTokens</strong>();
+                </span><span style="color: #0000ff;">if</span> (tokens &lt;<span style="color: #000000;"> n)
+                {
+                    </span><span style="color: #0000ff;">var</span> timeToIntervalEnd = nextRefillTime -<span style="color: #000000;"> SystemTime.UtcNow.Ticks;
+                    </span><span style="color: #0000ff;">if</span> (timeToIntervalEnd &lt; <span style="color: #800080;">0</span>) <span style="color: #0000ff;">return</span> ShouldThrottle(n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+
+                    waitTime </span>=<span style="color: #000000;"> TimeSpan.FromTicks(timeToIntervalEnd);
+                    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+                }
+                <strong>tokens </strong></span><strong>-=</strong><span style="color: #000000;"><strong> n;</strong>
+
+                waitTime </span>=<span style="color: #000000;"> TimeSpan.Zero;
+                </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+            }
+        }</span></pre>
+</div>
+<p>&nbsp; &nbsp;以上就是令牌桶算法的实现。我们继续看漏桶算法。</p>
+<p><span style="font-size: 15px;"><strong>&nbsp;二、漏桶算法实现</strong></span></p>
+<p><span style="font-size: 15px;">&nbsp; 首先回顾一下漏桶算法的原理：</span></p>
+<p><span style="font-size: 15px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809230914990-2053194618.png" alt="" />&lsquo;</span></p>
+<p><span style="font-size: 15px;">&nbsp;&nbsp;</span></p>
+<p>&nbsp; 水(请求)先进入到漏桶里，漏桶以一定的速度出水(接口有响应速率),</p>
+<p>&nbsp;</p>
+<p>&nbsp; 当水流入速度过大会直接溢出(访问频率超过接口响应速率), 然后就拒绝请求,</p>
+<p>&nbsp;</p>
+<p>&nbsp; 可以看出漏桶算法能强行限制数据的传输速率.</p>
+<p>&nbsp;</p>
+<p>&nbsp; 有两个变量：</p>
+<p>&nbsp;</p>
+<ul>
+<li>一个是桶的大小,支持流量突发增多时可以存多少的水(burst),</li>
+<li>另一个是水桶漏洞的大小(rate)。</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;漏桶抽象类：<strong>LeakTokenBucket，继承与令牌桶抽象父类 TokenBucket，说明了获取令牌(漏出令牌)在底层的方式是一致的，不一样的是重置令牌的方式（务必理解这一点）</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 漏桶
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">abstract</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> LeakyTokenBucket : TokenBucket
+    {
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> stepTokens;
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> ticksStepInterval;
+
+        </span><span style="color: #0000ff;">protected</span> LeakyTokenBucket(<span style="color: #0000ff;">long</span> maxTokens, <span style="color: #0000ff;">long</span> refillInterval, <span style="color: #0000ff;">int</span><span style="color: #000000;"> refillIntervalInMilliSeconds, 
+            </span><span style="color: #0000ff;">long</span> stepTokens, <span style="color: #0000ff;">long</span> stepInterval, <span style="color: #0000ff;">int</span><span style="color: #000000;"> stepIntervalInMilliseconds)
+            : </span><span style="color: #0000ff;">base</span><span style="color: #000000;">(maxTokens, refillInterval, refillIntervalInMilliSeconds)
+        {
+            </span><span style="color: #0000ff;">this</span>.stepTokens =<span style="color: #000000;"> stepTokens;
+            </span><span style="color: #0000ff;">if</span> (stepInterval &lt; <span style="color: #800080;">0</span>) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">stepInterval</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Step interval cannot be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (stepTokens &lt; <span style="color: #800080;">0</span>) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">stepTokens</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Step tokens cannot be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (stepIntervalInMilliseconds &lt;= <span style="color: #800080;">0</span>) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">"</span><span style="color: #800000;">stepIntervalInMilliseconds</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">Step interval in milliseconds cannot be negative</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            ticksStepInterval </span>= TimeSpan.FromMilliseconds(stepInterval *<span style="color: #000000;"> stepIntervalInMilliseconds).Ticks;
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; &nbsp; 可以看出，漏桶是在令牌桶的基础上增加了二个重要的属性：<strong>这两个属性决定了重置令牌桶的方式</strong></p>
+<p>&nbsp; &nbsp; stepTokens：每间隔时间内漏的数量</p>
+<p>&nbsp; &nbsp; ticksStepInterval：漏的间隔时间</p>
+<p>&nbsp; &nbsp; 举个例子：TPS 100，即每秒漏出100个Token，stepTokens =100，&nbsp;ticksStepInterval=1000ms</p>
+<p>&nbsp; &nbsp; 漏桶的具体实现有两种：空桶和满桶</p>
+<p>&nbsp; &nbsp;&nbsp;StepDownTokenBucket 满桶：即一把将令牌桶填充满</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d206443c-f7ac-47ec-9bef-a616a25b326d')"><img id="code_img_closed_d206443c-f7ac-47ec-9bef-a616a25b326d" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_d206443c-f7ac-47ec-9bef-a616a25b326d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('d206443c-f7ac-47ec-9bef-a616a25b326d',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_d206443c-f7ac-47ec-9bef-a616a25b326d" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 漏桶(满桶)
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;remarks&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> StepDownLeakyTokenBucketStrategy resembles a bucket which has been filled with tokens at the beginning but subsequently leaks tokens at a fixed interval
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/remarks&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> StepDownTokenBucket : LeakyTokenBucket
+    {
+        </span><span style="color: #0000ff;">public</span> StepDownTokenBucket(<span style="color: #0000ff;">long</span> maxTokens, <span style="color: #0000ff;">long</span> refillInterval, <span style="color: #0000ff;">int</span> refillIntervalInMilliSeconds, <span style="color: #0000ff;">long</span> stepTokens, <span style="color: #0000ff;">long</span> stepInterval, <span style="color: #0000ff;">int</span> stepIntervalInMilliseconds) : <span style="color: #0000ff;">base</span><span style="color: #000000;">(maxTokens, refillInterval, refillIntervalInMilliSeconds, stepTokens, stepInterval, stepIntervalInMilliseconds)
+        {
+        }
+
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> UpdateTokens()
+        {
+            </span><span style="color: #0000ff;">var</span> currentTime =<span style="color: #000000;"> SystemTime.UtcNow.Ticks;
+
+            </span><span style="color: #0000ff;">if</span> (currentTime &gt;=<span style="color: #000000;"> nextRefillTime)
+            {
+                </span><span style="color: #008000;">//</span><span style="color: #008000;">set tokens to max</span>
+                tokens =<span style="color: #000000;"> bucketTokenCapacity;
+
+                </span><span style="color: #008000;">//</span><span style="color: #008000;">compute next refill time</span>
+                nextRefillTime = currentTime +<span style="color: #000000;"> ticksRefillInterval;
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+            }
+
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">calculate max tokens possible till the end</span>
+            <span style="color: #0000ff;">var</span> timeToNextRefill = nextRefillTime -<span style="color: #000000;"> currentTime;
+            </span><span style="color: #0000ff;">var</span> stepsToNextRefill = timeToNextRefill/<span style="color: #000000;">ticksStepInterval;
+
+            </span><span style="color: #0000ff;">var</span> maxPossibleTokens = stepsToNextRefill*<span style="color: #000000;">stepTokens;
+
+            </span><span style="color: #0000ff;">if</span> ((timeToNextRefill%ticksStepInterval) &gt; <span style="color: #800080;">0</span>) maxPossibleTokens +=<span style="color: #000000;"> stepTokens;
+            </span><span style="color: #0000ff;">if</span> (maxPossibleTokens &lt; tokens) tokens =<span style="color: #000000;"> maxPossibleTokens;
+        }
+    }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>&nbsp; &nbsp;StepUpLeakyTokenBucket 空桶：即每次只将stepTokens个数的令牌放到桶中&nbsp; &nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('be9348b0-a307-4616-ad94-93d13f27c877')"><img id="code_img_closed_be9348b0-a307-4616-ad94-93d13f27c877" class="code_img_closed" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_be9348b0-a307-4616-ad94-93d13f27c877" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('be9348b0-a307-4616-ad94-93d13f27c877',event)" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_be9348b0-a307-4616-ad94-93d13f27c877" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">{
+</span><span style="color: #008080;"> 5</span>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #808080;">///</span><span style="color: #008000;"> 漏桶(空桶)
+</span><span style="color: #008080;"> 7</span>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;remarks&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #808080;">///</span><span style="color: #008000;">  StepUpLeakyTokenBucketStrategy resemembles an empty bucket at the beginning but get filled will tokens over a fixed interval.
+</span><span style="color: #008080;">10</span>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/remarks&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">class</span><span style="color: #000000;"> StepUpLeakyTokenBucket : LeakyTokenBucket
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> lastActivityTime;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">public</span> StepUpLeakyTokenBucket(<span style="color: #0000ff;">long</span> maxTokens, <span style="color: #0000ff;">long</span> refillInterval, <span style="color: #0000ff;">int</span> refillIntervalInMilliSeconds, <span style="color: #0000ff;">long</span> stepTokens, <span style="color: #0000ff;">long</span> stepInterval, <span style="color: #0000ff;">int</span><span style="color: #000000;"> stepIntervalInMilliseconds) 
+</span><span style="color: #008080;">16</span>             : <span style="color: #0000ff;">base</span><span style="color: #000000;">(maxTokens, refillInterval, refillIntervalInMilliSeconds, stepTokens, stepInterval, stepIntervalInMilliseconds)
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>         <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> UpdateTokens()
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">22</span>             <span style="color: #0000ff;">var</span> currentTime =<span style="color: #000000;"> SystemTime.UtcNow.Ticks;
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>             <span style="color: #0000ff;">if</span> (currentTime &gt;=<span style="color: #000000;"> nextRefillTime)
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">26</span>                 tokens =<span style="color: #000000;"> stepTokens;
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span>                 lastActivityTime =<span style="color: #000000;"> currentTime;
+</span><span style="color: #008080;">29</span>                 nextRefillTime = currentTime +<span style="color: #000000;"> ticksRefillInterval;
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span>             <span style="color: #008000;">//</span><span style="color: #008000;">calculate tokens at current step</span>
+<span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>             <span style="color: #0000ff;">long</span> elapsedTimeSinceLastActivity = currentTime -<span style="color: #000000;"> lastActivityTime;
+</span><span style="color: #008080;">37</span>             <span style="color: #0000ff;">long</span> elapsedStepsSinceLastActivity = elapsedTimeSinceLastActivity /<span style="color: #000000;"> ticksStepInterval;
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>             tokens += (elapsedStepsSinceLastActivity*<span style="color: #000000;">stepTokens);
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>             <span style="color: #0000ff;">if</span> (tokens &gt; bucketTokenCapacity) tokens =<span style="color: #000000;"> bucketTokenCapacity;
+</span><span style="color: #008080;">42</span>             lastActivityTime =<span style="color: #000000;"> currentTime;
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">45</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>&nbsp;<strong style="font-size: 15px;">三、流控服务封装</strong></p>
+<p>&nbsp; 第二章节，详细介绍了令牌桶和漏桶的具体实现。基于以上，要重点介绍接口：IThrottleStrategy：流控的具体方式</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Spi
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 流量控制算法策略
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span><span style="color: #000000;"> IThrottleStrategy
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 是否流控
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="n"&gt;&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+        <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n = <span style="color: #800080;">1</span><span style="color: #000000;">);
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 是否流控
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="n"&gt;&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="waitTime"&gt;&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+        <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime);
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 是否流控
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="waitTime"&gt;&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+        <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime);
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 当前令牌个数
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">long</span> CurrentTokenCount { <span style="color: #0000ff;">get</span><span style="color: #000000;">; }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; &nbsp; 有了这个流控方式接口后，我们还需要一个流控策略定义类：FlowControlStrategy</p>
+<p>&nbsp; &nbsp; 即定义具体的流控策略：以下是这个类的详细属性和成员：&nbsp; 不仅定义了流控策略类型，还定义了流控的维度信息和流控阈值，这样流控就做成依赖注入的方式了！&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Spi
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 流控策略
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> FlowControlStrategy
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 标识
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 名称
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Name { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 流控策略类型
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> FlowControlStrategyType StrategyType { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 流控阈值-Int
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">long</span> IntThreshold { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 流控阈值-Double
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">decimal</span> DoubleThreshold { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 时间区间跨度
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> FlowControlTimespan TimeSpan { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">private</span> Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> flowControlConfigs;
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 流控维度信息
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;"> FlowControlConfigs
+        {
+            </span><span style="color: #0000ff;">get</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">if</span> (flowControlConfigs == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    flowControlConfigs </span>= <span style="color: #0000ff;">new</span> Dictionary&lt;<span style="color: #0000ff;">string</span>, <span style="color: #0000ff;">string</span>&gt;<span style="color: #000000;">();
+
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> flowControlConfigs;
+            }
+            </span><span style="color: #0000ff;">set</span><span style="color: #000000;">
+            {
+                flowControlConfigs </span>=<span style="color: #000000;"> value;
+            }
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 描述
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Descriptions { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 触发流控后是否直接拒绝请求
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>        
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> IsRefusedRequest { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 创建时间
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> DateTime CreateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 创建人
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Creator { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 最后修改时间
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> DateTime LastModifyTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 最后修改人
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> LastModifier { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; &nbsp;同时，流控策略类型，我们抽象了一个枚举：FlowControlStrategyType</p>
+<p>&nbsp; &nbsp;支持3种流控策略：TPS、Sum(指定时间段内请求的次数)，Delay延迟</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Spi
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 流控策略类型枚举
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">enum</span><span style="color: #000000;"> FlowControlStrategyType
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> TPS控制策略
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #000000;">        TPS,
+     </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 总数控制策略
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #000000;">        Sum,
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 延迟控制策略
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #000000;">        Delay
+    }
+}</span></pre>
+</div>
+<p>&nbsp; 面向每种流控策略类型，提供了一个对应的流控器，比如说TPS的流控器</p>
+<pre><span>TPSFlowController</span>，内部使用了固定令牌桶算法</pre>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> CZ.FlowControl.Spi;
+
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> TPS流量控制器
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> TPSFlowController : IFlowController
+    {
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> IThrottleStrategy InnerThrottleStrategy
+        {
+            </span><span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">set</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">public</span> FlowControlStrategy FlowControlStrategy { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime)
+        {
+            </span><span style="color: #0000ff;">return</span> InnerThrottleStrategy.ShouldThrottle(n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+        }
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> TPSFlowController(FlowControlStrategy strategy)
+        {
+            FlowControlStrategy </span>=<span style="color: #000000;"> strategy;
+
+            InnerThrottleStrategy </span>= <span style="color: #0000ff;">new</span> <strong>FixedTokenBucket</strong>(strategy.IntThreshold, <span style="color: #800080;">1</span>, <span style="color: #800080;">1000</span><span style="color: #000000;">);
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; Sum(指定时间段内请求的次数)流控器：</p>
+<p>&nbsp;&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.IO;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Linq;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> CZ.FlowControl.Spi;
+
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 一段时间内合计值流量控制器
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> SumFlowController : IFlowController
+    {
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> IThrottleStrategy InnerThrottleStrategy
+        {
+            </span><span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">set</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">public</span> FlowControlStrategy FlowControlStrategy { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> ShouldThrottle(<span style="color: #0000ff;">long</span> n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> TimeSpan waitTime)
+        {
+            </span><span style="color: #0000ff;">return</span> InnerThrottleStrategy.ShouldThrottle(n, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTime);
+        }
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> SumFlowController(FlowControlStrategy strategy)
+        {
+            FlowControlStrategy </span>=<span style="color: #000000;"> strategy;
+
+            </span><span style="color: #0000ff;">var</span> refillInterval =<span style="color: #000000;"> GetTokenBucketRefillInterval(strategy);
+
+            InnerThrottleStrategy </span>= <span style="color: #0000ff;">new</span> <strong>FixedTokenBucket</strong>(strategy.IntThreshold, refillInterval, <span style="color: #800080;">1000</span><span style="color: #000000;">);
+        }
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">long</span><span style="color: #000000;"> GetTokenBucketRefillInterval(FlowControlStrategy strategy)
+        {
+            </span><span style="color: #0000ff;">long</span> refillInterval = <span style="color: #800080;">0</span><span style="color: #000000;">;
+
+            </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (strategy.TimeSpan)
+            {
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlTimespan.Second:
+                    refillInterval </span>= <span style="color: #800080;">1</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlTimespan.Minute:
+                    refillInterval </span>= <span style="color: #800080;">60</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlTimespan.Hour:
+                    refillInterval </span>= <span style="color: #800080;">60</span> * <span style="color: #800080;">60</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlTimespan.Day:
+                    refillInterval </span>= <span style="color: #800080;">24</span> * <span style="color: #800080;">60</span> * <span style="color: #800080;">60</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> refillInterval;
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; 同时，通过一个创建者工厂，根据不同的流控策略，创建对应的流控器（做了一层缓存，性能更好）：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> CZ.FlowControl.Spi;
+
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 流控策略工厂
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">class</span><span style="color: #000000;"> FlowControllerFactory
+    {
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> Dictionary&lt;<span style="color: #0000ff;">string</span>, IFlowController&gt;<span style="color: #000000;"> fcControllers;
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">object</span> syncObj = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span><span style="color: #000000;">();
+
+        </span><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> FlowControllerFactory instance;
+
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> FlowControllerFactory()
+        {
+            fcControllers </span>= <span style="color: #0000ff;">new</span> Dictionary&lt;<span style="color: #0000ff;">string</span>, IFlowController&gt;<span style="color: #000000;">();
+        }
+
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> FlowControllerFactory GetInstance()
+        {
+            </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (instance == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    {
+                        instance </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> FlowControllerFactory();
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> instance;
+        }
+
+        </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> IFlowController GetOrCreateFlowController(FlowControlStrategy strategy)
+        {
+            </span><span style="color: #0000ff;">if</span> (strategy == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentNullException(<span style="color: #800000;">"</span><span style="color: #800000;">FlowControllerFactory.GetOrCreateFlowController.strategy</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">fcControllers.ContainsKey(strategy.ID))
+            {
+                </span><span style="color: #0000ff;">lock</span><span style="color: #000000;"> (syncObj)
+                {
+                    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">fcControllers.ContainsKey(strategy.ID))
+                    {
+                        </span><span style="color: #0000ff;">var</span> fcController =<span style="color: #000000;"> CreateFlowController(strategy);
+                        </span><span style="color: #0000ff;">if</span> (fcController != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                            fcControllers.Add(strategy.ID, fcController);
+                    }
+                }
+            }
+
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (fcControllers.ContainsKey(strategy.ID))
+            {
+                </span><span style="color: #0000ff;">var</span> controller =<span style="color: #000000;"> fcControllers[strategy.ID];
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> controller;
+            }
+
+            </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> IFlowController CreateFlowController(FlowControlStrategy strategy)
+        {
+            </span><span style="color: #0000ff;">if</span> (strategy == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentNullException(<span style="color: #800000;">"</span><span style="color: #800000;">FlowControllerFactory.CreateFlowController.strategy</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            IFlowController controller </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+            </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (strategy.StrategyType)
+            {
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlStrategyType.TPS:
+                    controller </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> TPSFlowController(strategy);
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlStrategyType.Delay:
+                    controller </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DelayFlowController(strategy);
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> FlowControlStrategyType.Sum:
+                    controller </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> SumFlowController(strategy);
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                    </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            }
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> controller;
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;有了流控策略定义、我们更进一步，继续封装了流控Facade服务，这样把流控的变化封装到内部。对外只提供流控服务接口，流控时动态传入流控策略和流控个数：FlowControlService</p>
+<p>&nbsp; &nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> CZ.FlowControl.Service
+{
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> CZ.FlowControl.Spi;
+    </span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Threading;
+
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 统一流控服务
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> FlowControlService
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 流控
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="strategy"&gt;</span><span style="color: #008000;">流控策略</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="count"&gt;</span><span style="color: #008000;">请求次数</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> FlowControl(FlowControlStrategy strategy, <span style="color: #0000ff;">int</span> count = <span style="color: #800080;">1</span><span style="color: #000000;">)
+        {
+            </span><span style="color: #0000ff;">var</span> controller =<span style="color: #000000;"> FlowControllerFactory.GetInstance().GetOrCreateFlowController(strategy);
+
+            TimeSpan waitTimespan </span>=<span style="color: #000000;"> TimeSpan.Zero;
+
+            </span><span style="color: #0000ff;">var</span> result = controller.ShouldThrottle(count, <span style="color: #0000ff;">out</span><span style="color: #000000;"> waitTimespan);
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (result)
+            {
+                </span><span style="color: #0000ff;">if</span> (strategy.IsRefusedRequest == <span style="color: #0000ff;">false</span> &amp;&amp; waitTimespan !=<span style="color: #000000;"> TimeSpan.Zero)
+                {
+                    WaitForAvailable(strategy, controller, waitTimespan, count);
+                }
+                </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (strategy.IsRefusedRequest)
+                {
+                    </span><span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> Exception(<span style="color: #800000;">"</span><span style="color: #800000;">触发流控！</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                }
+            }
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 等待可用
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="strategy"&gt;</span><span style="color: #008000;">流控策略</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="controller"&gt;</span><span style="color: #008000;">流控器</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="waitTimespan"&gt;</span><span style="color: #008000;">等待时间</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="count"&gt;</span><span style="color: #008000;">请求次数</span><span style="color: #808080;">&lt;/param&gt;</span>
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> WaitForAvailable(FlowControlStrategy strategy, IFlowController controller, TimeSpan waitTimespan, <span style="color: #0000ff;">int</span><span style="color: #000000;"> count)
+        {
+            </span><span style="color: #0000ff;">var</span> timespan =<span style="color: #000000;"> waitTimespan;
+            </span><span style="color: #0000ff;">if</span> (strategy.StrategyType ==<span style="color: #000000;"> FlowControlStrategyType.Delay)
+            {
+                Thread.Sleep(timespan);
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+            }
+
+            </span><span style="color: #0000ff;">while</span> (controller.ShouldThrottle(count, <span style="color: #0000ff;">out</span><span style="color: #000000;"> timespan))
+            {
+                Thread.Sleep(timespan);
+            }
+        }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; 以上，统一流控服务完成了第一个版本的封装。接下来我们看示例代码</p>
+<p><span style="font-size: 15px;"><strong>&nbsp;四、示例代码</strong></span></p>
+<p><span style="font-size: 15px;"><strong>&nbsp; &nbsp; 先安装Nuget：</strong></span></p>
+<pre></pre>
+<div class="cnblogs_code">
+<pre><strong>Install-Package CZ.FlowControl.Service -Version <span style="color: #800080;">1.0</span>.<span style="color: #800080;">0</span></strong></pre>
+</div>
+<pre></pre>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809234421804-82051343.png" alt="" /></p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201908/23525-20190809234430065-143778995.png" alt="" /></p>
+<p>&nbsp; &nbsp; 是不是很简单。</p>
+<p>&nbsp; &nbsp; 大家如果希望了解详细的代码，请参考这个项目的GitHub地址：</p>
+<p>&nbsp; &nbsp;&nbsp;<a href="https://github.com/zhouguoqing/FlowControl">https://github.com/zhouguoqing/FlowControl</a></p>
+<p>&nbsp; &nbsp; 同时也欢迎大家一起改进完善。</p>
+<p>&nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/8/9</p>
+<p>&nbsp; &nbsp;&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-08-09 23:51</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11328969" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11328969);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11328969, cb_entryCreatedDate = '2019-08-09 23:51', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

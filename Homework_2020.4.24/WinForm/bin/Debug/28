@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上篇文章给大家解释了Windbg的基本命令和说明，这一篇给大家介绍内存泄露场景的问题分析。 文章大纲： 1. 先说问题背景：生产环境IIS站点，运行一段时间后，w3wp进程内存会涨到2G，同时内存不释" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列2-内存泄露问题 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9875667.html">Windbg程序调试系列2-内存泄露问题</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上篇文章给大家解释了Windbg的基本命令和说明，这一篇给大家介绍内存泄露场景的问题分析。</p>
+<p><strong>文章大纲：</strong></p>
+<ol>
+<li>描述问题背景和现象</li>
+<li>确定问题是否是内存泄露</li>
+<li>梳理问题分析思路</li>
+<li>动手分析解决</li>
+<li>总结</li>
+</ol>
+<p><strong>1. 先说问题背景：</strong>生产环境IIS站点，运行一段时间后，w3wp进程内存会涨到2G，同时内存不释放。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030105300560-1665910691.png" alt="" /></p>
+<p><strong>2. 问题确认</strong></p>
+<p>打开性能计数器，我们重点看一段时间内，IIS站点w3wp进程相关的性能计数器的变化：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030105606626-752990896.png" alt="" /></p>
+<p>性能计数器中：有三个非常重要：</p>
+<p>.NET CLR Memory/Gen 2 heap size<br />.NET CLR Memory/Gen 1 heap size<br />.NET CLR Memory/Gen 0 heap size<br />托管堆上的对象有三代：<br />第 0 代： 这是最年轻的代，其中包含短生存期对象。 短生存期对象的一个示例是临时变量。 垃圾回收最常发生在此代中。新分配的对象构成新一代的对象并且为隐式的第 0 代回收，除非它们是大对象，在这种情况下，它们将进入第 2 代回收中的大对象堆。大多数对象通过第 0 代中的垃圾回收进行回收，不会保留到下一代。<br />第 1 代： 这一代包含短生存期对象并用作短生存期对象和长生存期对象之间的缓冲区。<br />第 2 代： 这一代包含长生存期对象。 长生存期对象的一个示例是服务器应用程序中的一个包含在进程期间处于活动状态的静态数据的对象。当条件得到满足时，垃圾回收将在特定代上发生。 回收某个代意味着回收此代中的对象及其所有更年轻的代。 第 2 代垃圾回收也称为完整垃圾回收FullGC，因为它回收所有代上的所有对象（即，托管堆中的所有对象）。<br />幸存和提升：垃圾回收中未回收的对象也称为幸存者，并会被提升到下一代。 在第 0 代垃圾回收中幸存的对象将被提升到第 1 代；在第 1 代垃圾回收中幸存的对象将被提升到第 2 代；而在第 2 代垃圾回收中幸存的对象将仍为第 2 代。<br />通过代提升，看对象的存活时间！</p>
+<p>Process/Private Bytes<br />Process/Virtual Bytes<br />.NET CLR Memory/# Bytes in all Heaps : CLR内存托管堆的大小<br />.NET CLR Memory/Large Object Heap Size: 大对象堆包含其大小为 85,000 个字节和更多字节的对象。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030105803105-1946605176.png" alt="" /></p>
+<p>托管堆的内存大小增加的趋势和大对象堆增加的趋势重叠，可以初步推断，内存的增加和大对象有关系！</p>
+<p><strong>3. 梳理问题分析思路</strong></p>
+<p>连续、间隔抓两个或者三个Dump，每次抓Dump间隔半个小时，或者一个小时，主要看内存的增量。</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111043907-2024483911.png" alt="" /><br />对比的看每个Dump中：</p>
+<ul>
+<li>多核CPU情况下，分析每个GC托管堆的大小 !eeheap &ndash;gc</li>
+<li>查询内存中各类对象的总个数和总内存占用 !dumpheap &ndash;stat</li>
+<li>查询内存中大对象的个数和对象大小 !dumpheap &ndash;stat  -mt -min 5000 -max 100000</li>
+<li>如果某一类或者几类对象的内存总占用很多，分析此类对象 !dumpheap &ndash;mt ***</li>
+<li>多次采样查看步骤4中对象的gcroot   !gcroot addr</li>
+<li>打断gcroot中任何一个链条，释放对象引用</li>
+
+
+
+</ul>
+<p>4. 动手分析</p>
+<ul>
+<li>多核CPU情况下，分析每个GC托管堆的大小 !eeheap &ndash;gc</li>
+
+
+
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111141989-107853247.png" alt="" /></p>
+<ul>
+<li>查询内存中各类对象的总个数和总内存占用 !dumpheap &ndash;stat</li>
+
+
+
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111240528-481895784.png" alt="" /></p>
+<ul>
+<li>查询内存中大对象的个数和对象大小 !dumpheap &ndash;stat -mt -min 5000 -max 100000</li>
+
+
+
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111321869-118802940.png" alt="" /></p>
+<p>&nbsp;&nbsp;</p>
+<ul>
+<li>如果某一类或者几类对象的内存总占用很多，分析此类对象 !dumpheap &ndash;mt *** -stat</li>
+
+
+
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111451576-1313267258.png" alt="" /></p>
+<p>&nbsp; &nbsp; &nbsp; <strong>大对象字符串分析，Session会话数据！同时Session会话中包含了权限数据！</strong></p>
+<ul>
+<li>多次采样查看步骤4中对象的gcroot !gcroot addr</li>
+
+
+
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201810/23525-20181030111629181-1971682750.png" alt="" /></p>
+<ul>
+<li>打断gcroot中任何一个链条，释放对象引用</li>
+
+
+</ul>
+<p><strong>5. 总结</strong></p>
+<p>总结一下，内存泄露问题分析，有固定的方法和指令，过程需要大家深入理解，同时熟悉代码非常重要，因为需要找出gcroot，分析出内存泄露的原因，再进行修改解决。</p>
+<p>大的套路：</p>
+<ul>
+<li>描述问题背景和现象</li>
+<li>确定问题是否是内存泄露</li>
+<li>梳理问题分析思路</li>
+<li>动手分析解决</li>
+<li>总结</li>
+
+
+</ul>
+<p>详细的分析步骤：</p>
+<ul>
+<li>多核CPU情况下，分析每个GC托管堆的大小 !eeheap &ndash;gc</li>
+<li>查询内存中各类对象的总个数和总内存占用 !dumpheap &ndash;stat</li>
+<li>查询内存中大对象的个数和对象大小 !dumpheap &ndash;stat -mt -min 5000 -max 100000</li>
+<li>如果某一类或者几类对象的内存总占用很多，分析此类对象 !dumpheap &ndash;mt ***</li>
+<li>多次采样查看步骤4中对象的gcroot !gcroot addr</li>
+<li>打断gcroot中任何一个链条，释放对象引用</li>
+
+
+</ul>
+<p>欢迎大家补充。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/10/30</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-10-30 11:23</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9875667" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9875667);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9875667, cb_entryCreatedDate = '2018-10-30 11:23', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="前段时间.Net Core 3.0 发布了，Entity Framework Core 3.0 也发布了Preview版。假期用了一上午大致研究了一遍，同时又体验了一把Visual Studio 20" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>.NetCore技术研究-EntityFramework Core 3.0 Preview - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/10661571.html">.NetCore技术研究-EntityFramework Core 3.0 Preview</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>前段时间.Net Core 3.0 发布了，Entity Framework Core 3.0 也发布了Preview版。假期用了一上午大致研究了一遍，同时又体验了一把Visual Studio 2019。总结一下分享给大家：</p>
+<ol>
+<li><strong><span style="color: #0000ff; font-size: 14px;">VS2019 新建.Net Core 3.0 Console应用，添加EFCore相关的Nuget引用</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">增加appSettings.json配置文件，配置数据库连接</span></strong></li>
+<li><strong><span style="color: #0000ff; font-size: 14px;">新建OneToMany模型，使用EF Core完成数据库操作</span></strong></li>
+</ol>
+<p><span style="font-size: 16px;"><strong>一、VS2019 新建.Net Core 3.0 Console应用，添加EFCore相关的Nuget引用</strong></span></p>
+<p>&nbsp; <strong>&nbsp;1. 新建.Net Core控制台应用 EFCoreTest</strong></p>
+<p>&nbsp; &nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190406134459471-448043963.png" alt="" /></p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190406134513664-571192900.png" alt="" /></p>
+<p>&nbsp; &nbsp;新建完成后，查看项目的依赖性，我们可以看到：</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190406134608234-1797239857.png" alt="" /></p>
+<p>&nbsp; <strong>2. 添加Microsoft.EntityFrameworkCore 3.0 Preview版 Nuget引用</strong></p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190406134752164-516467009.png" alt="" /></p>
+<p>&nbsp; &nbsp;同时添加Microsoft.EntityFrameworkCore.SqlServer3.0 Nuget引用（我们要用到SQL Server）</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201904/23525-20190406134840536-510334946.png" alt="" /></p>
+<p>&nbsp; &nbsp;这样我们就完成了项目的初始化。</p>
+<p><span style="font-size: 16px;"><strong>二、增加appsettings.json配置文件，配置数据库连接</strong></span></p>
+<p><strong>&nbsp; 1. 项目中添加appsettings.json文件</strong></p>
+<p>&nbsp; &nbsp;配置文件的内容如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{</span>"ConnectionStrings"<span style="color: #000000;">: {</span>"BizDatabase": "Server=127.0.0.1;Database=master;User id=sa;password=******" <span style="color: #000000;">}}</span></pre>
+</div>
+<p>&nbsp;<strong>2. 访问这个appsettings.json配置文件我们需要引用以下Nuget包</strong>：版本用的都是：3.0.0-preview3.19153.1</p>
+<ul>
+<li>Microsoft.Extensions.Configuration</li>
+<li>Microsoft.Extensions.Configuration.Json</li>
+</ul>
+<p><span style="font-size: 16px;"><strong>三、新建OneToMany模型，使用EF Core完成数据库操作</strong></span></p>
+<p>&nbsp; 这里以充电站和集控为例，1：M的关联关系。</p>
+<p>&nbsp; 这里我们同时使用了EF的注解，示例了个性化数据库表结构。以及外键关系</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><strong><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.ComponentModel.DataAnnotations;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.ComponentModel.DataAnnotations.Schema;
+</span></strong><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> EFCoreTest
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 充电站
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    [Table(<span style="color: #800000;">"</span><strong><span style="color: #800000;">Stations</span></strong><span style="color: #800000;">"</span><span style="color: #000000;">)]    
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ChargeStation
+    {
+        [Key]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">ID</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">Code</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Code { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">Name</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Name { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">MaintainTel</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">long</span> MaintainTel { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+     <strong>   [ForeignKey(</strong></span><strong><span style="color: #800000;">"</span><span style="color: #800000;">StationID</span><span style="color: #800000;">"</span></strong><span style="color: #000000;"><strong>)]</strong>        
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">virtual</span> List&lt;ChargeStationController&gt; Controllers { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+    }
+}</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><strong><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.ComponentModel.DataAnnotations;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.ComponentModel.DataAnnotations.Schema;
+</span></strong><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> EFCoreTest
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 电站集控
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    [Table(<span style="color: #800000;">"</span><strong><span style="color: #800000;">StationCtrl</span></strong><span style="color: #800000;">"</span><span style="color: #000000;">)]
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ChargeStationController
+    {
+        [Key]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">ID</span><span style="color: #800000;">"</span><span style="color: #000000;">)]        
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">Code</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Code { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">ControlAddress</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ControlAddress { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        [Required]        
+        [Column(</span><span style="color: #800000;">"</span><span style="color: #800000;">StationID</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        [ForeignKey(</span><span style="color: #800000;">"</span><span style="color: #800000;">StationID</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> StationID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+    }
+}</span></pre>
+</div>
+<p>&nbsp; 实体及关联关系搞定后，我们介绍今天的主角&nbsp; DbContext的实现：<strong>ChargeDbContext</strong></p>
+<p><strong>&nbsp;&nbsp;ChargeDbContext 有几个重要的属性和方法：</strong></p>
+<p style="margin-left: 30px;">public DbSet&lt;ChargeStation&gt; Stations { get; set; }<br />public DbSet&lt;ChargeStationController&gt; StationCtrl { get; set; }</p>
+<p style="margin-left: 30px;"><strong>重载OnConfiguring方法，加载配置系统、数据库连接串</strong></p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ChargeDbContext : DbContext 
+    {
+        </span><span style="color: #0000ff;">public</span> DbSet&lt;ChargeStation&gt; Stations { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+        </span><span style="color: #0000ff;">public</span> DbSet&lt;ChargeStationController&gt; StationCtrl { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            </span><span style="color: #0000ff;">var</span> builder = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ConfigurationBuilder()
+           .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile(</span><span style="color: #800000;">"</span><span style="color: #800000;">appsettings.json</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+
+            </span><span style="color: #0000ff;">var</span> configuration =<span style="color: #000000;"> builder.Build();
+        
+            </span><span style="color: #0000ff;">var</span> conn = configuration.GetConnectionString(<span style="color: #800000;">"</span><span style="color: #800000;">BizDatabase</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+            <strong>optionsBuilder.UseSqlServer(conn);</strong>
+        }
+    }</span></pre>
+</div>
+<p>&nbsp;至此， 核心主要的EFCore 代码已经完成，我们继续来实现对ChargeStation的数据库操作：</p>
+<p>&nbsp;我们在Main函数中实现对ChargeStation和ChargeStationController的删除和保存操作，以下代码，大家用过EF应该很熟悉：</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Program
+    {
+        </span><span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+        {
+            </span><span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> context = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ChargeDbContext())
+            {                
+                </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> sta <span style="color: #0000ff;">in</span> context.Stations.Include(i =&gt;<span style="color: #000000;"> i.Controllers))
+                {
+                    context.Remove(sta);
+                }
+               
+                context.SaveChanges();
+
+                </span><span style="color: #0000ff;">var</span> station = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ChargeStation
+                {
+                    ID </span>= <span style="color: #800000;">"</span><span style="color: #800000;">Station0001</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                    Code </span>= <span style="color: #800000;">"</span><span style="color: #800000;">Station0001</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                    Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">济南市奥体中路汉庭充电站</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                    MaintainTel </span>= <span style="color: #800080;">13799990001</span><span style="color: #000000;">,
+                    Controllers </span>= <span style="color: #0000ff;">new</span> System.Collections.Generic.List&lt;ChargeStationController&gt;<span style="color: #000000;">
+                    {
+                         </span><span style="color: #0000ff;">new</span><span style="color: #000000;"> ChargeStationController
+                         {
+                              ID </span>= <span style="color: #800000;">"</span><span style="color: #800000;">Station0001-101</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                              Code </span>=  <span style="color: #800000;">"</span><span style="color: #800000;">Station0001-101</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                              ControlAddress </span>= <span style="color: #800000;">"</span><span style="color: #800000;">123456789</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                              StationID </span>= <span style="color: #800000;">"</span><span style="color: #800000;">Station0001</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                         }
+                    }
+                };
+
+                context.Stations.Add(station);
+                context.SaveChanges();
+                Console.WriteLine(</span><span style="color: #800000;">"</span><span style="color: #800000;">Press any key!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                Console.ReadKey();
+            }
+        }
+    }</span></pre>
+</div>
+<p>&nbsp;以上即是EntityFramework Core 3.0 Preview 体验和使用分享，后续有会有一篇文章介绍在Debug时，如何Trace SQL语句。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/4/6</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-04-06 14:43</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=10661571" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(10661571);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 10661571, cb_entryCreatedDate = '2019-04-06 14:43', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

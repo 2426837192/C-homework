@@ -1,0 +1,448 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="上一篇博文我们介绍了ML.NET 的入门： ML.NET技术研究系列1-入门篇 本文我们继续，研究分享一下聚类算法k-means. 一、k-means算法简介 1. k-means算法的原理是什么样的" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>ML.NET技术研究系列-2聚类算法KMeans - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/11183035.html">ML.NET技术研究系列-2聚类算法KMeans</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>上一篇博文我们介绍了ML.NET 的入门：</p>
+<p><a id="homepage1_HomePageDays_DaysList_ctl01_DayList_TitleUrl_0" class="postTitle1" href="https://www.cnblogs.com/tianqing/p/11071864.html">ML.NET技术研究系列1-入门篇</a></p>
+<p>本文我们继续，研究分享一下聚类算法k-means.</p>
+<p><span style="font-size: 15px;"><strong>一、k-means算法简介</strong></span></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:sql;gutter:true;">k-means算法是一种聚类算法，所谓聚类，即根据相似性原则，将具有较高相似度的数据对象划分至同一类簇，将具有较高相异度的数据对象划分至不同类簇。
+</pre>
+</div>
+<p><strong>1. k-means算法的原理是什么样的</strong>？参考：<a href="https://baijiahao.baidu.com/s?id=1622412414004300046&amp;wfr=spider&amp;for=pc">https://baijiahao.baidu.com/s?id=1622412414004300046&amp;wfr=spider&amp;for=pc</a></p>
+<p>&nbsp; &nbsp;k-means算法中的k代表类簇个数，means代表类簇内数据对象的均值（这种均值是一种对类簇中心的描述），因此，k-means算法又称为k-均值算法。</p>
+<p>&nbsp; &nbsp;k-means算法是一种基于划分的聚类算法，以距离作为数据对象间相似性度量的标准，即数据对象间的距离越小，则它们的相似性越高，则它们越有可能在同一个类簇。</p>
+<p>&nbsp; &nbsp;数据对象间距离的计算有很多种，k-means算法通常采用欧氏距离来计算数据对象间的距离。算法详细的流程描述如下：</p>
+<p style="margin-left: 30px;"><img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714075928384-167622394.png" alt="" /></p>
+<p><strong>&nbsp; &nbsp;2. k-means算法的优缺点：</strong></p>
+<p>&nbsp; &nbsp; &nbsp;优点：&nbsp;<span class="bjh-br">算法简单易实现；&nbsp;</span></p>
+<p><span class="bjh-br"><span class="bjh-br">&nbsp; &nbsp; &nbsp;缺点：&nbsp;<span class="bjh-br">需要用户事先指定类簇个数；&nbsp;<span class="bjh-br">聚类结果对初始类簇中心的选取较为敏感；&nbsp;<span class="bjh-br">容易陷入局部最优；&nbsp;<span class="bjh-br">只能发现球形类簇；</span></span></span></span></span></span></p>
+<p>接下来我们说一下k-means算法的经典应用场景：鸢尾花</p>
+<p><strong>二、鸢尾花</strong></p>
+<p>首先，鸢尾花是一种植物，有四个典型的属性：</p>
+<ul>
+<li>&nbsp; 花瓣长度</li>
+<li>&nbsp; 花瓣宽度</li>
+<li>&nbsp; 花萼长度</li>
+<li>&nbsp; 花萼宽度</li>
+</ul>
+<p style="margin-left: 30px;">&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714091743543-882351295.png" alt="" />&nbsp;</p>
+<p>&nbsp;鸢尾花有三大品种setosa、versicolor 或 virginica&nbsp;，每个品种对应的以上四个属性各不相同。</p>
+<p>&nbsp;鸢尾花数据集中一共包含了150条记录，每个样本的包含它的萼片长度和宽度，花瓣的长度和宽度以及这个样本所属的具体品种。每个品种的样本量为50条。</p>
+<p>&nbsp;鸢尾花样本数据格式：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:sql;gutter:true;">5.2,3.4,1.4,0.2,Iris-setosa
+4.7,3.2,1.6,0.2,Iris-setosa
+4.8,3.1,1.6,0.2,Iris-setosa
+6.0,2.2,4.0,1.0,Iris-versicolor
+6.1,2.9,4.7,1.4,Iris-versicolor
+5.6,2.9,3.6,1.3,Iris-versicolor
+5.7,2.5,5.0,2.0,Iris-virginica
+5.8,2.8,5.1,2.4,Iris-virginica
+6.4,3.2,5.3,2.3,Iris-virginica
+</pre>
+</div>
+<p>　上述数据中，第一列是鸢尾花花萼长度，第二列是鸢尾花花萼宽度，第三列是鸢尾花花瓣长度，第四列是鸢尾花花瓣宽度。</p>
+<p>&nbsp; &nbsp;基于上述数据做机器学习、训练，形成一个模型。</p>
+<p><strong>三、ML.NET k-means</strong></p>
+<p>&nbsp; &nbsp;基于上述的场景，我们先准备样本数据，<a href="https://github.com/dotnet/machinelearning/blob/master/test/data/iris.data">https://github.com/dotnet/machinelearning/blob/master/test/data/iris.data</a></p>
+<p>&nbsp; &nbsp;另存为iris.data文件，每个属性逗号间隔。</p>
+<p>&nbsp; &nbsp;然后，大致梳理了一下实现步骤：</p>
+<ol>
+<li><span style="color: #0000ff; font-size: 15px;">&nbsp; &nbsp;新建一个.Net&nbsp; Core Console Project</span></li>
+<li><span style="color: #0000ff; font-size: 15px;">&nbsp; &nbsp;添加Microsoft.ML nuget 1.2.0版本</span></li>
+<li><span style="color: #0000ff; font-size: 15px;">&nbsp; &nbsp;添加鸢尾花数据、预测类实体类IrisData、ClusterPrediction</span></li>
+<li><span style="color: #0000ff; font-size: 15px;">&nbsp; &nbsp;构造MLContext、从iris.data构造IDataView，采用Trainers.KMeans进行模型训练，形成模型文件：IrisClusteringModel.zip</span></li>
+<li><span style="color: #0000ff; font-size: 15px;">&nbsp; &nbsp;输入一个测试数据，进行预测。</span></li>
+</ol>
+<p>&nbsp; &nbsp;好，让我们开始搞吧：</p>
+<p><span style="font-size: 15px;"><strong>&nbsp; &nbsp;1. 新建一个.Net&nbsp; Core Console Project</strong></span></p>
+<p>&nbsp; &nbsp; 先看下用的VS的版本：</p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714092638996-504963117.png" alt="" /></p>
+<p>&nbsp; &nbsp; 新建一个.Net Core Console的Project&nbsp;KMeansDemo</p>
+<p><span style="font-size: 15px;"><strong>&nbsp; &nbsp;2.&nbsp;添加Microsoft.ML nuget 1.2.0版本</strong></span></p>
+<p>&nbsp; &nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714092802514-1568527036.png" alt="" /></p>
+<p>&nbsp; 将iris.data文件放到Project下的Data目录中，同时右键iris.data，设置为：始终复制</p>
+<p style="margin-left: 30px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714092913309-1999362763.png" alt="" /></p>
+<p style="margin-left: 30px;">&nbsp;&nbsp;<img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714093941634-851591873.png" alt="" /></p>
+<p>&nbsp;</p>
+<p><span style="font-size: 15px;"><strong>&nbsp;3.&nbsp;添加鸢尾花数据、预测类实体类IrisData、ClusterPrediction</strong></span></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace KMeansDemo
+{
+    using Microsoft.ML.Data;
+
+    /// &lt;summary&gt;
+    /// 鸢尾花数据
+    /// &lt;/summary&gt;
+    class IrisData
+    {
+        /// &lt;summary&gt;
+        /// 鸢尾花花萼长度
+        /// &lt;/summary&gt;
+        [LoadColumn(0)]
+        public float SepalLength;
+
+        /// &lt;summary&gt;
+        /// 鸢尾花花萼宽度
+        /// &lt;/summary&gt;
+        [LoadColumn(1)]
+        public float SepalWidth;
+
+        /// &lt;summary&gt;
+        /// 鸢尾花花瓣长度
+        /// &lt;/summary&gt;
+        [LoadColumn(2)]
+        public float PetalLength;
+
+        /// &lt;summary&gt;
+        /// 鸢尾花花瓣宽度
+        /// &lt;/summary&gt;
+        [LoadColumn(3)]
+        public float PetalWidth;
+    }
+}
+</pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace KMeansDemo
+{
+    using Microsoft.ML.Data;
+
+    public class ClusterPrediction
+    {
+        /// &lt;summary&gt;
+        /// 预测的族群
+        /// &lt;/summary&gt;
+        [ColumnName("PredictedLabel")]
+        public uint PredictedClusterId;
+
+        [ColumnName("Score")]
+        public float[] Distances;
+    }
+}</pre>
+</div>
+<p><span style="font-size: 15px;"><strong>4.&nbsp; 构造MLContext、从iris.data构造IDataView，采用Trainers.KMeans进行模型训练，形成模型文件：IrisClusteringModel.zip</strong></span></p>
+<p>&nbsp;在Main函数中，开始编码 ，首先添加引用</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">using Microsoft.ML;
+</pre>
+</div>
+<p>&nbsp;声明样本数据文件和模型文件的文件路径</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">static readonly string _dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "iris.data");
+static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "IrisClusteringModel.zip");
+</pre>
+</div>
+<p>&nbsp;构造MLContext、IDataView，采用Trainer.KMeans进行模型训练，<strong>形成模型文件：IrisClusteringModel.zip</strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var mlContext = new MLContext(seed: 0);
+IDataView dataView = mlContext.Data.LoadFromTextFile&lt;IrisData&gt;(_dataPath, hasHeader: false, separatorChar: ',');
+string featuresColumnName = "Features";
+var pipeline = mlContext.Transforms
+                .Concatenate(featuresColumnName, "SepalLength", "SepalWidth", "PetalLength", "PetalWidth")
+                .Append(mlContext.Clustering.Trainers.KMeans(featuresColumnName, numberOfClusters: 3));
+var model = pipeline.Fit(dataView);
+using (var fileStream = new FileStream(_modelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+{
+      mlContext.Model.Save(model, dataView.Schema, fileStream);
+}
+Console.WriteLine("完成模型训练!");
+Console.WriteLine("模型文件:"+ _modelPath);
+</pre>
+</div>
+<p><span style="font-size: 15px;"><strong>5.&nbsp; 输入一个测试数据，进行预测。</strong></span></p>
+<p>&nbsp;输入一个测试数据，使用生成的模型，进行预测：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var predictor = mlContext.Model.CreatePredictionEngine&lt;IrisData, ClusterPrediction&gt;(model);
+var Setosa = new IrisData
+{
+                SepalLength = 5.1f,
+                SepalWidth = 3.5f,
+                PetalLength = 1.4f,
+                PetalWidth = 0.2f
+};
+
+var prediction = predictor.Predict(Setosa);
+Console.WriteLine($"Cluster: {prediction.PredictedClusterId}");
+Console.WriteLine($"Distances: {string.Join(" ", prediction.Distances)}");
+Console.WriteLine("Press any key!");</pre>
+</div>
+<p>　全部的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.ML;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.IO;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> KMeansDemo
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">{
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">class</span><span style="color: #000000;"> Program
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">string</span> _dataPath = Path.Combine(Environment.CurrentDirectory, <span style="color: #800000;">"</span><span style="color: #800000;">Data</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">iris.data</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">string</span> _modelPath = Path.Combine(Environment.CurrentDirectory, <span style="color: #800000;">"</span><span style="color: #800000;">Data</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">IrisClusteringModel.zip</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">14</span>             <span style="color: #0000ff;">var</span> mlContext = <span style="color: #0000ff;">new</span> MLContext(seed: <span style="color: #800080;">0</span><span style="color: #000000;">);
+</span><span style="color: #008080;">15</span>             IDataView dataView = mlContext.Data.LoadFromTextFile&lt;IrisData&gt;(_dataPath, hasHeader: <span style="color: #0000ff;">false</span>, separatorChar: <span style="color: #800000;">'</span><span style="color: #800000;">,</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">string</span> featuresColumnName = <span style="color: #800000;">"</span><span style="color: #800000;">Features</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span>             <span style="color: #0000ff;">var</span> pipeline =<span style="color: #000000;"> mlContext.Transforms
+</span><span style="color: #008080;">18</span>                 .Concatenate(featuresColumnName, <span style="color: #800000;">"</span><span style="color: #800000;">SepalLength</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">SepalWidth</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">PetalLength</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">PetalWidth</span><span style="color: #800000;">"</span><span style="color: #000000;">)
+</span><span style="color: #008080;">19</span>                 .Append(mlContext.Clustering.Trainers.KMeans(featuresColumnName, numberOfClusters: <span style="color: #800080;">3</span><span style="color: #000000;">));
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">var</span> model =<span style="color: #000000;"> pipeline.Fit(dataView);
+</span><span style="color: #008080;">21</span>             <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> fileStream = <span style="color: #0000ff;">new</span><span style="color: #000000;"> FileStream(_modelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">                mlContext.Model.Save(model, dataView.Schema, fileStream);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">25</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">完成模型训练!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">模型文件:</span><span style="color: #800000;">"</span>+<span style="color: #000000;"> _modelPath);
+</span><span style="color: #008080;">27</span>             
+<span style="color: #008080;">28</span>             <span style="color: #008000;">//</span><span style="color: #008000;">预测</span>
+<span style="color: #008080;">29</span>             <span style="color: #0000ff;">var</span> predictor = mlContext.Model.CreatePredictionEngine&lt;IrisData, ClusterPrediction&gt;<span style="color: #000000;">(model);
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>             <span style="color: #0000ff;">var</span> Setosa = <span style="color: #0000ff;">new</span><span style="color: #000000;"> IrisData
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">33</span>                 SepalLength = <span style="color: #800080;">5.1f</span><span style="color: #000000;">,
+</span><span style="color: #008080;">34</span>                 SepalWidth = <span style="color: #800080;">3.5f</span><span style="color: #000000;">,
+</span><span style="color: #008080;">35</span>                 PetalLength = <span style="color: #800080;">1.4f</span><span style="color: #000000;">,
+</span><span style="color: #008080;">36</span>                 PetalWidth = <span style="color: #800080;">0.2f</span>
+<span style="color: #008080;">37</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>             <span style="color: #0000ff;">var</span> prediction =<span style="color: #000000;"> predictor.Predict(Setosa);
+</span><span style="color: #008080;">40</span>             Console.WriteLine($<span style="color: #800000;">"</span><span style="color: #800000;">Cluster: {prediction.PredictedClusterId}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">41</span>             Console.WriteLine($<span style="color: #800000;">"</span><span style="color: #800000;">Distances: {string.Join(</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">, prediction.Distances)}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">42</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Press any key!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">45</span> }</pre>
+</div>
+<p>Run，看一下输出：</p>
+<p><img src="https://img2018.cnblogs.com/blog/23525/201907/23525-20190714093857450-1421847202.png" alt="" /></p>
+<p>&nbsp;以上就是通过ML.NET 的KMeans算法，实现聚类。</p>
+<p>&nbsp;上面的数据是一个监督学习的样本，同时是一个数值类型的数据，比较好奇的是，能不能对文本数据+值数据进行聚类，下一篇，我们将继续完成文本数据+值数据的聚类分析。</p>
+<p>以上，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2019/7/14</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-07-14 09:43</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11183035" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11183035);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 11183035, cb_entryCreatedDate = '2019-07-14 09:43', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

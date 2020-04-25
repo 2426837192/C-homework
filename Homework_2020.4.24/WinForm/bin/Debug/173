@@ -1,0 +1,474 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="在上一篇中，我们介绍了消息的顺序收发保证： Azure Messaging-ServiceBus Messaging消息队列技术系列3-消息顺序保证 在本文中我们主要介绍下复杂对象消息是否需要支持序列" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Azure Messaging-ServiceBus Messaging消息队列技术系列4-复杂对象消息是否需要支持序列化和消息持久化 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6533272.html">Azure Messaging-ServiceBus Messaging消息队列技术系列4-复杂对象消息是否需要支持序列化和消息持久化</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>在上一篇中，我们介绍了消息的顺序收发保证：</p>
+<p><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/tianqing/p/6527106.html">Azure Messaging-ServiceBus Messaging消息队列技术系列3-消息顺序保证</a></p>
+<p>在本文中我们主要介绍下复杂对象消息是否需要支持序列化以及消息的持久化。</p>
+<p>在实际的业务应用开发中，我们经常会将复杂业务对象放到消息里面，实现异构系统之间的集成、模块间的解耦等等。</p>
+<p>同时，我们还比较关注消息队列服务是否支持消息的持久化，消息队列如果宕机后持久化的消息是否可以还原？</p>
+<p>在Azure Messaging的官方说明中，没有特地的介绍复杂对象消息是否需要支持序列化的要求，但是，我们在上篇博文中，有个消息创建方法，as following,</p>
+<p>BrokeredMessage类的构造函数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;"> Summary:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     Constructor that creates a BrokeredMessage from a given object using the
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     provided XmlObjectSerializer
+        </span><span style="color: #008000;">//</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;"> Parameters:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">   serializableObject:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     The serializable object.
+        </span><span style="color: #008000;">//</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">   serializer:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     The serializer object.
+        </span><span style="color: #008000;">//</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;"> Exceptions:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">   System.ArgumentNullException:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     Thrown when null serializer is passed to the method with a non-null serializableObject
+        </span><span style="color: #008000;">//</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;"> Remarks:
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     You should be aware of the exceptions that their provided Serializer can
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     throw and take appropriate actions. Please refer to for a possible list of
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">     exceptions and their cause.</span>
+        <span style="color: #0000ff;">public</span> BrokeredMessage(<span style="color: #0000ff;">object</span> serializableObject, XmlObjectSerializer serializer);</pre>
+</div>
+<p>看来消息的构造，支持动态传入XmlObjectSerializer, so,</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;"> 2</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 构造消息
+</span><span style="color: #008080;"> 3</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="serializableObject"&gt;</span><span style="color: #008000;">可序列化的对象</span><span style="color: #808080;">&lt;/param&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">消息</span><span style="color: #808080;">&lt;/returns&gt;</span>
+<span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">public</span><span style="color: #000000;"> BrokeredMessage Create(Object serializableObject)
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">var</span> serializer = <span style="color: #0000ff;">new</span><span style="color: #000000;"> DataContractSerializer(serializableObject.GetType(),
+</span><span style="color: #008080;"> 9</span>                 <span style="color: #0000ff;">new</span> DataContractSerializerSettings() { IgnoreExtensionDataObject = <span style="color: #0000ff;">true</span>, PreserveObjectReferences = <strong><span style="color: #0000ff;">true</span></strong><span style="color: #000000;"> });
+</span><span style="color: #008080;">10</span>             <span style="color: #0000ff;">var</span> message = <span style="color: #0000ff;">new</span><span style="color: #000000;"> BrokeredMessage(serializableObject, serializer);
+</span><span style="color: #008080;">11</span>             message.Properties.Add(<span style="color: #800000;">"</span><span style="color: #800000;">Type</span><span style="color: #800000;">"</span><span style="color: #000000;">, serializableObject.GetType().ToString());
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> message;
+</span><span style="color: #008080;">14</span>         }</pre>
+</div>
+<p>接下来，我们用上一篇中的代码，做一个复杂对象消息收发的测试，我们还是用上次的SalesOrder类，但是增加一个SalesOrderItem集合和双向关联，来描述销售订单和销售订单明细的的1：n的业务领域模型。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Linq;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Threading.Tasks;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> AzureMessaging.FIFO
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 销售订单类
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> SalesOrder
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 订单ID
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> OrderID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 订单编号
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Code { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 创建时间
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> DateTime CreateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 总价格
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> Decimal TotalPrice { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 产品ID
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> ProductID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #0000ff;">private</span> List&lt;SalesOrderItem&gt;<span style="color: #000000;"> items;
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 销售订单明细
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> List&lt;SalesOrderItem&gt;<span style="color: #000000;"> Items
+        {
+            </span><span style="color: #0000ff;">get</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">if</span> (items == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    items </span>= <span style="color: #0000ff;">new</span> List&lt;SalesOrderItem&gt;<span style="color: #000000;">();
+
+                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> items;
+            }
+            </span><span style="color: #0000ff;">set</span><span style="color: #000000;">
+            {
+                items </span>=<span style="color: #000000;"> value;
+            }
+        }
+    }
+}</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Linq;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+</span><span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Threading.Tasks;
+
+</span><span style="color: #0000ff;">namespace</span><span style="color: #000000;"> AzureMessaging.FIFO
+{
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+    <span style="color: #808080;">///</span><span style="color: #008000;"> 销售订单明细
+    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> SalesOrderItem
+    {
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 标识
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 客户ID
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> CustomerID { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 所属的销售订单ID
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span><span style="color: #000000;"> SalesOrderID
+        {
+            </span><span style="color: #0000ff;">get</span><span style="color: #000000;">
+            {
+                </span><span style="color: #0000ff;">if</span> (Order != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> Order.OrderID;
+
+                </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">string</span><span style="color: #000000;">.Empty;
+            }
+        }
+
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+        <span style="color: #808080;">///</span><span style="color: #008000;"> 所属的销售订单
+        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+        <span style="color: #0000ff;">public</span> SalesOrder Order { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+    }
+}</span></pre>
+</div>
+<p>创建销售订单实例类方法：</p>
+<div class="cnblogs_code">
+<pre>  <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> SalesOrder CreateSalesOrder(<span style="color: #0000ff;">int</span><span style="color: #000000;"> i)
+        {
+            </span><span style="color: #0000ff;">var</span> order = <span style="color: #0000ff;">new</span> SalesOrder() { OrderID = i.ToString(), Code = <span style="color: #800000;">"</span><span style="color: #800000;">SalesOrder_</span><span style="color: #800000;">"</span> + i, CreateTime = DateTime.Now, ProductID = <span style="color: #800080;">17967</span>, TotalPrice = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">decimal</span>(<span style="color: #800080;">19999</span><span style="color: #000000;">) };
+            order.Items.Add(</span><span style="color: #0000ff;">new</span> SalesOrderItem() { ID = Guid.NewGuid().ToString(), <strong>Order = order</strong>, CustomerID = <span style="color: #800080;">1234567</span><span style="color: #000000;"> });
+
+            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> order;
+        }</span></pre>
+</div>
+<p>在构造SalesOrder和SalesOrderItems时，我们做了双向关联。<br />消息顺序收发测试：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> Microsoft.ServiceBus.Messaging;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections.Generic;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Linq;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Threading.Tasks;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">namespace</span><span style="color: #000000;"> AzureMessaging.FIFO
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">class</span><span style="color: #000000;"> Program
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">string</span> queueName = <span style="color: #800000;">"</span><span style="color: #800000;">OrderQueue</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span><span style="color: #000000;">[] args)
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">            MessageSend();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">            Console.ReadKey();
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #000000;">            MessageReceive();
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">            Console.ReadKey();
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;">23</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 发送消息
+</span><span style="color: #008080;">24</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;">25</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> MessageSend()
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">27</span>             <span style="color: #0000ff;">var</span> sbUtils = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServiceBusUtils();
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>             <span style="color: #008000;">//</span><span style="color: #008000;">创建队列</span>
+<span style="color: #008080;">30</span>             sbUtils.CreateQueue(queueName, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span>             <span style="color: #008000;">//</span><span style="color: #008000;">顺序发送消息到OrderQueue</span>
+<span style="color: #008080;">33</span>             <span style="color: #0000ff;">var</span> queueSendClient =<span style="color: #000000;"> sbUtils.GetQueueClient(queueName);
+</span><span style="color: #008080;">34</span>             <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">10</span>; i++<span style="color: #000000;">)
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">36</span>                 <span style="color: #0000ff;">var</span> order =<span style="color: #000000;"> CreateSalesOrder(i);
+</span><span style="color: #008080;">37</span>                 <span style="color: #0000ff;">var</span> message =<span style="color: #000000;"> sbUtils.Create(order);
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">                queueSendClient.Send(message);
+</span><span style="color: #008080;">39</span>                 Console.WriteLine(<span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Send {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, i, message.MessageId));
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Send Completed!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+<span style="color: #008080;">46</span>         <span style="color: #808080;">///</span><span style="color: #008000;"> 接收消息
+</span><span style="color: #008080;">47</span>         <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+<span style="color: #008080;">48</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> MessageReceive()
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">50</span>             <span style="color: #0000ff;">int</span> index = <span style="color: #800080;">0</span><span style="color: #000000;">;
+</span><span style="color: #008080;">51</span>             BrokeredMessage msg = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">52</span>             <span style="color: #0000ff;">var</span> sbUtils = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServiceBusUtils();
+</span><span style="color: #008080;">53</span>             <span style="color: #0000ff;">var</span> queueReveiveClient =<span style="color: #000000;"> sbUtils.GetReceiveQueueClient(queueName, ReceiveMode.ReceiveAndDelete);
+</span><span style="color: #008080;">54</span>             <span style="color: #0000ff;">while</span> ((msg = queueReveiveClient.Receive(TimeSpan.FromMilliseconds(<span style="color: #800080;">3</span>))) != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">56</span>                 Console.WriteLine(<span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">"</span><span style="color: #800000;">Received {0} MessageID: {1}</span><span style="color: #800000;">"</span><span style="color: #000000;">, index, msg.MessageId));
+</span><span style="color: #008080;">57</span>                 index++<span style="color: #000000;">;
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span>             <span style="color: #808080;">///</span><span style="color: #008000;">/删除队列</span>
+<span style="color: #008080;">61</span>             <span style="color: #008000;">//</span><span style="color: #008000;">sbUtils.DeleteQueue(queueName);</span>
+<span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span>             Console.WriteLine(<span style="color: #800000;">"</span><span style="color: #800000;">Receive Completed!</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> SalesOrder CreateSalesOrder(<span style="color: #0000ff;">int</span><span style="color: #000000;"> i)
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">68</span>             <span style="color: #0000ff;">var</span> order = <span style="color: #0000ff;">new</span> SalesOrder() { OrderID = i.ToString(), Code = <span style="color: #800000;">"</span><span style="color: #800000;">SalesOrder_</span><span style="color: #800000;">"</span> + i, CreateTime = DateTime.Now, ProductID = <span style="color: #800080;">17967</span>, TotalPrice = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">decimal</span>(<span style="color: #800080;">19999</span><span style="color: #000000;">) };
+</span><span style="color: #008080;">69</span>             order.Items.Add(<span style="color: #0000ff;">new</span> SalesOrderItem() { ID = Guid.NewGuid().ToString(), Order = order, CustomerID = <span style="color: #800080;">1234567</span><span style="color: #000000;"> });
+</span><span style="color: #008080;">70</span> 
+<span style="color: #008080;">71</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> order;
+</span><span style="color: #008080;">72</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">74</span> }</pre>
+</div>
+<p>&nbsp;</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170310214658248-1854959179.png" alt="" /></p>
+<p>可以看出，复杂对象消息只要指定适当的XmlObjectSerializer，即可。</p>
+<p>在双向引用这种领域模型的设计场景下，我们配置了PreserveObjectReferences = true</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> serializer = <span style="color: #0000ff;">new</span><span style="color: #000000;"> DataContractSerializer(serializableObject.GetType(),
+                </span><span style="color: #0000ff;">new</span> DataContractSerializerSettings() { IgnoreExtensionDataObject = <span style="color: #0000ff;">true</span>, <strong>PreserveObjectReferences = <span style="color: #0000ff;">true</span> </strong>});</pre>
+</div>
+<p>解决了序列化时循环引用的问题。<br />关于消息的持久化，Azure messaging有官方的说明：所有的队列都是持久化的，持久化存储是SQL Server，不提供内存中的消息队列。</p>
+<p>毕竟是PaaS层的消息队列服务，消息的持久化和高可用性微软还是有保障的。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201703/23525-20170310215259045-725304148.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>本篇中我们介绍并验证了Azure Messaging Service Bus复杂对象消息是否需要支持序列化和消息持久化，下一篇我们继续介绍消息的重复发送问题。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/3</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-03-10 21:56</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6533272" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6533272);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6533272, cb_entryCreatedDate = '2017-03-10 21:56', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

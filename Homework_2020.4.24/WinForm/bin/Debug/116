@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>随笔列表第10页 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                
+
+
+
+<div id="homepage_top_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=9">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=7">7</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=9">9</a>
+    10
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=11">下一页</a>
+</div>
+</div>
+
+
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/08/07.html">2008年8月7日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/08/07/1263093.html">
+    SQL Server2005探索之---正确使用索引SQL案例补充
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：应上篇文章&quot;SQL Server2005探索之---正确使用索引&quot;朋友们的需要，将如何正确使用索引结合几个SQL索引使用说明作为补充。 数据库： Northwind SQL Server 版本： SQL Server2005 操作之前执行如下sql：dbcc freeproccache 以清空缓存，执行“SET STATISTICS IO ON ”，查看执行成本。 ...            <a href="https://www.cnblogs.com/tianqing/archive/2008/08/07/1263093.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-08-07 17:01 Eric zhou 阅读 (2240) 评论 (25)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1263093" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+            <div class="postSeparator"></div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/08/07/1262603.html">
+    SQL Server2005探索之---正确使用索引
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近在总结SQL Server2005下性能调优方法，一个通用的调优方法。通过找到系统的瓶颈，然后解决瓶颈，提高性能。例如：当我们找到系统的瓶颈在于磁盘I/O上，在不提高硬件配置的前提下，我们应该如果提高性能？通过各种各样的性能分析工具 ：Profiler、SQLDiag、Perfmon等等。我们找到了一些影响性能的关键SQL，现在我们暂不考虑程序问题。对于这些SQL我们应该如何改进呢？说起...            <a href="https://www.cnblogs.com/tianqing/archive/2008/08/07/1262603.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-08-07 10:12 Eric zhou 阅读 (2903) 评论 (15)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1262603" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/07/17.html">2008年7月17日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/07/17/1245036.html">
+    SQL Server2005探索之——分区，请朋友们讨论说说
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：SQL Server 2005是微软在推出SQL Server 2000后时隔五年推出的一个数据库.相对于SQL Server2000来说有了质的提高。它给我们提供了诸多新特性，例如：复制、分区、动态管理视图、CTE、性能顾问等等。现在，就这个帖子，和园子里的朋友们讨论一下分区。 在微软TechNet上是这样介绍分区表和分区索引的： Instruction 已分区表和已分区索引的...            <a href="https://www.cnblogs.com/tianqing/archive/2008/07/17/1245036.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-07-17 11:09 Eric zhou 阅读 (1660) 评论 (13)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1245036" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/06/25.html">2008年6月25日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/06/25/1229419.html">
+    菜鸟学sql，Oracle数据库结构比较
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：这几天，正好做oracle下数据库结构比较，比较具体详细差异，例如：2个库具体有那些表不同，不同在什么地方，主键、长度、类型......,要求是用一句sql实现，对于我这个sql菜鸟来说，的确是个挑战。好在有个SQL Server例子可以借鉴。先贴一下oracle下的sql 1 2 3 ------------------------------------------------...            <a href="https://www.cnblogs.com/tianqing/archive/2008/06/25/1229419.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-06-25 10:37 Eric zhou 阅读 (1847) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1229419" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/06/23.html">2008年6月23日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/06/23/1228129.html">
+    自己对环境和社会的一些感悟
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近，我一值在考虑一些问题，想想自己当前的境况，想想自己的未来。感到一丝惆怅的同时，也有一些顿悟。 从学校里，我们便被灌输：你要适应社会，不要让社会来适应你。当时考虑这些话是很对的，的确，当你刚步入社会，你的个人能力和社会经验是少的可怜，也许你有很多个性，很多理想，但在现实面前你不得不低头而放弃。那时，我明白了可以有机会去追求自己的理想是件多么快乐的事情。随着你慢慢适应社会，你的能力和...            <a href="https://www.cnblogs.com/tianqing/archive/2008/06/23/1228129.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-06-23 13:40 Eric zhou 阅读 (337) 评论 (0)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1228129" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/05/24.html">2008年5月24日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/05/24/1206477.html">
+    SQL Server2005探索之—— 利用SQL Server2005提供的namespace 编程
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：最近，在探索SQL Server2005的新特性,例如，SSIS，Replication.....,利用SSIS（Microsoft SQL Server Integration Services ）将Oracle数据库整体迁移到SQL Server2005中（），Replication 实现了多个数据库服务器之间的数据同步，间接的提高的数据库的性能。相信朋友们一定很熟悉，在这里就不再赘述了...            <a href="https://www.cnblogs.com/tianqing/archive/2008/05/24/1206477.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-05-24 17:01 Eric zhou 阅读 (1628) 评论 (3)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1206477" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/04/17.html">2008年4月17日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/04/17/1158176.html">
+    SQL Server 数据类型学习
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：这些天，需要由Oracle移植到SQL Server，用到了Microsoft 的Microsoft SQL Server Migration Assistant 2005 for Oracle，用到了数据类型，所以对SQL Server 的数据类型来了个全面的学习，先总结几个关键点，于朋友们分享 The difference between char and nchar CHAR是固定长度...            <a href="https://www.cnblogs.com/tianqing/archive/2008/04/17/1158176.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-04-17 15:29 Eric zhou 阅读 (933) 评论 (2)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1158176" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/03/29.html">2008年3月29日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/03/29/1128783.html">
+    what AS and Is are? 
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：今天看了AnyTao博客上 -------[你必须知道的.NET] 第一回：恩怨情仇：is和as ,通过MSDN，对As 和Is在C#里的用法来了个深刻的理解，现总结一下，和园子里朋友共享。 先引用AnyTao的解释：比较好, Hereis的规则如下： 检查对象类型的兼容性，并返回结果，true或者false； 不会抛出异常； 如果对象为null，则...            <a href="https://www.cnblogs.com/tianqing/archive/2008/03/29/1128783.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-03-29 13:45 Eric zhou 阅读 (1953) 评论 (12)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1128783" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2008/03/12.html">2008年3月12日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2008/03/12/1101644.html">
+    treeview 和数据源绑定
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：前几天写了个ASP.NET程序，用到了treeview作为左边菜单，依据用户的角色来初始treeview，比较简单实用，所以现在总结一下，和博友们共享一下。 首先需要一个关系数据库表结构:就这个结构 NodeId ModualID NodeName NodeUR...            <a href="https://www.cnblogs.com/tianqing/archive/2008/03/12/1101644.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2008-03-12 10:14 Eric zhou 阅读 (1789) 评论 (1)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=1101644" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+    
+
+
+<div class="day">
+    <div class="dayTitle">
+        <a href="https://www.cnblogs.com/tianqing/archive/2007/06/20.html">2007年6月20日</a>
+    </div>
+        <div class="postTitle">
+            
+
+<a class="postTitle2" href="https://www.cnblogs.com/tianqing/archive/2007/06/20/790306.html">
+    C# set和get如何用 
+</a>
+
+        </div>
+        <div class="postCon">
+            
+
+    <div class="c_b_p_desc">
+摘要：C#语言有两个函数--一个赋值函数（get），一个取值函数(set)，这从它生成的中间语言代码可以清晰地看到。C#不提倡将域的保护级别设为public而使用户在类外任意操作--那样太不OO,或者具体点说太不安全！对所有有必要在类外可见的域，C#推荐采用属性来表达。属性不表示存储位置，这是属性和域的根本性的区别。下面是一个典型的属性设计： using System; class MyClass { ...            <a href="https://www.cnblogs.com/tianqing/archive/2007/06/20/790306.html" class="c_b_p_desc_readmore">阅读全文</a>
+    </div>
+
+        </div>
+        <div class="clear"></div>
+        <div class="postDesc">
+            
+
+posted @ 2007-06-20 13:29 Eric zhou 阅读 (10287) 评论 (2)
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=790306" rel="nofollow">
+    编辑
+</a>
+
+        </div>
+        <div class="clear"></div>
+</div>
+
+<div class="topicListFooter">
+    <div id="nav_next_page">
+        
+
+    </div>    
+</div>
+
+
+<div id="homepage_bottom_pager" class="topicListFooter">
+    
+
+<div class="pager">
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=9">上一页</a>
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=1">1</a>
+    ···
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=6">6</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=7">7</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=8">8</a>
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=9">9</a>
+    10
+        <a href="https://www.cnblogs.com/tianqing/default.html?page=11">11</a>
+    
+    
+    <a href="https://www.cnblogs.com/tianqing/default.html?page=11">下一页</a>
+</div>
+</div>
+
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

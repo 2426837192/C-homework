@@ -1,0 +1,357 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="业界主流的互联网架构中，分布式服务框架、分布式数据访问服务、消息队列服务、服务网关(API)、分布式事务等都是核心的组件和框架。 当我们的系统规模越来越大，从几台服务器扩展到几十台、几百台、上千台，传" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>分布式数据访问服务之1—华山论剑篇 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/6736320.html">分布式数据访问服务之1—华山论剑篇</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>&nbsp; &nbsp; &nbsp; 业界主流的互联网架构中，分布式服务框架、分布式数据访问服务、消息队列服务、服务网关(API)、分布式事务等都是核心的组件和框架。</p>
+<p>当我们的系统规模越来越大，从几台服务器扩展到几十台、几百台、上千台，传统的烟囱式的、大集中式系统架构，逐步演进为服务化SOA、分布式的系统架构：</p>
+<p>在数据层面，应用层面，访问层面和查询方面，全都以分布式的结构来搭建，使整个系统不存在性能和横向扩展的瓶颈，实现系统的弹性伸缩和横向扩展，</p>
+<p>以支撑我们超大规模的系统。</p>
+<p>&nbsp; &nbsp; &nbsp; 最近研究了业界主流的分布式数据访问服务，做了一次横向对比和分析。基于对比做技术选型、验证，目的就是要设计一套.Net版本的分布式数据访问组件。</p>
+<p>&nbsp; &nbsp; &nbsp; 搞了这么多年.Net，ORMapping（EF、Hibernate、MyBatis），有必要搞一个&ldquo;分布式数据访问服务&rdquo;的技术专题，作为总结和技术分享。</p>
+<p>&nbsp; &nbsp; &nbsp; 这个系列的第一篇以"华山论剑" 开始吧，细数各门各派的看家本领（分布式数据访问服务框架），一较高低！</p>
+<p><strong>一、微软Azure SQL&nbsp;</strong></p>
+<p>使用 Azure SQL 数据库的可缩放工具和功能，可以轻松地横向扩展数据库。特别是可以使用弹性数据库客户端库来创建和管理扩大的数据库。</p>
+<p>此功能支持使用成百上千个 AzureSQL 数据库，轻松地开发数据分区应用程序。然后，可以使用弹性作业帮助简化这些数据库的管理。</p>
+<p>它包含了三个核心组件：<strong>分片映射管理、数据路由、多分片查询</strong></p>
+<p>1.&nbsp;<strong>分片映射管理器</strong>：分片映射管理器是一个特殊的数据库，它维护一个分片集中有关所有分片 （数据库）的全局映射信息。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419222945399-1831512279.png" alt="" /></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419223025759-764101835.png" alt="" /></p>
+<p>2.&nbsp;<strong>数据路由</strong>：使用查询中的数据将请求路由到相应数据库的功能</p>
+<p>假设将一个请求传入应用程序。基于请求的分区键值，应用程序必须根据该键值判断正确的数据库。接着，它会与数据库建立连接来处理请求。<strong>借助数据依赖路由</strong>，</p>
+<p>能够通过对应用程序的分片映射的单个简单调用打开连接，进行数据操作：</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419223157556-865047573.png" alt="" /></p>
+<p>3.&nbsp;&nbsp;<strong>多分片查询</strong>：多分片查询用于诸如数据收集/报告等需要跨多个分片运行查询的任务。（相比之下，数据相关的路由会在单个分片上执行所有操作。）</p>
+<p>当一个请求涉及多个（或所有）分片时，多分片查询将生效。多分片查询在所有分片或一组分片上执行相同的 T-SQL 代码。使用 UNION ALL 语义，</p>
+<p>将参与分片中的结果合并到一个总结果集中。该功能是通过该客户端库处理多个任务公开的，其中包括连接管理、线程管理、故障处理和中间结果处理。</p>
+<p>最多可以查询数百个分片</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419223335399-1040983865.png" alt="" /></p>
+<p>总结：微软的Azure SQL是一个PaaS层的数据访问服务，需要将本地数据库迁移到Azure SQL，即云端SQLServer中，</p>
+<p>整个Azure SQL支持对SQLServer的横向扩展，在SDK层面简化屏蔽了分库分表带来的一些编程问题，如果采用Azure SQL的话，</p>
+<p>分库分表的部署、管理、集成的确非常方便，原生支持。但是本地化私有云环境下，SQLServer的分库分表就需要自己搞了。</p>
+<p><strong>二、阿里分布式关系型数据库服务DRDS&mdash;&mdash;云端数据库PaaS服务</strong></p>
+<p>DRDS 目前定位成一个中间件（前身是TDDL），在业务应用和RDS（关系型数据库服务器）之间，本身不承担数据存储，</p>
+<p>只负责解决分布式情况下数据操作路由、执行、数据处理等功能。主要支持的数据库是MySQL。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224046118-65523507.png" alt="" /><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224120102-1329765488.png" alt="" /></p>
+<p>DRDS的使用与MySQL非常接近，建实例、建库、建表、SQL操作，唯一比较大的区别在于水平拆分模式下，DRDS对于建表需要指定拆分字段(类似索引)，</p>
+<p>只要带上这个拆分字段，SQL只会在部分数据分片上执行，从而加速SQL执行速度。</p>
+<p>DRDS有着比较完整的MySQL SQL兼容性</p>
+<p>DRDS 对于单机事务完整支持，也就是业务中一个事务中的各个SQL最终都落到同一个数据库即可保障强一致，</p>
+<p>对于跨数据库的分布式事务，DRDS提供最终一致分布式事务给业务使用，目前处于内测阶段。</p>
+<p><strong>1. DRDS基本原理-读写分离：</strong></p>
+<p>对于sql进行类型判定，如果判定为读取操作，则按照用户设置的读权重进行sql路由，到主实例或者到只读上进行sql操作。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224323368-2027041472.png" alt="" width="549" height="297" /></p>
+<p><strong>2. DRDS基本原理-水平拆分</strong></p>
+<p>对于sql进行类型判定，如果判定为读取操作，则按照用户设置的读权重进行sql路由，到主实例或者到只读上进行sql操作。</p>
+<p>DRDS中的数据是按照拆分字段值，加上特定的算法进行计算，根据结果存储数据到对应分片。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224456727-984262747.png" alt="" width="237" height="299" /><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224531852-1096142776.png" alt="" width="486" height="272" /></p>
+<p>3. DRDS基本原理-SQL路由</p>
+<p>当用户SQL到DRDS时，DRDS会解析整个SQL含义，然后按照拆分字段的值和执行策略将SQL路由到对应分区进行执行。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170419224652181-1594626546.png" alt="" width="674" height="286" /></p>
+<p><strong>4. DRDS基本原理-数据合并：</strong></p>
+<p>如果一个SQL对应多个分片数据执行，DRDS会将各个分片返回的数据按照原始SQL语义进行合并。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170420212230384-1388961181.png" alt="" width="590" height="277" /></p>
+<p><strong>5. DRDS支持的SQL语法</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170420212336946-1101411394.png" alt="" /></p>
+<p><strong>6. DRDS不支持的SQL语法：</strong></p>
+<p>&nbsp; &nbsp; 受限于分布式事务</p>
+<ul>
+<li>跨分片操作, UPDATE/DELETE [ORDER BY] LIMIT</li>
+<li>跨分片操作, UPDATE A,B set A.s = B.s+1 WHERE A.ID = B.NAME , 非拆分字段之间的跨库JOIN</li>
+<li>拆分键变更, UPDATE A SET A.ID = 1 WHERE XXX, ID为拆分字段</li>
+<li>跨分片操作, INSERT A SELECT B WHERE B.ID &gt; XX , 跨库导入导出数据</li>
+<li>跨库事务, 比如两次UPDATE不在一个分片上</li>
+</ul>
+<p>&nbsp; &nbsp;子查询限制</p>
+<ul>
+<li>暂不支持非where条件的correlate subquery</li>
+<li>暂不支持sql中带聚合条件和correlate subquery</li>
+</ul>
+<p>7. <strong>DRDS是否支持分布式join以及复杂SQL如何支持？</strong></p>
+<p>&nbsp; &nbsp;不是所有的join都能够支持，例如对于大表之间的join，就因为执行代价过高，速度过慢而被DRDS限制，但大部分的join的语义，支持以最高效的方式完成。</p>
+<p>&nbsp; &nbsp;DRDS处理join的原则非常简单：<strong>尽可能让join发生在单机</strong>。</p>
+<p>&nbsp; &nbsp;7.1. 按照同一个维度进行切分：如果能够让join物理上发生在单台机器上，那么任何一类的复杂查询都是可以直接支持的。一般而言，</p>
+<p>这就意味着参与join的多张表按照同一个维度进行切分。例如，一个用户有多个商品，每个商品都有自己的商品特征。这时候，如果需要join,可以将所有数据按照用户，</p>
+<p>或者按照商品进行切分，那么join就会物理上的发生在同一个机器上，DRDS能够很轻松的保证所有在单机发生的join查询，物理上都能够查出数据，</p>
+<p>对于非常复杂的SQL，可以通过注释的方式，直接告知DRDS切分条件，这样就可以绕开SQL解析器进行查询。</p>
+<p>&nbsp; 7.2. 小表复制（主数据复制同步）：同时可以有选择的将一些不经常更新的，数据量比较小的元数据表复制到全部的节点上。</p>
+<p>这样，大表join小表的时候，就从一个分布式join变为了本地join，当然，这种过程需要一定的代价，也就是元数据表内的数据更新，</p>
+<p>可能在一小段时间(50~100ms)后才能在分库内看到。</p>
+<p>&nbsp; 7.3. 在线查询与离线查询分离：对于复杂的大表和大表的分析和统计类查询，阿里内部推荐采取专门的分析引擎来获取报表数据，比如使用ODPS等，</p>
+<p>这类查询使用传统数据库架构，在数据量非常巨大的时候，很可能会影响线上的应用，因此阿里<strong>建议将在线和离线查询分开。</strong></p>
+<p><strong>总结：阿里的DRDS还是非常强大的，<strong>依靠MySQL原生的Replica技术+SQL路由解析+内存数据合并，</strong>日常的MySQL分库分表、读写分离等大部分场景都能支持。</strong></p>
+<p><strong>三、当当Sharding-JDBC</strong></p>
+<p><strong>Sharding-JDBC是当当应用框架ddframe中，关系型数据库模块dd-rdb中分离出来的数据库水平扩展框架，即透明化数据库分库分表访问。</strong></p>
+<p>从框架名字看，肯定是Java技术路线的，官方的说明中，Sharding-JDBC功能灵活且全面：</p>
+<ul>
+<li>分片策略灵活，可支持=，BETWEEN，IN等多维度分片，</li>
+<li>也可支持多分片键共用</li>
+<li>SQL解析功能完善，支持聚合，分组，排序，Limit，OR等查询，并且支持Binding Table以及笛卡尔积的表查询。</li>
+<li>支持柔性事务(目前仅最大努力送达型)。</li>
+<li>支持读写分离</li>
+</ul>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170420213216477-1006941706.png" alt="" width="689" height="504" /></p>
+<p>Sharding-JDBC定位于<strong>日常数据库CRUD操作，目前仅针对DQL和DML语句进行支持</strong>。</p>
+<p>编程示例：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> ShardingRule shardingRule = ShardingRule.builder()<br />　　　　.dataSourceRule(dataSourceRule)<br />　　　　.tableRules(tableRuleList)<br />　　　　.databaseShardingStrategy(<span style="color: #0000ff;">new</span> DatabaseShardingStrategy("sharding_column", <span style="color: #0000ff;">new</span> XXXShardingAlgorithm())) <br />　　　　.tableShardingStrategy(<span style="color: #0000ff;">new</span> TableShardingStrategy("sharding_column", <span style="color: #0000ff;">new</span><span style="color: #000000;"> XXXShardingAlgorithm()))) <br />　　　　.build(); 
+</span><span style="color: #008080;">2</span> DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule); <br />  String sql = "SELECT i.* FROM t_order o JOIN t_order_item i ON o.order_id=i.order_id WHERE o.user_id=? AND o.order_id=?"<span style="color: #000000;">; <br /></span><span style="color: #008080;">4</span>     Connection conn =<span style="color: #000000;"> dataSource.getConnection(); 
+</span><span style="color: #008080;">5</span>     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {           <br />      preparedStatement.setInt(1, 10<span style="color: #000000;">); 
+</span><span style="color: #008080;">6</span>     preparedStatement.setInt(2, 1001<span style="color: #000000;">); </span><br />      ResultSet rs =<span style="color: #000000;"> preparedStatement.executeQuery();
+</span><span style="color: #008080;">8</span>       {<br />                <span style="color: #0000ff;">while</span>(rs.next()) {<br />                System.out.println(rs.getInt(1));  <br />                System.out.println(rs.getInt(2<span style="color: #000000;">));<br />        } <br />      } 
+</span><span style="color: #008080;">9</span>     </pre>
+</div>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170420213706759-1470351856.png" alt="" width="633" height="289" /></p>
+<p>对于复制的综合查询，咨询了当当的架构师团队，他们也在计划通过离线分析和大数据分析来实现，不过其实时性和数据的准确性是一个挑战。</p>
+<p><strong>四、Shark：分布式的MySQL分库分表中间件</strong></p>
+<p>此Shark非工作流Shark，是<strong>云集</strong>主要的分布式数据访问框架，也是Java技术路线，它是一个应用程序层的数据访问框架。</p>
+<p><img src="https://images2015.cnblogs.com/blog/23525/201704/23525-20170420214939024-650688486.jpg" alt="" /></p>
+<p>Shark的技术优点：</p>
+<ul>
+<li>完善的技术文档支持；</li>
+<li>动态数据源的无缝切换；</li>
+<li>丰富、灵活的分布式路由算法支持；</li>
+<li>非proxy架构，应用直连数据库，降低外围系统依赖所带来的宕机风险；</li>
+<li>业务零侵入，配置简单；</li>
+<li>站在巨人的肩膀上(springjdbc、基于druid的sqlparser完成sql解析任务)，执行性能高效、稳定；</li>
+<li>提供多机sequenceid的API支持，解决多机sequenceid难题；</li>
+<li>缺省支持基于zookeeper、redis3.x cluster作为集中式资源配置中心；</li>
+<li>基于velocity模板引擎渲染内容，支持sql语句独立配置和动态拼接，与业务逻辑代码解耦；</li>
+<li>提供内置验证页面，方便开发、测试及运维人员对执行后的sql进行验证；</li>
+<li>提供自动生成配置文件的API支持，降低配置出错率；</li>
+</ul>
+<p>同样，也有很多限制:</p>
+<ul>
+<li>不支持强一致性的分布式事务，建议在业务层依赖MQ，保证最终数据一致性；</li>
+<li>不建议、不支持多表查询，所有多表查询sql，务必全部打散为单条sql逐条执行；</li>
+<li>sql语句的第一个参数务必是shard key；</li>
+<li>shard key必须是整数类型；</li>
+</ul>
+<p>项目的Git：https://github.com/gaoxianglong/shark，个人要支持一下，希望能继续增强改进。</p>
+<p><strong>五、总结</strong></p>
+<p>通过上面四个主要的分布式数据访问服务/框架的比较，我们深入研究了分布式数据访问技术，有以下收获分享给大家：</p>
+<p>1.&nbsp;分布式数据访问组件基于物理上的数据库分库分表，主要解决数据库的横向扩展问题</p>
+<p>2.&nbsp;业界主流的分布式数据访问组件主要面向CRUD操作，复杂查询的实现依赖于数据仓库、分析型数据库、大数据分析等技术来实现</p>
+<p>3. Sharding策略和SQL路由是实现分库分表的关键技术，其中Sharding的粒度：主要有两种：Database（数据库） 和 Table（表），即分库和分表</p>
+<p>4.&nbsp;Sharding策略主要有以下几种：时间范围、ID哈希、地理区域、Hash分区、枚举分区、表达式计算分区等等</p>
+<p>5. 分区键的设计非常重要，阿里的实践值得借鉴：用户和商品两个维度，满足不同用户的需求</p>
+<p>6. 分库分表后的复杂查询是一个大的技术挑战：需要解决跨库Join、跨多个Shard查询合并、存储过程、综合BI查询等等，可能需要引入数据仓库和大数据技术来实现</p>
+<p>7. 还有分布式事务问题需要解决，阿里有个TXC，可以学习了解借鉴。</p>
+<p>综合起来说，分布式数据访问服务是大规模分布式应用的必备中间件，技术复杂度和难度都很高，涉及的技术栈比较多，同时比较深，我们会继续深入研究，</p>
+<p>目标是设计一套.Net版本的分布式数据访问服务。有兴趣的小伙伴，可以一起搞。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2017/4/20</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-04-20 22:07</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6736320" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6736320);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 6736320, cb_entryCreatedDate = '2017-04-20 22:07', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

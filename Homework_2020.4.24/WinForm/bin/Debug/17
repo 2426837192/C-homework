@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="升级ASP.NET Core后，配置的读取是第一个要明确的技术。原先的App.Config、Web.Config、自定义Config在ASP.NET Core中如何正常使用。有必要好好总结整理一下，相" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>.NET Core技术研究-最实用最常用的配置读取方式 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/12609152.html">.NET Core技术研究-最实用最常用的配置读取方式</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>升级ASP.NET Core后，配置的读取是第一个要明确的技术。原先的App.Config、Web.Config、自定义Config在ASP.NET Core中如何正常使用。有必要好好总结整理一下，相信大家都会用到。</p>
+<p>首先，看一下ASP.NET Core中的配置提供程序（Configuration Providers）：</p>
+<p><span style="font-size: 18px;"><strong>一、配置提供程序（Configuration Providers）</strong></span></p>
+<p>&nbsp;ASP.NET Core 使用一个或多个配置提供程序来读取配置：</p>
+<ul>
+<li><strong><span style="font-size: 16px;">应用程序设置文件（配置文件），例如appsettings.json</span></strong></li>
+<li><strong><span style="font-size: 16px;">环境变量：Environment variables</span></strong></li>
+<li><strong><span style="font-size: 16px;">命令行参数：Command-line arguments</span></strong></li>
+<li><span style="font-size: 16px;">自定义的配置提供程序</span></li>
+<li><span style="font-size: 16px;">目录文件</span></li>
+<li><span style="font-size: 16px;">内存中的.NET对象（内存中的配置类）</span></li>
+<li><span style="font-size: 16px;">Azure Key Vault，详细说明参考这个连接：https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&amp;tabs=windows</span></li>
+<li><span style="font-size: 16px;">Azure应用程序配置：Azure App Configuration</span></li>
+</ul>
+<p>&nbsp; 我们通过下面的代码，输出配置提供程序的加载顺序：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var configRoot = (IConfigurationRoot)Configuration;
+foreach (var provider in configRoot.Providers.ToList())
+{
+    Debug.WriteLine(provider.ToString() + "\n");
+}
+</pre>
+</div>
+<p>　输出有5个：&nbsp; &nbsp;</p>
+<ul>
+<li>Microsoft.Extensions.Configuration.ChainedConfigurationProvider：链式的配置提供程序，可以添加已有的IConfiguration，作为一个配置源</li>
+<li>JsonConfigurationProvider for 'appsettings.json' (Optional)：读取appsettings.json文件</li>
+<li>JsonConfigurationProvider for 'appsettings.Development.json' (Optional)：按环境读取不同的appsettings.json文件，例如appsettings.Development.json、appsettings.Production.json</li>
+<li>EnvironmentVariablesConfigurationProvider：读取环境变量</li>
+<li>CommandLineConfigurationProvider：读取命令行参数配置</li>
+</ul>
+<p>&nbsp;接下来我们我们重点介绍<strong>&ldquo;应用程序配置文件&rdquo;，&ldquo;环境变量&rdquo;，&ldquo;命令行参数&rdquo;，&ldquo;app.config&rdquo;</strong> 这四种最常用的配置读取方式，通过代码的方式，示例给大家：</p>
+<p><span style="font-size: 18px;"><strong>二、读取应用程序设置文件appsettings.json</strong></span></p>
+<p>&nbsp;我们使用ASP.NET Core工程中默认的appsettings.json文件</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:true;">{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
+</pre>
+</div>
+<p>&nbsp;通过代码读取配置</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var allowedHosts = Configuration["AllowedHosts"];       
+var defaultLogLevel = Configuration["Logging:LogLevel:Default"];
+Debug.WriteLine("allowedHosts:" + allowedHosts + "\n");
+Debug.WriteLine("defaultLogLevel:"+defaultLogLevel + "\n");
+</pre>
+</div>
+<p>实际输出：</p>
+<p>allowedHosts:*</p>
+<p>defaultLogLevel:Information</p>
+<p>如果想读取整个的LogLevel对象，如何实现？</p>
+<p>&nbsp; 新建LogLevel类和Logging类</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">   [DataContract]
+    public class LogLevel
+    {
+        [DataMember(Name = "Default")]
+        public string Default { get; set; }
+
+        [DataMember(Name = "Microsoft")]
+        public string Microsoft { get; set; }
+
+        [DataMember(Name ="Microsoft.Hosting.Lifetime")]        
+        public string MicrosoftHostingLifetime { get; set; }
+
+    }
+
+    [DataContract]
+    public class Logging
+    {
+        [DataMember]
+        public LogLevel LogLevel { get; set; }
+    }
+</pre>
+</div>
+<p>　　读取Logging配置示例代码：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">Logging logConfig = new Logging();
+<strong>Configuration.GetSection("Logging").Bind(logConfig);</strong></pre>
+<pre class="brush:csharp;gutter:true;"><strong>var lifetime = Configuration["Logging:LogLevel:Microsoft.Hosting.Lifetime"];</strong></pre>
+<pre class="brush:csharp;gutter:true;">logConfig.LogLevel.MicrosoftHostingLifetime = lifetime;
+</pre>
+</div>
+<p>&nbsp; &nbsp; &nbsp;上述代码中，对Lifetime属性的设置，通过以下方式实现，Bind的方式因为key匹配的问题，无法完成匹配。</p>
+<p class="brush:csharp;gutter:true;"><strong>&nbsp; &nbsp; &nbsp;Configuration["Logging:LogLevel:Microsoft.Hosting.Lifetime"];<br /><br /></strong>&nbsp; &nbsp; &nbsp;这个地方补充一个带环境类型的应用设置文件的价值顺序：比如说按环境分appsettings.json文件</p>
+<p class="brush:csharp;gutter:true;">&nbsp; &nbsp; &nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200401212453501-413464872.jpg" alt=""></p>
+<p class="brush:csharp;gutter:true;">&nbsp; &nbsp; 默认的JsonConfigurationProvider ，按以下顺序加载&nbsp;appsettings.json文件：&nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; ① appsettings.json<br />&nbsp; &nbsp; ② appsettings.Environment.json，例如appsettings.Development.json ，appsettings.Production.json&nbsp;</p>
+<p>&nbsp; &nbsp; 关于appsettings.Environment.json，Environment的设置主页在Program时指定的变量：&nbsp; &nbsp;&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =&gt;
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =&gt;
+                {
+                    webBuilder.UseEnvironment("Development");
+                    webBuilder.UseStartup&lt;Startup&gt;();                    
+                });
+    }
+</pre>
+</div>
+<p><span style="font-size: 18px;"><strong>三、环境变量读取</strong></span></p>
+<p>&nbsp; &nbsp;按照配置的加载顺序，EnvironmentVariablesConfigurationProvider从环境变量中读取配置信息，在appsettings.json和Secret manager读取配置之后。</p>
+<p>&nbsp; &nbsp;这个地方有个分隔符的注意点，因为 ：并不是在所有平台上都支持，建议统一使用__(双下划线)，运行时会将__统一替换为：</p>
+<p>&nbsp; &nbsp;先通过以下命令，设置环境变量:</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">set Key1="Value1"
+set Logging__LogLevel__Customer=Information
+</pre>
+</div>
+<p>　&nbsp; 代码中读取环境变量的配置&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;"> public static IHostBuilder CreateHostBuilder(string[] args) =&gt;
+            Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostBuilder, config) =&gt;
+                {
+                    config.AddEnvironmentVariables();
+                })
+                .ConfigureWebHostDefaults(webBuilder =&gt;
+                {
+                    webBuilder.UseEnvironment("Development");
+                    webBuilder.UseStartup&lt;Startup&gt;();                    
+                });
+</pre>
+</div>
+<p>　　修改Startup中Configure方法：读取配置并输出</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var key1Value = Configuration["Key1"];
+var logLevel = Configuration["Logging:LogLevel:Customer"];
+Console.WriteLine("key1Value:" + key1Value + "\n");
+Console.WriteLine("logLevel:" + logLevel + "\n");
+</pre>
+</div>
+<p>　　<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200401220900270-1001460389.jpg" alt=""></p>
+<p><span style="font-size: 18px;"><strong>四、命令行参数读取</strong></span></p>
+<p>&nbsp; &nbsp;命令行配置提供程序CommandLineConfigurationProvider，将在以下配置源之后从命令行参数键值对加载配置：</p>
+<ol>
+<li>&nbsp; &nbsp;appsettings.json和appsettings。Environment。json文件</li>
+<li>&nbsp; &nbsp;开发环境中的应用程序机密（秘密管理器）</li>
+<li>&nbsp; &nbsp;环境变量</li>
+</ol>
+<p>&nbsp; &nbsp;继续使用第三章中的示例工程，<strong>新建CMD命令行，输入以下dotnet run指令：</strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">dotnet run Key1="Value1"&nbsp; Logging:LogLevel:Customer="Information"
+</pre>
+</div>
+<p>　　<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200401221707093-1247559358.jpg" alt=""></p>
+<p><span style="font-size: 18px;"><strong>五、app.config读取</strong></span></p>
+<p>&nbsp; &nbsp;这个场景最大的作用就是兼容原有ASP.NET Web.Config文件！</p>
+<p>&nbsp; &nbsp;首先添加Nuget引用：System.Configuration.ConfigurationManager</p>
+<p>&nbsp; &nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200401222728243-1190396395.jpg" alt=""></p>
+<p>&nbsp; &nbsp;新增app.config文件：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;?</span><span style="color: #ff00ff;">xml version="1.0" encoding="utf-8"</span><span style="color: #0000ff;">?&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">configuration</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">appSettings</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">add </span><span style="color: #ff0000;">key</span><span style="color: #0000ff;">="ConfigKey1"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="Value"</span> <span style="color: #0000ff;">/&gt;</span>   
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">appSettings</span><span style="color: #0000ff;">&gt;</span>  
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">configuration</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>&nbsp;使用原有ConfigurationManager读取配置：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">var value = System.Configuration.ConfigurationManager.AppSettings["ConfigKey1"];
+Console.WriteLine("ConfigKey1:" + value + "\n");
+</pre>
+</div>
+<p><img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200401223218574-1094728178.png" alt=""></p>
+<p>&nbsp;</p>
+<p>以上就是ASP.NET Core常用的<strong>&ldquo;应用程序配置文件&rdquo;，&ldquo;环境变量&rdquo;，&ldquo;命令行参数&rdquo;，&ldquo;app.config&rdquo;</strong>&nbsp;配置读取方式，分享给大家。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2020/4/1</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-01 22:33</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12609152" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12609152);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 12609152, cb_entryCreatedDate = '2020-04-01 22:33', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

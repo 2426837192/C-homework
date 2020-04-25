@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="我们将原有ASP.NET应用升级到ASP.NET Core的过程中，会遇到一个新的概念：中间件。 中间件是ASP.NET Core全新引入的概念。中间件是一种装配到应用管道中以处理请求和响应的软件。&amp;" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>.NET Core技术研究-中间件的由来和使用 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/12633780.html">.NET Core技术研究-中间件的由来和使用</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>&nbsp; 我们将原有ASP.NET应用升级到ASP.NET Core的过程中，会遇到一个新的概念：<strong>中间件。</strong></p>
+<p>&nbsp; 中间件是ASP.NET Core全新引入的概念。<span data-ttu-id="0f612-105">中间件是一种装配到应用管道中以处理请求和响应的软件。&nbsp;<span data-ttu-id="0f612-106">每个组件：</span></span></p>
+<ul>
+<li><span data-ttu-id="0f612-107">选择是否将请求传递到管道中的下一个组件。</span></li>
+<li><span data-ttu-id="0f612-108">可在管道中的下一个组件前后执行工作。</span></li>
+</ul>
+<p><span data-ttu-id="0f612-108">&nbsp; 单独看以上中间件的定义，一个很直观的感觉：中间件是HTTP请求管道中的一层层的AOP扩展。</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; 在展开介绍中间件之前，我们先回顾一下ASP.NET中HttpHandler和HttpModule的处理方式。</span></p>
+<p><span style="font-size: 18px;"><strong><span data-ttu-id="0f612-108">&nbsp;一、ASP.NET中HttpHandler和HttpModule</span></strong></span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; 先看一张图：</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; &nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200404195430243-945318121.png" alt="">&nbsp;</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; &nbsp;上图中有两个概念HttpHandler和HttpModule，其中：</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; &nbsp;<strong>HttpHandler</strong>用于处理具有给定文件名或扩展名的请求。比如上图中的.report类的请求，同时，任何一个HttpHandler都需要实现接口IHttpHandler，都需要在Web.Config配置文件中注册使用。</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; &nbsp;<strong>HttpModule</strong>用于处理每个请求调用，比如上图中的Authorization Module，每个Http请求都会经过HttpModule的处理。通过HttpModule可以中断Http请求，可以自定义HttpResponse返回。同时，任何一个HttpModule都需要实现接口IHttpModule，都需要在Web.Config配置文件中注册使用。</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; ASP.NET Core引入了中间件来实现上面2种Http请求处理扩展。ASP.NET Core中间件和 ASP.NET&nbsp;HttpHandler HttpModule有什么区别？</span></p>
+<p><span data-ttu-id="0f612-108">&nbsp; <span style="font-size: 18px;"><strong>二、ASP.NET Core中间件和 ASP.NET&nbsp;HttpHandler HttpModule的区别</strong></span></span></p>
+<p><strong><span data-ttu-id="0f612-108">&nbsp; 1. 中间件比HttpHandler、HttpModule更简单</span></strong></p>
+<ul>
+<li>
+<p><span data-ttu-id="17d25-124">"模块"、"处理程序"、"&nbsp;<em>Global.asax.cs</em>"、&nbsp;<em>"WEB.CONFIG" （IIS</em>配置除外）和 "应用程序生命周期" 消失</span></p>
+</li>
+<li>
+<p><span data-ttu-id="17d25-125">中间件已使用HttpHandler HttpModule的角色</span></p>
+</li>
+<li>
+<p><span data-ttu-id="17d25-126">中间件使用代码而不<em>是在 web.config 中进行配置</em></span></p>
+</li>
+<li>
+<p>通过管道分支，可以将请求发送到特定的中间件，不仅可以基于 URL，还可以发送到请求标头、查询字符串等。</p>
+</li>
+</ul>
+<p>&nbsp; &nbsp;<strong>2. 中间件类似于HttpModule&nbsp;</strong> &nbsp; &nbsp;</p>
+<ul>
+<li>
+<p><span data-ttu-id="17d25-129">处理每个请求调用</span></p>
+</li>
+<li>
+<p>可以实现Http请求中间和继续</p>
+</li>
+<li>
+<p><span data-ttu-id="17d25-131">能够创建自定义的HttpResponse</span></p>
+</li>
+</ul>
+<p><span data-ttu-id="0f612-108">&nbsp; &nbsp;<strong>3. 中间件和HttpModule按不同的顺序处理</strong></span></p>
+<ul>
+<li>
+<p>中间件的顺序取决于它们插入请求管道的顺序，而模块的顺序主要基于应用程序生命周期事件</p>
+</li>
+<li>
+<p><span data-ttu-id="17d25-134">中间件中Http响应的顺序与Http请求的顺序相反，而对于HttpModule，请求和响应的顺序是相同的。</span></p>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200404201323991-1131350117.jpg" alt=""></p>
+<p><span style="font-size: 18px;">&nbsp;三<strong>、ASP.NET Core中间件的设计原理</strong></span></p>
+<p>&nbsp; &nbsp;ASP.NET Core 请求管道包含一系列请求委托，依次调用。 下图演示了这一概念。 沿黑色箭头执行。</p>
+<p>&nbsp; &nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200404201641123-1095857499.jpg" alt=""></p>
+<p>&nbsp; &nbsp;<span>每个请求委托（中间件）都可以在下一个请求委托（中间件）之前和之后执行操作。中间件中的</span><span>异常处理委托应该在管道的早期被处理，这样就可以捕获在管道后期发生的异常。</span></p>
+<p><span>&nbsp; &nbsp;在Startup.Configure 方法中添加中间件组件的顺序定义了针对请求调用这些中间件的顺序，以及响应的相反顺序。 这个顺序对于安全性、性能和功能非常重要。</span></p>
+<p><span>&nbsp; &nbsp;看一段示例代码：</span></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+        app.UseDatabaseErrorPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    // app.UseCookiePolicy();
+
+    app.UseRouting();
+    // app.UseRequestLocalization();
+    // app.UseCors();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+    // app.UseSession();
+
+    app.UseEndpoints(endpoints =&gt;
+    {
+        endpoints.MapRazorPages();
+        endpoints.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+    });
+}
+</pre>
+</div>
+<p>　　上述代码中每个中间件扩展方法都通过 Microsoft.AspNetCore.Builder 命名空间在 IApplicationBuilder 上公开。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; app.Use***都是各种常用的内置中间件。比如：</p>
+<p><strong>&nbsp; &nbsp; &nbsp; </strong>1. 异常处理类中间件。如上述代码中：</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;当应用在开发环境中运行时：异常显示页中间件 (UseDeveloperExceptionPage) 报告应用运行时错误。数据库错误页中间件报告数据库运行时错误。（app.UseDatabaseErrorPage();）</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;当应用在生产环境中运行时：异常处理程序中间件 (UseExceptionHandler) 捕获以下中间件中引发的异常。TTP 严格传输安全协议 (HSTS) 中间件 (UseHsts) 添加 Strict-Transport-Security 标头。</p>
+<p>&nbsp; &nbsp; &nbsp; 2.&nbsp;HTTPS 重定向中间件 (UseHttpsRedirection) 将 HTTP 请求重定向到 HTTPS。</p>
+<p>&nbsp; &nbsp; &nbsp; 3.&nbsp;静态文件中间件 (UseStaticFiles) 返回静态文件，并简化进一步请求处理。</p>
+<p>&nbsp; &nbsp; &nbsp; 4.&nbsp;Cookie 策略中间件 (UseCookiePolicy) 使应用符合欧盟一般数据保护条例 (GDPR) 规定。</p>
+<p>&nbsp; &nbsp; &nbsp; 5.&nbsp;用于路由请求的路由中间件 (UseRouting)。</p>
+<p>&nbsp; &nbsp; &nbsp; 6.&nbsp;身份验证中间件 (UseAuthentication) 尝试对用户进行身份验证，然后才会允许用户访问安全资源。</p>
+<p>&nbsp; &nbsp; &nbsp; 7.&nbsp;用于授权用户访问安全资源的授权中间件 (UseAuthorization)。</p>
+<p>&nbsp; &nbsp; &nbsp; 8.&nbsp;会话中间件 (UseSession) 建立和维护会话状态。 如果应用使用会话状态，请在 Cookie 策略中间件之后和 MVC 中间件之前调用会话中间件。</p>
+<p>&nbsp; &nbsp; &nbsp; 9.&nbsp;用于将 Razor Pages 终结点添加到请求管道的终结点路由中间件（带有 MapRazorPages 的 UseEndpoints）。</p>
+<p>&nbsp; &nbsp; &nbsp; 10.&nbsp;对于单页应用程序 (SPA)，SPA 中间件 UseSpaStaticFiles 通常是中间件管道中的最后一个。 SPA 中间件处于最后的作用是：允许所有其他中间件首先响应匹配的请求。允许具有客户端侧路由的 SPA 针对服务器应用无法识别的所有路由运行。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;还有很多其他的内置中间件，可以参考链接：<a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.0">https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.0</a>。如下图，</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;<img src="https://img2020.cnblogs.com/blog/23525/202004/23525-20200404203347047-319842525.png" alt=""></p>
+<p>&nbsp; &nbsp; &nbsp; 了解了ASP.NET Core内置的中间件之后，我们可能需要自定义一些中间件，比如说原有的ASP.NET HttpModule和HttpHandler.</p>
+<p>&nbsp; &nbsp; &nbsp; 接下来第四部分，我们继续示例：</p>
+<p><span style="font-size: 18px;">&nbsp;四<strong>、自定义中间件</strong></span></p>
+<p><span style="font-size: 15px;"><strong>&nbsp; &nbsp;</strong>将已有HttpModule用自定义中间件实现</span></p>
+<p><span style="font-size: 15px;"><strong>&nbsp; </strong></span><strong>&nbsp;</strong>先看一下原有HttpModule的一个实现：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">/// &lt;summary&gt;
+/// 自定义HTTP扩展模块
+/// &lt;/summary&gt;
+public class CustomerHttpModule : IHttpModule
+    {        
+        public void Init(HttpApplication context)
+        {
+            context.BeginRequest += Context_BeginRequest;
+        }
+
+        private void Context_BeginRequest(object sender, EventArgs e)
+        {            
+            HttpApplication app = (HttpApplication)sender;
+            // Do something            
+        }
+
+        public void Dispose()
+        {
+
+        }
+}
+</pre>
+</div>
+<p>　迁移到中间件实现：</p>
+<p>&nbsp; &nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">/// &lt;summary&gt;
+/// 自定义中间件
+/// &lt;/summary&gt;
+public class CustomerMiddleware
+{
+        private readonly RequestDelegate _next;
+
+        public CustomerMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            // Do something with context near the beginning of request processing.                
+            await _next.Invoke(context);
+            // Clean up.
+        }
+}
+</pre>
+</div>
+<p>　　同时增加IApplicationBuilder的一个扩展方法：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">public static IApplicationBuilder UseCustomerMiddleware(this IApplicationBuilder builder)
+{
+    return builder.UseMiddleware&lt;CustomerMiddleware&gt;();
+}
+</pre>
+</div>
+<p>　　Startup中使用这个中间件：&nbsp; &nbsp; &nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;">app.UseCustomerMiddlewares();　　</pre>
+</div>
+<p>&nbsp;以上是对ASP.NET Core中中间件的技术由来整理和使用分享。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2020/4/4&nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-04 20:49</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12633780" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12633780);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 12633780, cb_entryCreatedDate = '2020-04-04 20:49', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

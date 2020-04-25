@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta property="og:description" content="最近一直在频繁使用Windbg做线上Dump调试，与微软做Case交流的时候，发现微软CSS团队，用了一个非常效率的Windbg 插件，Mex： 使用介绍： https://blogs.msdn.mi" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Windbg程序调试系列1-Mex扩展使用总结 - Eric zhou - 博客园</title>
+    
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue.min.css?v=MH15aYd6DmX-6TABpA2xkiKENy3GAhiM2dh5rOPH89I" />
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/simpleblue/bundle-simpleblue-mobile.min.css?v=X7swQJ1TyCJAf6FMVjDPbYhUAiMdNFddEy1-m0_TbFQ" />
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/tianqing/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/tianqing/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/tianqing/wlwmanifest.xml" />
+    <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
+    <script>
+        var currentBlogId = 27084;
+        var currentBlogApp = 'tianqing';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'SimpleBlue';
+    </script>
+    
+    
+    
+</head>
+<body>
+    <a name="top"></a>
+    
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/tianqing/">I love .net</a>
+</div>
+<div class="subtitle">
+
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/tianqing/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/Eric%20zhou">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/tianqing/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+101&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+400</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/tianqing/p/9369693.html">Windbg程序调试系列1-Mex扩展使用总结</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>最近一直在频繁使用Windbg做线上Dump调试，与微软做Case交流的时候，发现微软CSS团队，用了一个非常效率的Windbg 插件，Mex：</p>
+<p>使用介绍：</p>
+<p>https://blogs.msdn.microsoft.com/luisdem/2016/07/19/mex-debugging-extension-for-windbg-2/</p>
+<p>下载地址：</p>
+<p>https://www.microsoft.com/en-us/download/details.aspx?id=53304</p>
+<p>下载之后，解压缩，有两个目录，X64和X86，大家根据自己的需要进行加载，目前我们主要用X64。当然也可以直接把这个扩展拷贝到Windbg运行目录中。</p>
+<p>这里，我们先show一下Windbg加载mex扩展：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt;<span style="color: #000000;"> .load D:\Mex\x64\mex.dll
+Mex External </span><span style="color: #800080;">3.0</span>.<span style="color: #800080;">0.7172</span> Loaded!</pre>
+</div>
+<p>当然，我们可以同时继续加载sos</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; .loadby sos clr</pre>
+</div>
+<p>查看已经加载的扩展：</p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726090138590-510519102.png" alt="" /></p>
+<p>如果本机调试Dump，建议设置调试符号的路径：</p>
+<div class="cnblogs_code">
+<pre>srv*c:\symcache*http:<span style="color: #008000;">//</span><span style="color: #008000;">msdl.microsoft.com/download/symbols;c:\symcache</span></pre>
+</div>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726085810882-1143611072.png" alt="" /></p>
+<p>查看Mex的各种命令：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">0</span>:<span style="color: #800080;">000</span>&gt; !<span style="color: #000000;">mex.help
+Mex currently has </span><span style="color: #800080;">255</span><span style="color: #000000;"> extensions available.  Please specify a keyword to search.
+Or browse by category:</span></pre>
+</div>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726085929439-853977929.png" alt="" /></p>
+<p>大家可以逐一点进去看一下。</p>
+<p>这里我给大家show几个常用的命令：</p>
+<p>1. !dae&nbsp; 查看所有的Exception</p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726090307765-698931990.png" alt="" /></p>
+<p>2. 查看所有的线程状态</p>
+<div class="cnblogs_code">
+<pre>!mex.mthreads</pre>
+</div>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726090501645-1384195705.png" alt="" /></p>
+<p>3. !clrstack2 查询线程堆栈</p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726090726221-1240379288.png" alt="" /></p>
+<p>4. do2 查看对象</p>
+<p><img src="https://images2018.cnblogs.com/blog/23525/201807/23525-20180726090958014-1074071120.png" alt="" /></p>
+<p>5. 查看所有的Asp.Net请求</p>
+<div class="cnblogs_code">
+<pre>!mex.aspxpagesext</pre>
+</div>
+<p>6. 查看当前线程的异常</p>
+<div class="cnblogs_code">
+<pre>!mex.pe2</pre>
+</div>
+<p>&nbsp;7. Foreach</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:true;"> !foreachobject  -x "!do2 @#Obj"  System.Net.Socket
+</pre>
+</div>
+<p>　　</p>
+<p>等等，分享给大家。</p>
+<p>&nbsp;</p>
+<p>周国庆</p>
+<p>2018/7/26</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="blog_post_info"></div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-07-26 09:14</span>&nbsp;
+<a href="https://www.cnblogs.com/tianqing/">Eric zhou</a>&nbsp;
+阅读(<span id="post_view_count">...</span>)&nbsp;
+评论(<span id="post_comment_count">...</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=9369693" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(9369693);return false;">收藏</a></div>
+        </div>
+<script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 27084, cb_blogApp = 'tianqing', cb_blogUserGuid = 'ea753d0b-63cf-dd11-9e4d-001cf0cd104b';
+    var cb_entryId = 9369693, cb_entryCreatedDate = '2018-07-26 09:14', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;"></div>
+    </div>
+    <div id="under_post_news"></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        </div>
+    </div>
+    <div id="under_post_kb"></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+            <script>loadBlogNews();</script>
+</div>
+
+                <div id="calendar"><div id="blog-calendar" style="display:none"></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn"></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright &copy; 2020 Eric zhou
+<br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+</body>
+</html>

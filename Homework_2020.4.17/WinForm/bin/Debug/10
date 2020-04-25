@@ -4,28 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin" />
-    <meta property="og:description" content="前言 今年主要会做一个比较完整的微服务项目开源出来。目前已经开始了，刚兴趣的先Star一个吧。 项目： &amp;quot;https://github.com/yinjihuan/kitty cloud&amp;q" />
+    <meta property="og:description" content="股票问题应该算是比较复杂的动态规划问题了，笔者在研究了多次之后记录下一点心得体会。" />
     <meta http-equiv="Cache-Control" content="no-transform" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>当Spring Cloud Alibaba Sentinel碰上Spring Cloud Sleuth会擦出怎样的火花 - 猿天地 - 博客园</title>
+    <title>从“股票问题”谈动态规划问题的解决思路 - wunsiang - 博客园</title>
     
-    <link rel="stylesheet" href="/css/blog-common.min.css?v=BKtyzabbeYJEVOaELkxmRjHbp7LT-v37GzrU5S24bJk" />
-    <link id="MainCss" rel="stylesheet" href="/skins/banlieue13/bundle-banlieue13.min.css?v=1J0RP_opHZcWv1yy974pRZewfj9S0p6tTP1QNRnmMiI" />
-    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/yinjihuan/custom.css?v=NtBRJkJK6PFpkDxbnwTt8TkWAMc=" />
-    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/banlieue13/bundle-banlieue13-mobile.min.css?v=cTNtJQ6_6SB1QXNeWlP0QHJBE4K5SDodawH8t2CtJ3Y" />
+    <link rel="stylesheet" href="/css/blog-common.min.css?v=-oFz8B4m7JhHaZzdTkzPza2oLZNDRR8obnCz6w7OHbU" />
+    <link id="MainCss" rel="stylesheet" href="/skins/custom/bundle-custom.min.css?v=1ssrnY3Il79Ok472qeVrpxlSprSXcHhYPgZC5S3wtVM" />
+    <link type="text/css" rel="stylesheet" href="https://www.cnblogs.com/wunsiang/custom.css?v=Jr94aNNTImH1o/3L908CWbER&#x2B;lQ=" />
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="/skins/custom/bundle-custom-mobile.min.css?v=-Yh290MhQyDeXLmvKTSses9H6-49lqbpXFh55zvS0w8" />
     
-    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/yinjihuan/rss" />
-    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/yinjihuan/rsd.xml" />
-    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/yinjihuan/wlwmanifest.xml" />
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/wunsiang/rss" />
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/wunsiang/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/wunsiang/wlwmanifest.xml" />
     <script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
-    <script src="/js/blog-common.min.js?v=VSP5rTXbJNpNidklGdgoLgwCGyUPITrcsmlgoaMKz3w"></script>
+    <script src="/js/blog-common.min.js?v=z6JkvKQ7L_bGD-nwJExYzsoFf5qnluqZJru6RsfoZuM"></script>
     <script>
-        var currentBlogId = 496691;
-        var currentBlogApp = 'yinjihuan';
+        var currentBlogId = 566163;
+        var currentBlogApp = 'wunsiang';
         var cb_enable_mathjax = false;
         var isLogined = false;
-        var skinName = 'Banlieue13';
+        var skinName = 'Custom';
     </script>
     
     
@@ -39,10 +39,10 @@
 <div id="home">
 <div id="header">
 	<div id="blogTitle">
-	<a href="https://www.cnblogs.com/yinjihuan/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>			
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/wunsiang/"><img id="blogLogo" src="/skins/custom/images/logo.gif" alt="返回主页" /></a>		
 		
 <!--done-->
-<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/yinjihuan/">猿天地</a>
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/wunsiang/">wunsiang</a>
 </h1>
 <h2>
 
@@ -53,116 +53,239 @@
 
 		
 	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/wunsiang/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/wunsiang">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/wunsiang/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+34&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+1</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
 </div><!--end: header 头部 -->
 
 <div id="main">
 	<div id="mainContent">
 	<div class="forFlow">
-		<div id="navigator">
-			
-<ul id="navList">
-	<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
-博客园</a>
-</li>
-	<li>
-<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/yinjihuan/">
-首页</a>
-</li>
-	<li>
-
-<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
-新随笔</a>
-</li>
-	<li>
-<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E7%8C%BF%E5%A4%A9%E5%9C%B0">
-联系</a></li>
-	<li>
-<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
-管理</a>
-</li>
-	<li>
-<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/yinjihuan/rss/">
-订阅</a>
-	
-<a id="blog_nav_rss_image" href="https://www.cnblogs.com/yinjihuan/rss/">
-    <img src="/skins/banlieue13/images/xml.gif" alt="订阅" />
-</a></li>
-</ul>
-
-
-
-			<div class="blogStats">
-				
-				<!--done-->
-随笔- 
-68&nbsp;
-文章- 
-0&nbsp;
-评论- 
-34&nbsp;
-
-
-
-				
-			</div><!--end: blogStats -->
-		</div><!--end: navigator 博客导航栏 -->
 		<div id="post_detail">
-<!--done-->
-<div id="topics">
-	<div class="post">
-		<h1 class = "postTitle">
-			
-<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/yinjihuan/p/12730654.html">当Spring Cloud Alibaba Sentinel碰上Spring Cloud Sleuth会擦出怎样的火花</a>
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class = "postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/wunsiang/p/12771442.html">从“股票问题”谈动态规划问题的解决思路</a>
 
-		</h1>
-		<div class="clear"></div>
-		<div class="postBody">
-			
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+    <div id="cnblogs_post_description" style="display: none">
+        股票问题应该算是比较复杂的动态规划问题了，笔者在研究了多次之后记录下一点心得体会。
+    </div>
 <div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
-    <h1 id="前言">前言</h1>
-<p>今年主要会做一个比较完整的微服务项目开源出来。目前已经开始了，刚兴趣的先Star一个吧。</p>
-<p>项目：<a href="https://github.com/yinjihuan/kitty-cloud">https://github.com/yinjihuan/kitty-cloud</a></p>
-<p>基础框架：<a href="https://github.com/yinjihuan/kitty">https://github.com/yinjihuan/kitty</a></p>
-<p>在做的过程中遇到一个问题那就是标题所说的两个框架碰撞了火花。都是S开头的谁都不服谁。</p>
-<h1 id="问题描述">问题描述</h1>
-<p>既然使用了Sentinel来限流，那么干脆熔断也直接用Sentinel好了，所以就没使用Hystrix了。</p>
-<p>Sentinel对Feign做了适配，使用的时候只需要引入spring-cloud-starter-alibaba-sentinel，如下：</p>
-<pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
-&lt;/dependency&gt;
+    <h2 id="总体思路">总体思路</h2>
+<p>    有过在Leetcode上练习经历的同学们对股票问题肯定不会感到陌生，动态规划问题的核心在于寻找<strong>状态转移方程</strong>，对于常规的动态规划问题，如零钱问题、背包问题，我们可能会觉得状态转移方程找起来并不费劲，但对于股票问题，可能很多同学都觉得状态转移方程难找。在我对股票问题进行了反复研究之后，我发现其实之所以股票系列分析存在这种困难，并不是“转移方程难找”，而是其具有多个维度的“<strong>状态</strong>”，其状态的复杂性导致我们在没有处理好状态的情况下便谈不上解决“转移方程”的问题。</p>
+<blockquote>
+<p>状态的确定与处理？</p>
+</blockquote>
+<p>首先我们要考虑的是状态有哪些，具体到本题，共有三个维度的状态：</p>
+<ol>
+<li>天数</li>
+<li>允许交易的最大次数</li>
+<li>用户账户当前状态（持有或者未持有股票）</li>
+</ol>
+<p>其次是如何处理状态，其实大家可以细细回想，对于动态规划问题我们处理状态，虽然你可能没有注意，其实使用的是“<strong>穷举</strong>”思想，比如说背包问题中的物品数量和背包容量。至于怎么枚举，看下面的伪代码你肯定就明白啦！</p>
+<pre><code class="language-java">for 状态1 in 状态1的所有取值：
+    for 状态2 in 状态2的所有取值：
+        for ...
+            dp[状态1][状态2][...] = 择优(选择1，选择2...)
 </code></pre>
-<p>然后在配置文件打开 Sentinel 对 Feign 的支持：feign.sentinel.enabled=true就可以了。</p>
-<p>一开始都很正常，平平淡淡的小日子过得也挺舒坦。</p>
-<p>突然有一天，来了一位同姓但不同名的哥们，它叫Sleuth。</p>
-<p>Sleuth文档：<a href="https://cloud.spring.io/spring-cloud-static/Greenwich.SR5/single/spring-cloud.html#_spring_cloud_sleuth">https://cloud.spring.io/spring-cloud-static/Greenwich.SR5/single/spring-cloud.html#_spring_cloud_sleuth</a></p>
-<p>Spring Cloud Sleuth为Spring Cloud实现了分布式追踪解决方案。可以配合Zipkin或者Jaeger使用。</p>
-<p>自从Sleuth来了之后，Sentinel  Feign 的日子就不好过了，莫名其妙熔断回退失效了。</p>
-<h1 id="问题排查">问题排查</h1>
-<p>Sentinel 对 Feign 的适配入口在SentinelFeignAutoConfiguration中。</p>
-<p><img src="https://img2020.cnblogs.com/blog/1618095/202004/1618095-20200419110906693-23713341.png" alt=""></p>
-<p>主要是构建了Feign 的 Builder类，只要这个类被自动配置了，那么Sentinel 对 Feign 的支持也会生效。突然不生效了，那么肯定是这里有问题。</p>
-<p>于是开启debug模式，发现启动的时候这里没有执行。feign.sentinel.enabled已经配置了，剩下就只有@ConditionalOnMissingBean的问题了。</p>
-<p>@ConditionalOnMissingBean的作用是如果容器中已经有Builder那么这里就不会执行。</p>
-<p>接下来就要看Sleuth的代码了，之所以能马上知道是Sleuth影响了，是因为一开始都是正常的，加了Sleuth后就出问题了。</p>
-<p>在Sleuth中Feign相关的配置是在TraceFeignClientAutoConfiguration中。</p>
-<p><img src="https://img2020.cnblogs.com/blog/1618095/202004/1618095-20200419110922569-1560469303.png" alt=""></p>
-<p>可以看到，Sleuth中对Feign Builder也有配置，一种是如果开启了Hystrix就用SleuthHystrixFeignBuilder，如果没有开启就用SleuthFeignBuilder。</p>
-<p>在这里打个断点，启动时直接就进来了，这边执行完后Builder对象就有了，所以Sentinel中的自然就不会执行了。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>发生冲突的根本原因在于两个框架都要对Feign进行扩展，Sentinel扩展是为了再调用的时候可以实现限流熔断等功能。Sleuth扩展是为了使用Feign调用接口的时候可以传递链路跟踪的信息。</p>
-<p>要想解决这个问题，要么妥协只用一个框架，这样是最简单的。</p>
-<p>要么看看Sleuth后面会不会支持Sentinel，目前可以看到已经支持了Hystrix。</p>
-<p>最后一种就是自己改源码，将Sentinel融入到Sleuth中。</p>
-<p>SleuthFeignBuilder 中只是对Client做了包装。</p>
-<p><img src="https://img2020.cnblogs.com/blog/1618095/202004/1618095-20200419110934615-978595515.png" alt=""></p>
-<p>SentinelFeign 中只是对Builder做了增强。</p>
-<p><img src="https://img2020.cnblogs.com/blog/1618095/202004/1618095-20200419110942932-675043199.png" alt=""></p>
-<p>所以我们只要把两者结合起来就可以了。</p>
-<p><img src="https://img2020.cnblogs.com/blog/1618095/202004/1618095-20200419110952069-1583323466.png" alt=""></p>
-<h1 id="ps：没star的现在接着star吧！">PS：没Star的现在接着Star吧！</h1>
-<p>项目：<a href="https://github.com/yinjihuan/kitty-cloud">https://github.com/yinjihuan/kitty-cloud</a></p>
-<p>基础框架：<a href="https://github.com/yinjihuan/kitty">https://github.com/yinjihuan/kitty</a></p>
+<p>该伪代码参考自<a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-wen/">Leetcode</a>，个人认为这个状态枚举思路的伪代码写的非常好，但是作者对于股票问题状态划分有些复杂。<br>
+那具体到本题，我们的状态框架如下</p>
+<pre><code class="language-java">dp[i][k][0 or 1] //前面说了三个维度，自然dp数组也是三维的
+for(int i = 0;i &lt; n;i++)
+    for(int j = 0;j &lt; k;j++)
+        dp[i][j][0] 取优
+        dp[i][j][1] 取优//账户状态这个维度只有两种可能，就直接计算就好啦。
+</code></pre>
+<blockquote>
+<p>那我们接下里将通过对股票问题的具体实例讲解的方式来介绍具体解法，目前剩下的其实就是个状态转移方程的事情啦。</p>
+</blockquote>
+<h2 id="各个击破">各个击破</h2>
+<h3 id="k--1的情况">k = 1的情况</h3>
+<p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/%22%3Ehttps://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/">121. 买卖股票的最佳时机</a><br>
+k = 1是思路很清晰，其实只需要直接一趟遍历，并且记录下当前元素之前的最小元素并利用其计算当前天卖出最大收益即可。这个其实感觉不算典型动态规划。</p>
+<pre><code class="language-java">
+class Solution {
+    public int maxProfit(int[] prices) {
+        if(prices == null || prices.length == 0)
+            return 0;
+        int min = prices[0],max = 0;
+        for(int i = 1;i &lt; prices.length;i++){
+            max = Math.max(max,prices[i] - min);
+            min = Math.min(min,prices[i]);
+            
+        }
+        return max;
+    }
+}
+</code></pre>
+<h3 id="k值不受限">k值不受限</h3>
+<p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/%22%3Ehttps://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/">122. 买卖股票的最佳时机 II</a></p>
+<h4 id="枚举框架">枚举框架</h4>
+<p>按照我们最开始的状态枚举框架，k不受限即从前向后遍历（了解完全背包问题的同学肯定熟悉），并且不设置k维度即可（只有天数、账户状态两个维度）。</p>
+<h4 id="状态转移方程">状态转移方程</h4>
+<p>当前天未持有，则有两种情况：<br>
+1、昨天就未持有，今天也不买，则为<code>dp[i - 1][0]</code><br>
+2、昨天持有，今天卖出，则为<code>dp[i - 1][1] + prices[i])</code><br>
+综上，二者取优<br>
+<code>dp[i][0] = Math.max(dp[i - 1][0],dp[i - 1][1] + prices[i]);</code><br>
+同样，当前天持有也是两种情况：<br>
+1、昨天持有，则为<code>dp[i - 1][1]</code><br>
+2、昨天未持有，今天买入<code>dp[i - 1][0] - prices[i]</code><br>
+综上，二者取优<br>
+<code>dp[i][1] = Math.max(dp[i - 1][1],dp[i - 1][0] - prices[i]);</code></p>
+<pre><code class="language-java">class Solution {
+    public int maxProfit(int[] prices) {
+        int[][] dp = new int[prices.length][2];//0为未持有，1为持有
+        dp[0][0] = 0;
+        dp[0][1] = 0 - prices[0];
+        for(int i = 1;i &lt; prices.length;i++){
+            dp[i][0] = Math.max(dp[i - 1][0],dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1],dp[i - 1][0] - prices[i]);
+        }
+        return dp[prices.length - 1][0];
+    }
+}
+</code></pre>
+<h3 id="k值不受限且包含冷冻期">k值不受限且包含冷冻期</h3>
+<p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/%22%3Ehttps://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/">309. 最佳买卖股票时机含冷冻期</a></p>
+<h4 id="枚举框架-2">枚举框架</h4>
+<p>按照我们最开始的状态枚举框架，k不受限即从前向后遍历（了解完全背包问题的同学肯定熟悉），并且不设置k维度即可（只有天数、账户状态两个维度）。</p>
+<h4 id="状态转移方程-2">状态转移方程</h4>
+<p>当前天未持有，则有两种情况：<br>
+1、昨天就未持有，今天也不买，则为<code>dp[i - 1][0]</code><br>
+2、昨天持有，今天卖出，则为<code>dp[i - 1][1] + prices[i - 1])</code>，注意，price从0开始索引<br>
+综上，二者取优<br>
+<code>dp[i][0] = Math.max(dp[i - 1][1] + prices[i - 1],dp[i - 1][0]);</code><br>
+同样，当前天持有也是两种情况，但由于存在冷冻期，买出的话需要从i-2转移过来：<br>
+1、昨天持有，则为<code>dp[i - 1][1]</code><br>
+2、昨天未持有，今天买入<code>dp[i - 2][0] - prices[i - 1]</code><br>
+综上，二者取优<br>
+<code>dp[i][1] = Math.max(dp[i - 1][1],i - 2 &gt;= 0 ? dp[i - 2][0] - prices[i - 1]: 0 - prices[i - 1])</code></p>
+<pre><code class="language-java">class Solution {
+    public int maxProfit(int[] prices) {
+        int[][] dp = new int[prices.length + 1][2];
+        dp[0][1] = Integer.MIN_VALUE;
+        for(int i = 1;i &lt;= prices.length;i++){
+            dp[i][0] = Math.max(dp[i - 1][1] + prices[i - 1],dp[i - 1][0]);
+            dp[i][1] = Math.max(dp[i - 1][1],i - 2 &gt;= 0 ? dp[i - 2][0] - prices[i - 1]: 0 - prices[i - 1]);
+        }
+        return dp[prices.length][0];
+    }
+}
+</code></pre>
+<h3 id="k值不受限且包含手续费">k值不受限且包含手续费</h3>
+<p>状态转移方程与k值不受限完全相同，只是卖出时要减手续费即可</p>
+<h4 id="枚举框架-3">枚举框架</h4>
+<p>按照我们最开始的状态枚举框架，k不受限即从前向后遍历（了解完全背包问题的同学肯定熟悉），并且不设置k维度即可（只有天数、账户状态两个维度）。</p>
+<h4 id="状态转移方程-3">状态转移方程</h4>
+<p>当前天未持有，则有两种情况：<br>
+1、昨天就未持有，今天也不买，则为<code>dp[i - 1][0]</code><br>
+2、昨天持有，今天卖出，则为<code>dp[i - 1][1] + prices[i] - fee)</code><br>
+综上，二者取优<br>
+<code>dp[i][0] = Math.max(dp[i - 1][0],dp[i - 1][1] + prices[i] - fee);</code><br>
+同样，当前天持有也是两种情况：<br>
+1、昨天持有，则为<code>dp[i - 1][1]</code><br>
+2、昨天未持有，今天买入<code>dp[i - 1][0] - prices[i]</code><br>
+综上，二者取优<br>
+<code>dp[i][1] = Math.max(dp[i - 1][1],dp[i - 1][0] - prices[i]);</code></p>
+<pre><code class="language-java">class Solution {
+    public int maxProfit(int[] prices, int fee) {
+        int[][] dp = new int[prices.length][2];//0为未持有，1为持有
+        dp[0][0] = 0;
+        dp[0][1] = 0 - prices[0];
+        for(int i = 1;i &lt; prices.length;i++){
+            dp[i][0] = Math.max(dp[i - 1][0],dp[i - 1][1] + prices[i] - fee);
+            dp[i][1] = Math.max(dp[i - 1][1],dp[i - 1][0] - prices[i]);
+        }
+        return dp[prices.length - 1][0];
+    }
+}
+</code></pre>
+<h3 id="k为任意整数">k为任意整数</h3>
+<p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/">188. 买卖股票的最佳时机 IV</a></p>
+<h4 id="枚举框架-4">枚举框架</h4>
+<p>枚举框架与本文最开始分析的思路完全相同，只需要对天、最大交易次数、账户状态这三个维度进行枚举即可。</p>
+<h4 id="状态转移方程-4">状态转移方程</h4>
+<p>当前天未持有，则有两种情况：<br>
+1、昨天就未持有，今天也不买，且显然这种情况不会增加交易次数，则为<code>dp[i - 1][j][0]</code><br>
+2、昨天持有，今天卖出，卖出操作并不会增加交易次数，仍然是本交易次数维度进行转移，为<code>dp[i - 1][j][1] + prices[i]</code><br>
+综上，二者取优<br>
+<code>dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);</code><br>
+同样，当前天持有也是两种情况：<br>
+1、昨天持有，则为<code>dp[i - 1][j][1]</code><br>
+2、昨天未持有，今天买入，注意买入会引起交易次数变化，所以为<code>dp[i - 1][j - 1][0] - prices[i]</code><br>
+综上，二者取优<br>
+<code>dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);</code></p>
+<pre><code class="language-java">class Solution {
+    public int maxProfit(int k, int[] prices) {
+        if(prices == null || prices.length &lt; 2)
+            return 0;
+        int[][][] dp = new int[prices.length][k + 1][2];//0是未持有，1是持有
+        for(int i = 0;i &lt;= k;i++){//第一天base case
+            dp[0][i][1] = 0 - prices[0];
+        }
+        for(int i = 1;i &lt; prices.length;i++){
+            for(int j = 1;j &lt;= k;j++){
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+            }
+        }
+        return dp[prices.length - 1][k][0];
+    }
+}
+</code></pre>
+<h2 id="总结">总结</h2>
+<p>看到这里，其实我们就会明白，动态规划其实要确定的三部分就是:</p>
+<ol>
+<li>dp语义</li>
+<li>状态枚举框架</li>
+<li>转移方程</li>
+</ol>
+<p>确定了这三样，一切便都迎刃而解了。</p>
 
 </div>
 <div id="MySignature"></div>
@@ -172,23 +295,24 @@
     <div class="clear"></div>
     <div id="post_next_prev"></div>
 </div>
-		</div>
-		<div class="postDesc">posted @ 
-<span id="post-date">2020-04-19 11:10</span>&nbsp;
-<a href="https://www.cnblogs.com/yinjihuan/">猿天地</a>&nbsp;
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2020-04-25 08:16</span>&nbsp;
+<a href="https://www.cnblogs.com/wunsiang/">wunsiang</a>&nbsp;
 阅读(<span id="post_view_count">...</span>)&nbsp;
 评论(<span id="post_comment_count">...</span>)&nbsp;
-<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12730654" rel="nofollow">编辑</a>&nbsp;
-<a href="javascript:void(0)" onclick="AddToWz(12730654);return false;">收藏</a></div>
-	</div>
-	
-	
-</div><!--end: topics 文章、评论容器-->
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=12771442" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(12771442);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
 <script src="https://common.cnblogs.com/highlight/9.12.0/highlight.min.js"></script>
 <script>markdown_highlight();</script>
 <script>
-    var allowComments = true, cb_blogId = 496691, cb_blogApp = 'yinjihuan', cb_blogUserGuid = '42e3e585-54fd-4252-72d3-08d69f02802c';
-    var cb_entryId = 12730654, cb_entryCreatedDate = '2020-04-19 11:10', cb_postType = 1; 
+    var allowComments = true, cb_blogId = 566163, cb_blogApp = 'wunsiang', cb_blogUserGuid = '0d595040-93a9-48cb-bf1b-08d77885435f';
+    var cb_entryId = 12771442, cb_entryCreatedDate = '2020-04-25 08:16', cb_postType = 1; 
     loadViewCount(cb_entryId);
 </script><a name="!comments"></a>
 <div id="blog-comments-placeholder"></div>
@@ -246,9 +370,7 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
         loadOptUnderPost();
         GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
     </script>
-</div></div>
-
-
+</div>
 	</div><!--end: forFlow -->
 	</div><!--end: mainContent 主体内容容器-->
 
@@ -259,12 +381,12 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
             <script>loadBlogNews();</script>
 </div>
 
-			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script></div>
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
 			
-			<DIV id="leftcontentcontainer">
+			<div id="leftcontentcontainer">
 				<div id="blog-sidecolumn"></div>
                     <script>loadBlogSideColumn();</script>
-			</DIV>
+			</div>
 			
 		</div><!--end: sideBarMain -->
 	</div><!--end: sideBar 侧边栏容器 -->
@@ -273,7 +395,7 @@ LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogI
 	<div class="clear"></div>
 	<div id="footer">
 		<!--done-->
-Copyright &copy; 2020 猿天地
+Copyright &copy; 2020 wunsiang
 <br /><span id="poweredby">Powered by .NET Core on Kubernetes</span>
 
 
